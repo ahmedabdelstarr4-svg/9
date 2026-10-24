@@ -1,0 +1,2599 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050806">
+<title>النظام المالي الشخصي الذكي — Neon Emerald Premium</title>
+<style>
+:root[data-theme="dark"] {
+  --bg-main: #050806; --bg-app: #090d0b; --bg-card: #0e1612; --bg-card-hover: #14201a;
+  --bg-input: #0a110d; --border-neon: rgba(16, 185, 129, 0.22); --border-subtle: rgba(255, 255, 255, 0.07);
+  --ink: #f8fafc; --ink-muted: #94a3b8; --emerald-neon: #10b981; --emerald-glow: rgba(16, 185, 129, 0.35);
+  --green-val: #34d399; --red-val: #fb7185; --amber-val: #fbbf24; --sky-val: #38bdf8; --purple-val: #c084fc;
+  --header-bg: #070c09; --nav-bg: rgba(10, 17, 13, 0.85); --modal-overlay: rgba(3, 7, 5, 0.85);
+  --app-max: 480px; --shadow-neon: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+:root[data-theme="light"] {
+  --bg-main: #f1f5f9; --bg-app: #ffffff; --bg-card: #f8fafc; --bg-card-hover: #f1f5f9;
+  --bg-input: #ffffff; --border-neon: rgba(5, 150, 105, 0.25); --border-subtle: #e2e8f0;
+  --ink: #0f172a; --ink-muted: #64748b; --emerald-neon: #059669; --emerald-glow: rgba(5, 150, 105, 0.2);
+  --green-val: #059669; --red-val: #e11d48; --amber-val: #d97706; --sky-val: #0284c7; --purple-val: #7c3aed;
+  --header-bg: #0f172a; --nav-bg: rgba(255, 255, 255, 0.9); --modal-overlay: rgba(15, 23, 42, 0.6);
+  --app-max: 480px; --shadow-neon: 0 10px 25px rgba(5, 150, 105, 0.1);
+}
+*{box-sizing:border-box;transition:background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;}
+html,body{margin:0;padding:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg-main);color:var(--ink);overflow-x:hidden}
+body{padding:4px;padding-bottom:calc(65px + env(safe-area-inset-bottom,8px));display:flex;justify-content:center;align-items:flex-start}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;touch-action:manipulation;min-height:36px}
+.app{width:100%;max-width:var(--app-max);background:var(--bg-app);border:1px solid var(--border-neon);border-radius:24px;box-shadow:var(--shadow-neon);display:flex;flex-direction:column;overflow:hidden;position:relative;}
+.header{background:var(--header-bg);color:var(--ink);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:800;gap:8px;border-bottom:1px solid var(--border-subtle);}
+.header-actions{display:flex;align-items:center;gap:8px;}
+.theme-toggle-btn{background:rgba(255,255,255,0.06);border:1px solid var(--border-subtle);color:var(--ink);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;min-height:26px;display:inline-flex;align-items:center;gap:4px;}
+.pill{font-size:10px;background:rgba(16, 185, 129, 0.1);color:var(--emerald-neon);padding:2px 8px;border-radius:10px;white-space:nowrap;font-weight:700;border:1px solid var(--border-neon);}
+.pill.warn{color:var(--amber-val);border-color:rgba(251, 191, 36, 0.3);background:rgba(251, 191, 36, 0.1);}
+.content{padding:6px;flex:1;display:flex;flex-direction:column;gap:6px}
+.view{display:flex;flex-direction:column;gap:6px}
+.hidden{display:none!important}
+.stack{display:flex;flex-direction:column;gap:6px}
+label{display:block;color:var(--ink-muted);font-size:11px;font-weight:800;margin-bottom:4px}
+input,select,textarea{width:100%;min-width:0;padding:8px 10px;border:1px solid var(--border-subtle);border-radius:12px;background:var(--bg-input);color:var(--ink);outline:none;font-size:12px;}
+input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-shadow:0 0 8px var(--emerald-glow);}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+#view-dashboard > *{min-width:0}
+.dash-cols{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+.dash-col{display:flex;flex-direction:column;gap:6px;min-width:0}
+.alert-strip{border-radius:12px;padding:6px 10px;font-size:10.5px;font-weight:800;line-height:1.4;cursor:pointer;border:1px solid;display:flex;flex-direction:column;gap:2px;}
+.alert-strip.bad{background:rgba(251, 113, 133, 0.1);border-color:var(--red-val);color:var(--red-val);}
+.alert-strip.warning{background:rgba(251, 191, 36, 0.1);border-color:var(--amber-val);color:var(--amber-val);}
+.balance-card{background:linear-gradient(145deg, #0f241a 0%, #08140e 100%);color:white;border-radius:16px;padding:8px 12px;text-align:center;display:flex;flex-direction:column;gap:2px;border:1px solid var(--border-neon);box-shadow:0 6px 20px rgba(0,0,0,0.4), inset 0 0 10px rgba(16, 185, 129, 0.15);position:relative;overflow:hidden;}
+.balance-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center, rgba(16,185,129,0.08) 0%, transparent 60%);pointer-events:none;}
+.balance-card span{font-size:10px;color:#a7f3d0;font-weight:700;letter-spacing:0.2px}
+.balance-card strong{font-size:20px;font-weight:900;color:#ffffff;font-variant-numeric:tabular-nums;letter-spacing:-0.5px;text-shadow:0 0 10px rgba(255,255,255,0.2);}
+.acc-scroll{display:flex;gap:4px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:1px;margin-top:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.acc-scroll::-webkit-scrollbar{display:none}
+.acc-chip{background:rgba(255,255,255,0.05);backdrop-filter:blur(6px);border-radius:8px;padding:3px 8px;text-align:center;border:1px solid rgba(255,255,255,0.1);flex:0 0 auto;min-width:85px;scroll-snap-align:start;}
+.acc-chip-title{font-size:9px;color:#cbd5e1;margin-bottom:0;white-space:nowrap}
+.acc-chip-val{font-size:11px;font-weight:900;color:var(--green-val);font-variant-numeric:tabular-nums}
+.acc-chip-val.neg{color:var(--red-val)}
+.today-card{background:var(--bg-card);border:1px solid var(--border-neon);text-align:center;gap:3px;padding:8px!important;border-radius:14px;}
+.today-label{font-size:10px;font-weight:800;color:var(--emerald-neon)}
+.today-val{font-size:20px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--green-val);letter-spacing:-0.5px}
+.today-val.warning{color:var(--amber-val)}
+.today-val.bad{color:var(--red-val)}
+.today-note{font-size:9.5px;color:var(--ink-muted);font-weight:700}
+.quick-actions{display:flex;flex-direction:column;gap:4px}
+.qa-main{border:0;width:100%;min-height:36px;padding:6px;border-radius:12px;font-size:12px;font-weight:900;color:#fff;background:linear-gradient(135deg, #10b981 0%, #047857 100%);box-shadow:0 4px 14px rgba(16, 185, 129, 0.3);display:flex;justify-content:center;align-items:center;gap:4px;transition:transform .15s ease, box-shadow .15s ease;}
+.qa-main:active{transform:scale(0.98)}
+.qa-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.qa-mini{border:1px solid var(--border-subtle);padding:4px 2px;border-radius:10px;font-size:9.5px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;background:var(--bg-card);color:var(--ink);transition:transform .15s ease;}
+.qa-mini span:first-child{font-size:13px;line-height:1}
+.qa-mini:active{transform:scale(0.96)}
+.qa-income{border-color:rgba(52, 211, 153, 0.3);color:var(--green-val);}
+.qa-transfer{border-color:rgba(251, 191, 36, 0.3);color:var(--amber-val);}
+.qa-debt{border-color:rgba(56, 189, 248, 0.3);color:var(--sky-val);}
+.qa-internal{border-color:rgba(192, 132, 252, 0.3);color:var(--purple-val);}
+.panel{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;min-width:0;}
+.budget-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px;min-width:0;}
+.budget-card[data-bkey="fixed"]{border-color:rgba(56, 189, 248, 0.3);}
+.budget-card[data-bkey="regular"]{border-color:rgba(16, 185, 129, 0.3);}
+.budget-card[data-bkey="personal"]{border-color:rgba(192, 132, 252, 0.3);}
+.budget-card[data-bkey="transfer"]{border-color:rgba(251, 191, 36, 0.3);}
+.budget-card[data-bkey="debt"]{border-color:rgba(56, 189, 248, 0.3);}
+.budget-card[data-bkey="emergency"]{border-color:rgba(251, 191, 36, 0.3);}
+.budget-card-head{display:flex;justify-content:space-between;align-items:center;gap:4px}
+.budget-card-title{font-size:12px;font-weight:900;color:var(--ink)}
+.budget-card-pct{font-size:9.5px;background:rgba(255,255,255,0.05);color:var(--ink-muted);padding:2px 6px;border-radius:6px;font-weight:800;border:1px solid var(--border-subtle)}
+.budget-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.budget-stat{background:rgba(0,0,0,0.15);border-radius:8px;padding:4px;text-align:center;border:1px solid var(--border-subtle)}
+.budget-stat-label{font-size:9px;color:var(--ink-muted);font-weight:700;margin-bottom:1px}
+.budget-stat-value{font-size:11px;font-weight:900;font-variant-numeric:tabular-nums}
+.budget-daily{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;font-size:10px}
+.budget-daily-item{background:rgba(0,0,0,0.15);border-radius:6px;padding:4px;border:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;gap:4px}
+.budget-daily-label{color:var(--ink-muted);font-weight:700}
+.budget-daily-value{font-weight:900;font-variant-numeric:tabular-nums}
+.cap-track{height:4px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden}
+.cap-bar{height:100%;width:0;transition:width .3s ease,background .3s ease}
+.bud-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.bud-mini-card{border:1px solid var(--border-subtle);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;background:var(--bg-card);min-width:0;}
+.bud-mini-head{display:flex;justify-content:space-between;align-items:center;gap:4px}
+.bud-mini-name{font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bud-mini-pct{font-size:9.5px;font-weight:900;font-variant-numeric:tabular-nums}
+.bud-mini-meta{display:flex;flex-direction:column;gap:1px;font-size:9.5px;color:var(--ink-muted);font-weight:700}
+.bud-mini-meta strong{font-variant-numeric:tabular-nums;font-weight:900;color:var(--ink);}
+.flow-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.flow-item{border:1px solid var(--border-subtle);background:var(--bg-card);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.flow-item span{font-size:9.5px;color:var(--ink-muted);font-weight:700}
+.flow-item strong{font-size:12px;font-weight:900;font-variant-numeric:tabular-nums}
+.tx-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 10px;background:var(--bg-card);border-radius:12px;border:1px solid var(--border-subtle);font-size:11px;}
+.tx-item:hover{background:var(--bg-card-hover)}
+.tx-item .amount{font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+.modal-sheet-overlay{position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(6px);z-index:100;display:flex;align-items:flex-end;justify-content:center;}
+.modal-sheet{background:var(--bg-app);width:100%;max-width:480px;border-top-left-radius:20px;border-top-right-radius:20px;border:1px solid var(--border-neon);padding:12px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:10px;box-shadow:0 -10px 40px rgba(0,0,0,0.5);animation:slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.btn{border:0;border-radius:10px;padding:8px 10px;font-weight:800;font-size:11px;transition:all .2s ease;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:32px}
+.btn-primary{background:linear-gradient(135deg, #10b981, #047857);color:white;box-shadow:0 4px 12px rgba(16,185,129,0.3)}
+.btn-dark{background:var(--header-bg);color:white;border:1px solid var(--border-subtle)}
+.btn-soft{background:rgba(16,185,129,0.1);color:var(--emerald-neon);border:1px solid var(--border-neon)}
+.btn-green{background:#10b981;color:white}
+.btn-muted{background:rgba(255,255,255,0.05);color:var(--ink);border:1px solid var(--border-subtle)}
+.btn-danger{background:rgba(251, 113, 133, 0.1);color:var(--red-val);border:1px solid rgba(251, 113, 133, 0.3)}
+#view-input .grid4{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;background:rgba(0,0,0,0.3);padding:4px;border-radius:12px;border:1px solid var(--border-subtle)}
+#view-input .tab{border:0;background:transparent;color:var(--ink-muted);border-radius:8px;padding:6px 2px;font-size:10px;font-weight:800;}
+#view-input .tab.active{background:linear-gradient(135deg,#10b981,#047857);color:#ffffff;box-shadow:0 3px 10px rgba(16,185,129,0.3)}
+#expense-amount,#income-amount,#total-kwd,#debt-amount,#int-amount{font-size:20px!important;text-align:center;font-weight:900;color:var(--emerald-neon)!important;background:rgba(16,185,129,0.05)!important;border:1px solid var(--border-neon)!important;border-radius:12px;padding:8px!important}
+.nav-bottom{position:fixed;bottom:4px;left:50%;transform:translateX(-50%);width:calc(100% - 10px);max-width:440px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding:3px;border:1px solid var(--border-neon);background:var(--nav-bg);backdrop-filter:blur(16px);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:30;}
+.nav-bottom .nav-btn{background:transparent;border:0;color:var(--ink-muted);padding:4px 2px;font-size:9.5px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:1px;border-radius:12px;}
+.nav-bottom .nav-btn span:first-child{font-size:14px}
+.nav-bottom .nav-btn.active{background:rgba(16,185,129,0.15);color:var(--emerald-neon);box-shadow:0 0 8px var(--emerald-glow)}
+.small{font-size:10.5px;color:var(--ink-muted)}
+.hint{font-size:11px;line-height:1.4;color:var(--amber-val);background:rgba(251, 191, 36, 0.1);border:1px solid rgba(251, 191, 36, 0.3);border-radius:10px;padding:8px}
+.table-wrap{overflow-x:auto;border:1px solid var(--border-subtle);border-radius:10px;width:100%;background:var(--bg-card)}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:100%;font-size:11px;text-align:right;table-layout:fixed}
+th,td{padding:8px 6px;border-bottom:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle);vertical-align:middle;word-wrap:break-word}
+th:last-child,td:last-child{border-left:0}
+th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
+.report{background:var(--bg-app);border:1px solid var(--border-subtle);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;width:100%}
+.report-head{background:linear-gradient(135deg,#0e1612,#070c09);color:white;border-radius:12px;text-align:center;padding:14px 10px;border:1px solid var(--border-neon)}
+.report-meta{background:var(--bg-card);border:1px solid var(--border-subtle);padding:12px;border-radius:12px;font-size:12px;display:flex;flex-direction:column;gap:6px}
+.report-summary{background:rgba(16,185,129,0.05);border:1px solid var(--border-neon);padding:12px;border-radius:12px;display:flex;flex-direction:column;gap:6px;font-size:12px}
+#toast{position:fixed;bottom:65px;left:50%;transform:translateX(-50%);z-index:200;background:#090d0b;color:var(--ink);padding:8px 14px;border-radius:12px;font-size:11px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,0.6);max-width:90vw;text-align:center;display:none;border:1px solid var(--border-neon)}
+.person-picker{display:grid;grid-template-columns:1fr auto;gap:4px}
+.btn-plus{padding:0 10px;font-size:14px;font-weight:800;min-width:36px}
+.persons-manage-list{display:flex;flex-direction:column;gap:4px;max-height:200px;overflow:auto}
+.person-item{display:flex;justify-content:space-between;align-items:center;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:8px;padding:6px 8px;font-size:11.5px}
+.modal-overlay{position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(4px);z-index:150;display:flex;align-items:center;justify-content:center;padding:10px}
+.modal-box{background:var(--bg-app);border-radius:16px;border:1px solid var(--border-neon);padding:14px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,0.5);}
+.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.finance-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;background:rgba(0,0,0,0.2);padding:3px;border-radius:12px;border:1px solid var(--border-subtle)}
+.finance-tabs .tab{padding:8px 2px;font-weight:800;border:0;background:transparent;color:var(--ink-muted);border-radius:8px;}
+.finance-tabs .tab.active{background:var(--emerald-neon);color:#fff;}
+.good{color:var(--green-val)!important}
+.bad{color:var(--red-val)!important}
+.warning{color:var(--amber-val)!important}
+.acc-item{border:1px solid var(--border-subtle);border-radius:12px;background:var(--bg-card);overflow:hidden}
+.acc-header{padding:10px 12px;background:rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-weight:800;font-size:12px}
+.acc-icon{font-size:10px;background:rgba(255,255,255,0.05);padding:2px 6px;border-radius:6px}
+.acc-body{padding:10px;border-top:1px solid var(--border-subtle);display:none;background:var(--bg-card)}
+.acc-item.open .acc-body{display:block}
+.acc-item.open .acc-icon{transform:rotate(180deg);background:var(--emerald-neon);color:#fff}
+.checkline{display:flex;align-items:center;gap:6px;background:rgba(16,185,129,0.05);border:1px solid var(--border-neon);border-radius:10px;padding:8px;color:var(--emerald-neon);font-size:11.5px;font-weight:800}
+.checkline input{width:16px;height:16px;accent-color:var(--emerald-neon)}
+.date-parts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
+.date-parts input{text-align:center;padding:6px 2px}
+.field-note{font-size:10px;color:var(--ink-muted);line-height:1.3;margin-top:2px}
+.field-note.warn{color:var(--amber-val);background:rgba(251,191,36,0.1);padding:4px 6px;border-radius:6px;border:1px solid rgba(251,191,36,0.3);font-weight:700}
+.row-between{display:flex;justify-content:space-between;align-items:center;gap:4px}
+@media (max-width: 600px){.balance-card strong{font-size:20px}.today-val{font-size:20px}}
+@media (min-width: 600px){:root{--app-max: 720px}}
+@media (min-width: 900px){
+  :root{--app-max: 1100px}
+  body{padding:16px;padding-bottom:16px;align-items:flex-start}
+  .app{border-radius:28px}
+  .content{padding:20px}
+  #view-dashboard{gap:16px}
+  .balance-card{padding:20px}
+  .balance-card strong{font-size:32px}
+  .acc-scroll{flex-wrap:wrap;overflow:visible;justify-content:center}
+  .dash-cols{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
+  .dash-col{gap:16px}
+  .nav-bottom{max-width: 750px;bottom: 16px}
+  .nav-bottom .nav-btn{padding: 10px 6px;font-size: 12px}
+  body{padding-bottom: calc(90px + env(safe-area-inset-bottom,16px))}
+  #toast{bottom: 90px;font-size: 13px;padding: 12px 20px}
+  .modal-sheet-overlay{align-items: center;padding: 16px}
+  .modal-sheet{max-width: 600px;border-radius: 24px;max-height: 85vh}
+}
+@media print{
+  .no-print{display:none!important}
+  .report tr,.report .report-head,.report .report-meta,.report .report-summary,.report .metric,.report .balance-card,.report .panel,.person-item,.table-wrap{break-inside:avoid;page-break-inside:avoid}
+  .table-wrap{overflow:visible!important}
+  .report{box-shadow:none;border:0;width:100%!important;padding:0!important}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+</head>
+<body>
+<div class="app">
+<header class="header">
+  <span>النظام المالي الشخصي 💼</span>
+  <div class="header-actions">
+    <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" title="تبديل المظهر">
+      <span id="theme-toggle-icon">🌙</span> <span id="theme-toggle-text">داكن</span>
+    </button>
+    <span class="pill" id="hdr-pill">الكويت · د.ك / مصر · ج.م</span>
+  </div>
+</header>
+
+<main class="content">
+<section id="view-dashboard" class="view">
+  <div id="dash-alert-strip" class="alert-strip hidden" onclick="switchMainView('reports');switchFinanceTab('budget')"></div>
+  <div class="balance-card" id="accounts-balance-card">
+    <span>💰 إجمالي ما أملك الآن</span>
+    <strong id="dash-total-wealth">0.000 د.ك</strong>
+    <div id="accounts-breakdown" class="acc-scroll"></div>
+  </div>
+  <div class="dash-cols">
+    <div class="dash-col">
+      <div class="panel today-card">
+        <span class="today-label">⚡ تقدر تصرف النهاردة</span>
+        <strong class="today-val" id="dash-today-val">0.000 د.ك</strong>
+        <div class="cap-track"><div class="cap-bar" id="dash-today-bar"></div></div>
+        <small class="today-note" id="dash-today-note">—</small>
+      </div>
+      <div class="quick-actions">
+<button type="button" class="qa-main" onclick="openInputForm('expense')">➕ تسجيل مصروف</button>
+<button type="button" class="qa-main" style="background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); margin-top: 4px;" onclick="window.location.href='analytics.html'">📊 أرشيف وتحليل الدورات</button>
+
+                <div class="qa-row">
+
+          <button type="button" class="qa-mini qa-income" onclick="openInputForm('income')"><span>📥</span><span>دخل</span></button>
+          <button type="button" class="qa-mini qa-transfer" onclick="openInputForm('transfer')"><span>✈️</span><span>حوالة</span></button>
+          <button type="button" class="qa-mini qa-debt" onclick="openInputForm('debt')"><span>🤝</span><span>دين</span></button>
+          <button type="button" class="qa-mini qa-internal" onclick="openInputForm('internal_transfer')"><span>🔄</span><span>تحويل</span></button>
+        </div>
+      </div>
+      <div class="panel stack" id="dash-budget-box" style="gap:6px">
+        <div class="row-between">
+          <strong style="font-size:12px">🎯 الميزانية والصناديق</strong>
+          <button type="button" class="btn btn-soft" style="padding:2px 8px;font-size:10px;min-height:24px" onclick="switchMainView('reports');switchFinanceTab('budget')">التفاصيل ›</button>
+        </div>
+        <div id="dash-budget-summary" class="bud-grid"><span class="small" style="grid-column: span 2">سجّل راتبًا أساسيًا لعرض الميزانية.</span></div>
+      </div>
+    </div>
+    <div class="dash-col">
+      <div class="flow-strip">
+        <div class="flow-item"><span>📥 دخل هذه الدورة</span><strong id="dash-cycle-in" class="good">0.000 د.ك</strong></div>
+        <div class="flow-item"><span>📤 صرف هذه الدورة</span><strong id="dash-cycle-out" class="bad">0.000 د.ك</strong></div>
+      </div>
+      <div class="panel stack">
+        <div class="row-between"><strong style="font-size:12px">📋 آخر المعاملات</strong><span id="dash-tx-count" class="small">0 معاملة</span></div>
+        <div id="dash-recent-transactions" class="stack" style="gap:4px"><span class="small">لا توجد معاملات محفوظة بعد.</span></div>
+        <button type="button" class="btn btn-muted" style="min-height:30px;font-size:11px" onclick="switchMainView('reports');switchFinanceTab('ledger')">فتح التقارير والكشوفات الكاملة 📊</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="view-input" class="modal-sheet-overlay hidden">
+  <div class="modal-sheet stack">
+    <div class="row-between">
+      <strong style="font-size:14px;color:var(--ink)">⚡ إدخال أو تعديل معاملة</strong>
+      <button type="button" class="btn btn-muted" style="padding:2px 8px;font-size:10.5px;border-radius:6px;min-height:24px" onclick="cancelEdit()">إغلاق ✕</button>
+    </div>
+    <div>
+      <label>نوع المعاملة</label>
+      <div class="grid4">
+        <button class="tab active" id="subtab-expense" type="button" onclick="switchInputTab('expense')">مصروفات</button>
+        <button class="tab" id="subtab-income" type="button" onclick="switchInputTab('income')">دخل</button>
+        <button class="tab" id="subtab-transfer" type="button" onclick="switchInputTab('transfer')">حوالة</button>
+        <button class="tab" id="subtab-debt" type="button" onclick="switchInputTab('debt')">ديون</button>
+        <button class="tab" id="subtab-internal_transfer" type="button" onclick="switchInputTab('internal_transfer')">تحويل داخلي</button>
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label>التاريخ</label>
+        <div class="date-parts">
+          <input id="tx-day" type="number" min="1" max="31" inputmode="numeric" placeholder="اليوم">
+          <input id="tx-month" type="number" min="1" max="12" inputmode="numeric" placeholder="الشهر">
+          <input id="tx-year" type="number" min="2000" max="2100" inputmode="numeric" placeholder="السنة">
+        </div>
+      </div>
+      <div>
+        <label for="tx-time">الوقت</label>
+        <input type="time" id="tx-time">
+      </div>
+    </div>
+    <div id="account-picker-wrap">
+      <label for="tx-account">🏦 الحساب / المحفظة</label>
+      <select id="tx-account"></select>
+      <div class="field-note" id="tx-account-hint"></div>
+    </div>
+    <div id="edit-banner" class="hint hidden">
+      أنت تعدّل معاملة محفوظة. احفظ التعديلات لتحديث السجل.
+      <button class="btn btn-muted" style="display:block;margin-top:4px;width:100%" type="button" onclick="cancelEdit()">إلغاء التعديل</button>
+    </div>
+    <div id="section-expense" class="stack">
+      <div><label>المبلغ (د.ك)</label><input id="expense-amount" type="number" min="0.001" step="0.001" inputmode="decimal" placeholder="0.000"></div>
+      <div><label>التصنيف</label><select id="expense-category"></select><div class="field-note" id="expense-cat-hint"></div></div>
+      <div id="expense-budget-hint" class="field-note"></div>
+    </div>
+    <div id="section-income" class="stack hidden">
+      <div><label>المبلغ الوارد (د.ك)</label><input id="income-amount" type="number" min="0.001" step="0.001" inputmode="decimal" placeholder="0.000"></div>
+      <div><label>المصدر</label><select id="income-category"></select></div>
+      <label class="checkline"><input type="checkbox" id="is-salary-base"><span>راتب أساسي — بداية دورة المتابعة</span></label>
+    </div>
+    <div id="section-transfer" class="stack hidden">
+      <div><label>إجمالي المبلغ المدفوع (د.ك)</label><input id="total-kwd" type="number" min="0.001" step="0.001" inputmode="decimal" placeholder="مثال: 100.000" oninput="calculateExchange()"></div>
+      <div>
+        <div class="row-between"><span class="section-title">المستفيدون ومبالغهم (ج.م)</span><button class="btn btn-soft" style="padding:4px 8px;border-radius:6px" type="button" onclick="addBeneficiary()">+ إضافة مستفيد</button></div>
+        <div id="beneficiaries-list"></div>
+        <div class="field-note" id="transfer-people-hint"></div>
+      </div>
+      <div class="rate"><span>تكلفة كل 1000 جنيه:</span><strong id="exchange-rate-display">0.000 د.ك / 1000 ج.م</strong></div>
+    </div>
+    <div id="section-debt" class="stack hidden">
+      <div>
+        <label>اسم الشخص / الجهة</label>
+        <div class="person-picker">
+          <select id="debt-person-select" aria-label="اسم الشخص أو الجهة"></select>
+          <button type="button" class="btn btn-soft btn-plus" onclick="openPersonModal(this)" title="إضافة اسم جديد">+</button>
+        </div>
+        <div class="field-note" id="debt-people-hint"></div>
+      </div>
+      <div><label>المبلغ (د.ك)</label><input id="debt-amount" type="number" min="0.001" step="0.001" inputmode="decimal" placeholder="0.000"></div>
+      <div><label>نوع الحركة</label><select id="debt-type"><option value="creditor">أخدنا منه (زيادة الدين علينا)</option><option value="debtor">أدّينا له (سداد من الدين)</option><option value="opening_balance">رصيد أول المدة (دين قديم)</option></select></div>
+    </div>
+    <div id="section-internal_transfer" class="stack hidden">
+      <div><label>من حساب</label><select id="int-from-account"></select></div>
+      <div><label>إلى حساب</label><select id="int-to-account"></select></div>
+      <div><label>المبلغ (د.ك)</label><input id="int-amount" type="number" min="0.001" step="0.001" inputmode="decimal" placeholder="0.000"></div>
+      <div class="field-note">مثال: سحبت من البنك وحطيت في جيبك، أو أودعت كاش في البنك. لا تؤثر على إجمالي ثروتك.</div>
+    </div>
+    <div><label for="tx-notes">ملاحظات</label><textarea id="tx-notes" rows="2" placeholder="ملاحظات سريعة..." maxlength="500"></textarea></div>
+    <button type="button" id="save-transaction" class="btn btn-primary" onclick="saveTransaction()">حفظ المعاملة 💾</button>
+  </div>
+</div>
+
+<section id="view-reports" class="view stack hidden">
+  <div class="finance-tabs no-print">
+    <button type="button" class="tab active" id="finance-tab-budget" onclick="switchFinanceTab('budget')">الميزانية 🎯</button>
+    <button type="button" class="tab" id="finance-tab-ledger" onclick="switchFinanceTab('ledger')">سجل المعاملات التفصيلي 📜</button>
+  </div>
+  <section id="finance-budget-view" class="stack">
+    <div class="panel stack no-print">
+      <div class="row-between">
+        <strong style="font-size:12px">🎯 ميزانية الدورة الحالية وصناديقها</strong>
+        <span id="budget-cycle-label" class="small">—</span>
+      </div>
+      <div class="small" id="budget-income-line">الدخل المرجعي: —</div>
+      <div class="small" id="budget-days-line">الأيام: —</div>
+    </div>
+    <div id="budget-alerts-container" class="stack no-print"></div>
+    <div id="budget-cards-container" class="stack"></div>
+  </section>
+  <section id="finance-ledger-view" class="stack hidden">
+    <div id="filter-section" class="stack no-print">
+      <div class="panel" style="background:rgba(16,185,129,0.08);border-color:var(--border-neon);color:var(--emerald-neon);font-size:11.5px;font-weight:700">حدد معايير التقرير</div>
+      <div><label>التصنيف الرئيسي</label><select id="report-type" onchange="onReportTypeChange()"><option value="expense">مصروفات</option><option value="income">دخل</option><option value="debt">ديون وعلاقات مالية</option><option value="transfer">تحويلات مالية خارجية</option><option value="internal_transfer">تحويلات بين الحسابات</option><option value="all">ملخص كل المعاملات</option></select></div>
+      <div id="report-subtype-wrap"><label>النوع الفرعي</label><select id="report-subtype" onchange="updateReportTargetOptions()"></select></div>
+      <div id="report-target-wrap"><label>الطرف / المستفيد</label><div class="person-picker"><select id="beneficiary-select"><option value="all">الكل</option></select><button type="button" class="btn btn-soft btn-plus" onclick="openPersonModal(this)" title="إضافة اسم جديد">+</button></div></div>
+      <div class="grid2">
+        <div><label>من تاريخ</label><div class="date-parts"><input id="date-from-day" type="number" min="1" max="31" inputmode="numeric" placeholder="يوم"><input id="date-from-month" type="number" min="1" max="12" inputmode="numeric" placeholder="شهر"><input id="date-from-year" type="number" min="2000" max="2100" inputmode="numeric" placeholder="سنة"></div></div>
+        <div><label>إلى تاريخ</label><div class="date-parts"><input id="date-to-day" type="number" min="1" max="31" inputmode="numeric" placeholder="يوم"><input id="date-to-month" type="number" min="1" max="12" inputmode="numeric" placeholder="شهر"><input id="date-to-year" type="number" min="2000" max="2100" inputmode="numeric" placeholder="سنة"></div></div>
+      </div>
+      <button type="button" onclick="setSalaryCycleDates()" class="btn btn-soft">📅 تعبئة تاريخ آخر دورة راتب</button>
+      <button type="button" onclick="generateReport()" class="btn btn-dark">إنشاء التقرير 📄</button>
+    </div>
+    <div id="report-section" class="stack hidden">
+      <button type="button" onclick="backToFilters()" class="btn btn-soft no-print">⬅️ تعديل معايير التقرير</button>
+      <div id="report-search-wrap" class="no-print"><label>🔍 بحث داخل التقرير (اسم / بيان / ملاحظات)</label><input id="report-search" placeholder="اكتب للبحث..." oninput="filterReportTable()"></div>
+      
+      <div id="capture-area" class="report">
+        <div class="report-head">
+          <h2 id="report-title" style="margin:0;font-size:16px">كشف حساب مالي</h2>
+          <div style="font-size:11px;color:#cbd5e1;margin-top:4px">النظام المالي الشخصي — تقرير رسمي معتمد</div>
+          <div id="report-number" style="font-size:10px;color:#cbd5e1;margin-top:2px"></div>
+        </div>
+        <div class="report-meta">
+          <div class="row-between"><span>الفترة:</span><strong id="display-date-range">—</strong></div>
+          <div class="row-between"><span>الطرف / التصنيف:</span><strong id="display-target">الكل</strong></div>
+          <div class="row-between"><span>عدد الحركات:</span><strong id="display-count">0</strong></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead id="report-table-head"></thead>
+            <tbody id="report-table-body"></tbody>
+          </table>
+        </div>
+        <div class="report-summary" id="report-summary"></div>
+        <div id="ledger-breakdowns" class="stack"></div>
+        <div id="tafqit-box" class="panel" style="font-size:11.5px;text-align:center;font-weight:700">ملاحظات التقرير ستظهر هنا.</div>
+        <div style="font-size:10px;color:var(--ink-muted);text-align:center;border-top:1px solid var(--border-subtle);padding-top:8px">تم إصدار هذا المستند إلكترونياً من النظام المالي الشخصي ولا يحتاج إلى ختم.</div>
+      </div>
+
+      <div id="report-actions" class="grid2 no-print" style="margin-top:8px">
+        <button type="button" onclick="exportReportExcel()" class="btn btn-green">تصدير Excel 📗</button>
+        <button type="button" onclick="shareReport()" class="btn btn-green">مشاركة / واتساب 💬</button>
+        <button type="button" onclick="exportPDF('capture-area','Report','p')" class="btn btn-dark">تصدير PDF 📄</button>
+        <button type="button" onclick="shareAsImageSafe('capture-area','Report')" class="btn btn-soft">حفظ كصورة 🖼️</button>
+      </div>
+    </div>
+  </section>
+</section>
+
+<section id="view-backup" class="view stack hidden">
+  <div class="row-between"><strong style="font-size:14px;color:var(--ink)">الإعدادات ⚙️</strong><span class="small">تصميم مدمج</span></div>
+  <div class="stack" style="gap:6px">
+    <div class="acc-item" id="acc-accounts">
+      <div class="acc-header" onclick="toggleAccordion('acc-accounts')"><span>🏦 إدارة الحسابات والمحافظ</span><span class="acc-icon">▼</span></div>
+      <div class="acc-body stack">
+        <div class="person-picker"><input id="new-account-name" placeholder="اسم الحساب (مثل: بنك مصر، محفظة إلكترونية)" maxlength="60"><button type="button" class="btn btn-primary btn-plus" onclick="addAccountFromSettings()" title="إضافة">+</button></div>
+        <div id="accounts-manage-list" class="persons-manage-list"></div>
+        <div class="field-note">كل حساب له رصيده المستقل. الأرصدة تُحسب تلقائيًا من المعاملات.</div>
+        <button type="button" class="btn btn-soft" onclick="openOpeningSetupModal()" style="padding:6px">🎬 إعادة بدء الاستخدام (تسجيل رصيد بداية جديد)</button>
+      </div>
+    </div>
+    <div class="acc-item open" id="acc-targets">
+      <div class="acc-header" onclick="toggleAccordion('acc-targets')"><span>🎯 النسب المستهدفة للميزانية (%)</span><span class="acc-icon">▼</span></div>
+      <div class="acc-body stack">
+        <div class="grid2">
+          <div><label style="font-size:10.5px">المصروفات الثابتة (%)</label><input id="target-fixed-pct" type="number" min="0" max="100" placeholder="مثال: 30" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="fixed" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
+          <div><label style="font-size:10.5px">المصروفات العادية (%)</label><input id="target-regular-pct" type="number" min="0" max="100" placeholder="مثال: 30" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="regular" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
+        </div>
+        <div class="grid2">
+          <div><label style="font-size:10.5px">المشتريات الشخصية (%)</label><input id="target-personal-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="personal" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
+          <div><label style="font-size:10.5px">التحويلات الخارجية (%)</label><input id="target-transfer-pct" type="number" min="0" max="100" placeholder="مثال: 20" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="transfer" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
+        </div>
+        <div><label style="font-size:10.5px">تسديد الديون (%) 🤝</label><input id="target-debt-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="debt" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
+        <div id="target-values-summary" class="panel stack" style="background:rgba(16,185,129,0.05);border-color:var(--border-neon);font-size:10.5px;gap:3px"></div>
+        <button type="button" class="btn btn-primary" onclick="saveTargetPercentages()" style="padding:6px">حفظ المستهدفات 🎯</button>
+        <div class="field-note">تحدد هذه النسب الخطة المالية للصناديق الأساسية. وأي نسبة متبقية تذهب تلقائياً لصندوق الأمان والطوارئ.</div>
+      </div>
+    </div>
+    <div class="acc-item open" id="acc-categories">
+      <div class="acc-header" onclick="toggleAccordion('acc-categories')"><span>🏷️ إدارة تصنيفات المصروفات</span><span class="acc-icon">▼</span></div>
+      <div class="acc-body stack">
+        <div class="person-picker">
+          <input id="new-expense-cat-name" placeholder="اسم التصنيف الجديد..." maxlength="80">
+          <button type="button" class="btn btn-primary btn-plus" onclick="addExpenseCategoryFromSettings()" title="إضافة">+</button>
+        </div>
+        <div><label style="font-size:10.5px">البند التابع للتصنيف الجديد</label><select id="new-expense-cat-budget"></select></div>
+        <div id="expense-cats-manage-list" class="persons-manage-list"><span class="small">لا توجد تصنيفات بعد.</span></div>
+        <div class="field-note">كل تصنيف مصروف يتبع بندًا واحدًا من بنود الميزانية. عند تسجيل مصروف، اختيار التصنيف يحدد البند تلقائيًا.</div>
+      </div>
+    </div>
+    <div class="acc-item" id="acc-people">
+      <div class="acc-header" onclick="toggleAccordion('acc-people')"><span>👥 قائمة الأسماء والجهات</span><span class="acc-icon">▼</span></div>
+      <div class="acc-body stack">
+        <div class="person-picker"><input id="new-person-name" placeholder="اسم جديد..." maxlength="80"><button type="button" class="btn btn-primary btn-plus" onclick="addPersonFromSettings()" title="إضافة">+</button></div>
+        <div id="persons-manage-list" class="persons-manage-list"><span class="small">لا توجد أسماء بعد.</span></div>
+      </div>
+    </div>
+    <div class="acc-item" id="acc-backup">
+      <div class="acc-header" onclick="toggleAccordion('acc-backup')"><span>💾 النسخ الاحتياطي والصيانة</span><span class="acc-icon">▼</span></div>
+      <div class="acc-body stack">
+        <div class="grid2">
+          <button class="btn btn-primary" type="button" onclick="downloadBackup()">تنزيل JSON</button>
+          <button class="btn btn-green" type="button" onclick="shareBackup()">مشاركة 📤</button>
+        </div>
+        <div id="backup-status" class="small" style="text-align:center">آخر تنزيل: لم ينزل بعد</div>
+        <div style="border-top:1px dashed var(--border-subtle);padding-top:6px" class="stack">
+          <label style="font-size:10.5px">استعادة نسخة حاسوب/تليفون:</label>
+          <input type="file" id="restore-file" accept=".json,application/json">
+          <button class="btn btn-muted" type="button" onclick="restoreBackup()">استعادة ملف النسخة</button>
+        </div>
+        <div style="border-top:1px dashed var(--border-subtle);padding-top:6px" class="stack">
+          <div class="row-between"><span class="small">عدد المعاملات:</span><strong id="backup-count">0</strong></div>
+          <div class="row-between"><span class="small">آخر حفظ محلي:</span><strong id="last-saved">—</strong></div>
+          <button class="btn btn-danger" type="button" onclick="clearAllTransactions()" style="padding:6px">حذف كل البيانات نهائيًا ⚠️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<nav class="nav-bottom no-print">
+  <button type="button" id="nav-dashboard" class="nav-btn active" onclick="switchMainView('dashboard')"><span>🏠</span><span>الرئيسية</span></button>
+  <button type="button" id="nav-reports" class="nav-btn" onclick="switchMainView('reports')"><span>🎯</span><span>الميزانية</span></button>
+  <button type="button" id="nav-backup" class="nav-btn" onclick="switchMainView('backup')"><span>⚙️</span><span>الإعدادات</span></button>
+</nav>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<div id="person-modal" class="modal-overlay hidden"><div class="modal-box"><h3 id="person-modal-title" style="margin:0;font-size:14px">إضافة اسم جديد</h3><input id="person-modal-input" placeholder="اسم الشخص / الجهة" maxlength="80"><div class="modal-actions"><button type="button" class="btn btn-primary" onclick="confirmAddPerson()">حفظ</button><button type="button" class="btn btn-muted" onclick="closePersonModal()">إلغاء</button></div></div></div>
+
+<div id="opening-setup-modal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <h3 style="margin:0;font-size:15px;text-align:center">👋 أهلاً بيك!</h3>
+    <p style="font-size:11.5px;color:var(--ink-muted);text-align:center;margin:0">عشان نبدأ صح، قولّي معاك كام دلوقتي:</p>
+    <div><label style="font-size:10.5px">💵 الكاش (في جيبي) — د.ك</label><input id="setup-cash-amount" type="number" min="0" step="0.001" inputmode="decimal" placeholder="0.000"></div>
+    <div><label style="font-size:10.5px">🏦 الحساب البنكي — د.ك</label><input id="setup-bank-amount" type="number" min="0" step="0.001" inputmode="decimal" placeholder="0.000"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-primary" onclick="confirmOpeningSetup()">ابدأ 🚀</button>
+      <button type="button" class="btn btn-muted" onclick="skipOpeningSetup()">تخطي</button>
+    </div>
+    <div class="field-note" style="text-align:center">هيتم تسجيل المعاملة في السجل كتحويل من "خارج النظام".</div>
+  </div>
+</div>
+
+<script>
+// @ts-nocheck
+const DB_NAME="PersonalFinanceDB",DB_VERSION=1,STORE_NAME="transactions";
+const PEOPLE_KEY="pf_people_list";
+const EXPENSE_CATS_KEY="pf_expense_cats_list";
+const TARGET_PCT_KEY="pf_target_percentages";
+const ACCOUNTS_KEY="pf_accounts_list";
+const SETUP_DONE_KEY="pf_setup_done";
+const THEME_KEY="pf_theme_pref";
+const OUTSIDE_ACCOUNT_ID="outside";
+const DEFAULT_PILL_TEXT="الكويت · د.ك / مصر · ج.م";
+const BUDGET_ITEMS=[
+  {key:"fixed",label:"📌 المصروفات الثابتة",short:"ثابت",icon:"📌"},
+  {key:"regular",label:"📊 المصروفات العادية",short:"عادي",icon:"📊"},
+  {key:"personal",label:"🛍️ المشتريات الشخصية والنثريات",short:"شخصي",icon:"🛍️"},
+  {key:"transfer",label:"✈️ التحويلات الخارجية",short:"تحويلات",icon:"✈️"},
+  {key:"debt",label:"🤝 تسديد الديون",short:"ديون",icon:"🤝"},
+  {key:"emergency",label:"🛡️ صندوق الأمان والطوارئ",short:"طوارئ",icon:"🛡️",isDynamic:true}
+];
+const BUDGET_BY_KEY={};
+BUDGET_ITEMS.forEach(b=>{BUDGET_BY_KEY[b.key]=b});
+const CYCLE_DAYS=30;
+let db=null,currentInputTab="expense",editingTxId=null,activePersonCallback=null,currentFinanceTab="budget",toastTimer=null,cachedReportRecords=[],visibleReportRecords=[],cachedReportRange={from:"",to:""},reportGenerated=!1;
+
+function $(e){return document.getElementById(e)}
+
+function initTheme(){
+  const saved=localStorage.getItem(THEME_KEY)||"dark";
+  document.documentElement.setAttribute("data-theme",saved);
+  updateThemeUI(saved);
+}
+function toggleTheme(){
+  const current=document.documentElement.getAttribute("data-theme")||"dark";
+  const next=current==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme",next);
+  localStorage.setItem(THEME_KEY,next);
+  updateThemeUI(next);
+}
+function updateThemeUI(theme){
+  const icon=$("theme-toggle-icon");
+  const text=$("theme-toggle-text");
+  if(icon&&text){
+    if(theme==="dark"){icon.textContent="🌙";text.textContent="داكن";}
+    else{icon.textContent="☀️";text.textContent="فاتح";}
+  }
+}
+function showToast(e){const t=$("toast");t.textContent=e;t.style.display="block";toastTimer&&clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.style.display="none",5000)}
+function escapeHTML(e){return String(e||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function money(e,t){return Number(e||0).toFixed(3)+" "+(t||"د.ك")}
+function moneyEGP(e){return Number(e||0).toLocaleString("en-US",{maximumFractionDigits:0})+" ج.م"}
+function toggleAccordion(e){const t=$(e);t&&t.classList.toggle("open")}
+function formatStrictISO(e,t,a){return`${String(e).padStart(4,"0")}-${String(t).padStart(2,"0")}-${String(a).padStart(2,"0")}`}
+function todayISO(){const e=new Date;return formatStrictISO(e.getFullYear(),e.getMonth()+1,e.getDate())}
+function firstOfMonthISO(){const e=new Date;return formatStrictISO(e.getFullYear(),e.getMonth()+1,1)}
+function fmtDate(e){if(!e)return"";const t=e.split("-");if(t.length<3)return e;const[a,n,s]=t;return`${String(s).padStart(2,"0")}/${String(n).padStart(2,"0")}/${a}`}
+function dateAddDays(iso,days){const p=iso.split("-");const d=new Date(Date.UTC(+p[0],+p[1]-1,+p[2]));d.setUTCDate(d.getUTCDate()+days);return formatStrictISO(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate());}
+function dateDiffDays(fromISO,toISO){const f=fromISO.split("-"),t=toISO.split("-");const d1=new Date(Date.UTC(+f[0],+f[1]-1,+f[2]));const d2=new Date(Date.UTC(+t[0],+t[1]-1,+t[2]));return Math.floor((d2-d1)/864e5);}
+
+function getAccounts(){
+  const raw=localStorage.getItem(ACCOUNTS_KEY);
+  if(raw){try{const arr=JSON.parse(raw);if(Array.isArray(arr)&&arr.length)return arr;}catch(e){}}
+  return [
+    {id:"cash_default",name:"الكاش (في جيبي)",type:"cash",icon:"💵"},
+    {id:"bank_default",name:"الحساب البنكي",type:"bank",icon:"🏦"},
+    {id:OUTSIDE_ACCOUNT_ID,name:"خارج النظام (بداية)",type:"outside",icon:"🌐",hidden:true}
+  ];
+}
+function saveAccounts(arr){localStorage.setItem(ACCOUNTS_KEY,JSON.stringify(arr));populateAccountSelects();renderAccountsManageList();}
+function getAccountById(id){if(!id)return getAccounts()[0];return getAccounts().find(a=>a.id===id)||getAccounts()[0];}
+function getVisibleAccounts(){return getAccounts().filter(a=>!a.hidden&&a.id!==OUTSIDE_ACCOUNT_ID);}
+
+function getAccountBalance(transactions,accountId){
+  let balance=0;
+  (transactions||[]).forEach(tx=>{
+    if(tx.type==="internal_transfer"){
+      if(tx.account===accountId)balance-=realAmount(tx);
+      if(tx.toAccount===accountId)balance+=realAmount(tx);
+      return;
+    }
+    const acc=tx.account||"cash_default";
+    if(acc!==accountId)return;
+    if(tx.type==="income")balance+=realAmount(tx);
+    else if(tx.type==="expense")balance-=realAmount(tx);
+    else if(tx.type==="transfer")balance-=realAmount(tx);
+    else if(tx.type==="debt"){
+      if(isCreditorEntry(tx))balance+=realAmount(tx);
+      else if(isDebtorEntry(tx))balance-=realAmount(tx);
+    }
+  });
+  return balance;
+}
+
+function populateAccountSelects(){
+  const visible=getVisibleAccounts();
+  const txAcc=$("tx-account");
+  if(txAcc){
+    const cur=txAcc.value;
+    txAcc.innerHTML=visible.map(a=>`<option value="${escapeHTML(a.id)}">${a.icon||"💳"} ${escapeHTML(a.name)}</option>`).join("");
+    if(visible.some(a=>a.id===cur))txAcc.value=cur;
+  }
+  const fromSel=$("int-from-account"),toSel=$("int-to-account");
+  const all=getAccounts().filter(a=>a.id!==OUTSIDE_ACCOUNT_ID);
+  if(fromSel){
+    const cur=fromSel.value;
+    fromSel.innerHTML=all.map(a=>`<option value="${escapeHTML(a.id)}">${a.icon||"💳"} ${escapeHTML(a.name)}</option>`).join("");
+    if(all.some(a=>a.id===cur))fromSel.value=cur;
+  }
+  if(toSel){
+    const cur=toSel.value;
+    toSel.innerHTML=all.map(a=>`<option value="${escapeHTML(a.id)}">${a.icon||"💳"} ${escapeHTML(a.name)}</option>`).join("");
+    if(all.some(a=>a.id===cur))toSel.value=cur;
+    if(toSel.options.length>1&&!toSel.value)toSel.selectedIndex=1;
+  }
+}
+
+function addAccountFromSettings(){
+  const input=$("new-account-name");
+  if(!input)return;
+  const name=input.value.trim();
+  if(!name)return;
+  const accs=getAccounts();
+  if(accs.some(a=>a.name===name&&!a.hidden))return void showToast("الحساب موجود بالفعل");
+  accs.push({id:`acc_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,name,type:"bank",icon:"💳"});
+  saveAccounts(accs);
+  input.value="";
+  showToast("تمت إضافة الحساب ✅");
+}
+
+async function deleteAccount(accountId){
+  const accs=getAccounts();
+  if(accs.filter(a=>!a.hidden).length<=1)return void showToast("لا يمكن حذف كل الحسابات.");
+  try{
+    const used=(await allTransactions()).some(tx=>tx.account===accountId||tx.toAccount===accountId);
+    if(used&&!confirm("هذا الحساب مستخدم في معاملات. سيتم حذفه من القائمة، لكن المعاملات تبقى في التقارير. متابعة؟"))return;
+    saveAccounts(accs.filter(a=>a.id!==accountId));
+    showToast("تم الحذف");
+  }catch(e){console.error(e);showToast("تعذر الحذف")}
+}
+
+function renderAccountsManageList(){
+  const container=$("accounts-manage-list");
+  if(!container)return;
+  const accs=getVisibleAccounts();
+  if(!accs.length)return void(container.innerHTML='<span class="small">لا توجد حسابات. أضف واحدًا.</span>');
+  container.innerHTML=accs.map(acc=>`
+    <div class="person-item" style="flex-direction:column;align-items:stretch;gap:4px">
+      <div class="row-between">
+        <span class="name">${acc.icon||"💳"} ${escapeHTML(acc.name)}</span>
+        <button type="button" class="btn btn-danger" style="padding:2px 8px;font-size:10px;min-height:26px" data-action="del-account" data-id="${acc.id}">حذف</button>
+      </div>
+      <div class="small">الرصيد الحالي: <strong class="account-balance-live" data-account-balance="${acc.id}">—</strong></div>
+    </div>
+  `).join("");
+  allTransactions().then(txs=>{
+    container.querySelectorAll("[data-account-balance]").forEach(el=>{
+      const bal=getAccountBalance(txs,el.dataset.accountBalance);
+      el.textContent=money(bal);
+      el.className=bal>=0?"good":"bad";
+    });
+  }).catch(()=>{});
+}
+
+function shouldShowSetup(){return localStorage.getItem(SETUP_DONE_KEY)!=="1";}
+function openOpeningSetupModal(){const m=$("opening-setup-modal");if(m)m.classList.remove("hidden");}
+function closeOpeningSetupModal(){const m=$("opening-setup-modal");if(m)m.classList.add("hidden");}
+
+async function confirmOpeningSetup(){
+  const cash=Number($("setup-cash-amount")?.value)||0;
+  const bank=Number($("setup-bank-amount")?.value)||0;
+  if(cash<0||bank<0)return void showToast("أدخل مبالغ صحيحة.");
+  if(cash===0&&bank===0){localStorage.setItem(SETUP_DONE_KEY,"1");closeOpeningSetupModal();return void showToast("تمام! ابدأ التسجيل عادي 🚀");}
+  try{
+    db||await openDB();
+    const accs=getAccounts();
+    const cashAcc=accs.find(a=>a.id==="cash_default")||accs[0];
+    const bankAcc=accs.find(a=>a.id==="bank_default")||accs[1]||accs[0];
+    const now=new Date();
+    const time=`${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
+    const today=todayISO();
+    const txs=[];
+    if(cash>0)txs.push({id:`tx_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,date:today,time,notes:"رصيد بداية — كاش",type:"internal_transfer",account:OUTSIDE_ACCOUNT_ID,toAccount:cashAcc.id,amount:cash});
+    if(bank>0)txs.push({id:`tx_${Date.now()+1}_${Math.random().toString(36).slice(2,6)}`,date:today,time,notes:"رصيد بداية — بنك",type:"internal_transfer",account:OUTSIDE_ACCOUNT_ID,toAccount:bankAcc.id,amount:bank});
+    await new Promise((resolve,reject)=>{
+      const tx=db.transaction(STORE_NAME,"readwrite");
+      const store=tx.objectStore(STORE_NAME);
+      txs.forEach(t=>store.put(t));
+      tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
+    });
+    localStorage.setItem(SETUP_DONE_KEY,"1");
+    closeOpeningSetupModal();
+    showToast("تم بدء الاستخدام بنجاح ✅");
+    await refreshAllViews();
+  }catch(e){console.error("opening setup:",e);showToast("تعذر حفظ رصيد البداية");}
+}
+function skipOpeningSetup(){localStorage.setItem(SETUP_DONE_KEY,"1");closeOpeningSetupModal();showToast("تمام! ابدأ التسجيل عادي 🚀");}
+
+function initDates(){
+  const[e,t,a]=todayISO().split("-");
+  $("tx-day")&&!$("tx-day").value&&($("tx-day").value=Number(a));
+  $("tx-month")&&!$("tx-month").value&&($("tx-month").value=Number(t));
+  $("tx-year")&&!$("tx-year").value&&($("tx-year").value=Number(e));
+  const n=$("tx-time");
+  if(n&&!n.value){const d=new Date;n.value=`${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;}
+  $("date-from-year")&&!$("date-from-year").value&&writeDateParts("date-from",firstOfMonthISO());
+  $("date-to-year")&&!$("date-to-year").value&&writeDateParts("date-to",todayISO());
+  loadTargetPercentages();
+}
+function readDateParts(e){
+  const t=$(e+"-day")?.value,a=$(e+"-month")?.value,n=$(e+"-year")?.value;
+  if(!t||!a||!n)return"";
+  const s=Number(t),r=Number(a),o=Number(n);
+  if(!(o>=2000&&o<=2100&&r>=1&&r<=12&&s>=1&&s<=31))return"";
+  const l=new Date(Date.UTC(o,r-1,s));
+  return l.getUTCFullYear()!==o||l.getUTCMonth()!==r-1||l.getUTCDate()!==s?"":formatStrictISO(o,r,s);
+}
+function writeDateParts(e,t){
+  if(!t)return;
+  const a=t.split("-");
+  if(a.length<3)return;
+  const[n,s,r]=a;
+  $(e+"-day")&&($(e+"-day").value=Number(r));
+  $(e+"-month")&&($(e+"-month").value=Number(s));
+  $(e+"-year")&&($(e+"-year").value=Number(n));
+}
+
+function getTargetPercentages(){
+  const e=localStorage.getItem(TARGET_PCT_KEY);
+  if(e)try{return JSON.parse(e)}catch(e){}
+  return{fixed:30,regular:30,personal:10,transfer:20,debt:10};
+}
+function saveTargetPercentages(){
+  const e=Number($("target-fixed-pct").value)||0,
+        t=Number($("target-regular-pct").value)||0,
+        a=Number($("target-personal-pct").value)||0,
+        n=Number($("target-transfer-pct").value)||0,
+        s=Number($("target-debt-pct").value)||0;
+  localStorage.setItem(TARGET_PCT_KEY,JSON.stringify({fixed:e,regular:t,personal:a,transfer:n,debt:s}));
+  showToast("تم حفظ النسب المستهدفة للميزانية ✅");
+  renderTargetValuesPreview();
+  if(currentFinanceTab==="budget")renderBudgetPage();
+  renderDashBudgetCard();
+}
+function loadTargetPercentages(){
+  const e=getTargetPercentages();
+  $("target-fixed-pct")&&($("target-fixed-pct").value=e.fixed);
+  $("target-regular-pct")&&($("target-regular-pct").value=e.regular);
+  $("target-personal-pct")&&($("target-personal-pct").value=e.personal);
+  $("target-transfer-pct")&&($("target-transfer-pct").value=e.transfer);
+  $("target-debt-pct")&&($("target-debt-pct").value=e.debt);
+}
+async function renderTargetValuesPreview(){
+  try{
+    const e=await allTransactions();
+    const cycle=getCurrentSalaryCycle(e);
+    const n=cycle?totalIncomeFor(e,cycle):0;
+    const s={
+      fixed:Number($("target-fixed-pct")?.value)||0,
+      regular:Number($("target-regular-pct")?.value)||0,
+      personal:Number($("target-personal-pct")?.value)||0,
+      transfer:Number($("target-transfer-pct")?.value)||0,
+      debt:Number($("target-debt-pct")?.value)||0
+    };
+    Object.entries(s).forEach(([k,v])=>{
+      const el=document.querySelector(`[data-target-hint="${k}"]`);
+      if(!el)return;
+      if(v<=0||n<=0)return el.textContent="",void(el.className="small target-value-hint");
+      const val=n*(v/100);
+      el.textContent=`≈ ${money(val)} من دخل الدورة (${money(n)})`;
+      el.className="small target-value-hint good";
+    });
+    const r=$("target-values-summary");
+    if(!r)return;
+    if(!cycle||n<=0)return void(r.innerHTML='<span class="small">لا توجد دورة راتب حالية مسجّلة — سجّل راتبًا أساسيًا لتظهر القيم.</span>');
+    const o=Object.values(s).reduce((a,b)=>a+b,0),
+          l=n*(o/100),
+          remPct=Math.max(0,100-o),
+          i=n-l,
+          c=o>100?`<div class="small bad">⚠️ مجموع النسب (${o}%) تجاوز 100% — المستهدفات أكبر من دخل الدورة!</div>`:o===100?'<div class="small warning">⚠️ مجموع النسب 100% — لا ينزل متبقي لصندوق الطوارئ.</div>':`<div class="small good">🛡️ المتبقي التلقائي لصندوق الطوارئ: ${remPct}% (${money(i)})</div>`;
+    r.innerHTML=`
+      <div class="small" style="color:var(--emerald-neon);font-weight:700;border-bottom:1px dashed var(--border-neon);padding-bottom:4px">📊 القيم محسوبة على دخل الدورة الحالية</div>
+      <div class="row-between"><span>📅 الدخل المرجعي:</span><strong>${money(n)}</strong></div>
+      <div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px"><span>🧮 مجموع النسب المخصصة:</span><strong>${o}%</strong></div>
+      <div class="row-between"><span>💰 مجموع المبالغ المخصصة:</span><strong>${money(l)}</strong></div>
+      ${c}
+    `;
+  }catch(e){console.warn("renderTargetValuesPreview:",e)}
+}
+
+function getExpenseCategories(){
+  const raw=localStorage.getItem(EXPENSE_CATS_KEY);
+  if(raw)try{
+    const arr=JSON.parse(raw);
+    if(Array.isArray(arr))return arr.map(normalizeCategory);
+  }catch(e){}
+  return [];
+}
+function normalizeCategory(c){
+  if(typeof c==="string")return {name:c,budgetId:"regular"};
+  if(c&&c.name)return {name:c.name,budgetId:c.budgetId||"regular"};
+  return null;
+}
+function saveExpenseCategories(arr){
+  const clean=arr.map(normalizeCategory).filter(Boolean);
+  localStorage.setItem(EXPENSE_CATS_KEY,JSON.stringify(clean));
+  populateCategorySelects();
+  renderExpenseCatsManageList();
+  renderBudgetCategorySelectOptions();
+}
+function getBudgetIdForCategory(catName){
+  const list=getExpenseCategories();
+  const item=list.find(c=>c.name===catName);
+  return item?item.budgetId:"regular";
+}
+function renderExpenseCatsManageList(){
+  const e=$("expense-cats-manage-list");
+  if(!e)return;
+  const cats=getExpenseCategories();
+  if(!cats.length)return void(e.innerHTML='<span class="small">لا توجد تصنيفات بعد. أضف تصنيفًا من الأعلى.</span>');
+  e.innerHTML=cats.map(c=>{
+    const b=BUDGET_BY_KEY[c.budgetId]||BUDGET_BY_KEY.regular;
+    return `<div class="person-item" style="flex-direction:column;align-items:stretch;gap:4px">
+      <div class="row-between"><span class="name">${escapeHTML(c.name)}</span>
+      <button type="button" class="btn btn-danger" style="padding:2px 8px;font-size:10px;min-height:26px" data-action="del-exp-cat" data-cat="${escapeHTML(c.name)}">حذف</button></div>
+      <div class="small">البند: <strong>${b.label}</strong></div>
+    </div>`;
+  }).join("");
+}
+function addExpenseCategoryFromSettings(){
+  const input=$("new-expense-cat-name");
+  const select=$("new-expense-cat-budget");
+  if(!input)return;
+  const name=input.value.trim();
+  const budgetId=select?.value||"regular";
+  if(!name)return void showToast("اكتب اسم التصنيف");
+  const list=getExpenseCategories();
+  if(list.some(c=>c.name===name))return void showToast("التصنيف موجود بالفعل");
+  list.push({name,budgetId});
+  saveExpenseCategories(list);
+  input.value="";
+  showToast("تمت إضافة التصنيف ✅");
+}
+async function deleteExpenseCategory(name){
+  try{
+    const txs=await allTransactions();
+    const used=txs.some(t=>t.type==="expense"&&t.category===name);
+    if(used&&!confirm(`"${name}" مستخدم في معاملات. سيتم حذفه من القائمة فقط، والمعاملات تبقى في التقارير. متابعة؟`))return;
+    saveExpenseCategories(getExpenseCategories().filter(c=>c.name!==name));
+    showToast("تم حذف التصنيف");
+  }catch(e){console.error(e);showToast("تعذر حذف التصنيف")}
+}
+function renderBudgetCategorySelectOptions(){
+  const sel=$("new-expense-cat-budget");
+  if(!sel)return;
+  const cur=sel.value;
+  sel.innerHTML=BUDGET_ITEMS.map(b=>`<option value="${b.key}">${b.label}</option>`).join("");
+  if(BUDGET_ITEMS.some(b=>b.key===cur))sel.value=cur;
+}
+
+function getIncomeCategories(){return["راتب أساسي","عمل إضافي","أرباح / عوائد","أخرى"]}
+
+function populateCategorySelects(){
+  const e=$("expense-category");
+  if(e){
+    const cats=getExpenseCategories();
+    const cur=e.value;
+    e.innerHTML=cats.map(c=>`<option value="${escapeHTML(c.name)}">${escapeHTML(c.name)}</option>`).join("");
+    if(cats.some(c=>c.name===cur))e.value=cur;
+    const a=$("expense-cat-hint");
+    a&&(cats.length?(a.className="field-note",a.textContent=""):(a.className="field-note warn",a.textContent="لا توجد تصنيفات. أضف تصنيفًا من الإعدادات أولاً."));
+    updateExpenseBudgetHint();
+  }
+  const t=$("income-category");
+  t&&(t.innerHTML=getIncomeCategories().map(e=>`<option value="${escapeHTML(e)}">${escapeHTML(e)}</option>`).join(""));
+}
+function updateExpenseBudgetHint(){
+  const hint=$("expense-budget-hint");
+  if(!hint)return;
+  const cat=$("expense-category")?.value;
+  if(!cat){hint.textContent="";return;}
+  const bid=getBudgetIdForCategory(cat);
+  const b=BUDGET_BY_KEY[bid]||BUDGET_BY_KEY.regular;
+  hint.innerHTML=`سيتم احتساب هذا المصروف على بند: <strong style="color:var(--green-val)">${b.label}</strong>`;
+}
+
+function getPeopleList(){
+  const e=localStorage.getItem(PEOPLE_KEY);
+  if(!e)return[];
+  try{const t=JSON.parse(e);return Array.isArray(t)?t:[]}catch(e){return[]}
+}
+function savePeopleList(e){localStorage.setItem(PEOPLE_KEY,JSON.stringify([...new Set(e)]));populatePeopleSelects();renderPersonsManageList();}
+function populatePeopleSelects(){
+  const e=getPeopleList(),t=$("debt-person-select");
+  if(t){const a=t.value;t.innerHTML=e.map(x=>`<option value="${escapeHTML(x)}">${escapeHTML(x)}</option>`).join("");if(e.includes(a))t.value=a;}
+  document.querySelectorAll(".beneficiary-name-select").forEach(t=>{
+    const a=t.value;
+    t.innerHTML=e.map(x=>`<option value="${escapeHTML(x)}">${escapeHTML(x)}</option>`).join("");
+    if(e.includes(a))t.value=a;
+  });
+  renderPeopleHints();
+}
+function renderPeopleHints(){
+  const e=getPeopleList(),t=$("debt-people-hint"),a=$("transfer-people-hint");
+  t&&(e.length===0?(t.className="field-note warn",t.textContent="لسه مفيش أسماء. اضغط زر ➕ لإضافة أول اسم."):(t.className="field-note",t.textContent=""));
+  a&&(e.length===0?(a.className="field-note warn",a.textContent="لسه مفيش أسماء. اضغط زر ➕ جنب الصف لإضافة أول مستفيد."):(a.className="field-note",t.textContent="لو الاسم مش موجود، دوس زر ➕ جنبه لإضافته للقائمة."));
+}
+function renderPersonsManageList(){
+  const e=$("persons-manage-list");
+  if(!e)return;
+  const t=getPeopleList();
+  if(!t.length)return void(e.innerHTML='<span class="small">لا توجد أسماء محفوظة بعد.</span>');
+  e.innerHTML=t.map(x=>`<div class="person-item"><span class="name">${escapeHTML(x)}</span><button type="button" class="btn btn-danger" style="padding:2px 8px;font-size:10px;min-height:26px" data-action="del-person" data-person="${escapeHTML(x)}">حذف</button></div>`).join("");
+}
+function addPersonFromSettings(){
+  const e=$("new-person-name");
+  if(!e)return;
+  const t=e.value.trim();
+  if(!t)return;
+  const a=getPeopleList();
+  if(a.includes(t))return void showToast("الاسم موجود بالفعل");
+  a.push(t);savePeopleList(a);e.value="";showToast("تمت الإضافة بنجاح");
+}
+async function deletePerson(name){
+  try{
+    const txs=await allTransactions();
+    const used=txs.some(t=>t.person===name||(t.beneficiaries||[]).some(b=>b.name===name));
+    if(used&&!confirm(`"${name}" عنده معاملات محفوظة. سيتم حذفه من القائمة فقط. متابعة؟`))return;
+    savePeopleList(getPeopleList().filter(x=>x!==name));
+    showToast("تم الحذف من القائمة");
+  }catch(e){console.error(e);showToast("تعذر حذف الاسم")}
+}
+function openPersonModal(e){
+  const t=e&&e.closest?e.closest(".person-picker, .beneficiary"):null;
+  activePersonCallback=t?t.querySelector("select"):null;
+  $("person-modal-input").value="";
+  $("person-modal").classList.remove("hidden");
+  setTimeout(()=>$("person-modal-input").focus(),50);
+}
+function closePersonModal(){$("person-modal").classList.add("hidden");activePersonCallback=null;}
+function confirmAddPerson(){
+  const e=$("person-modal-input").value.trim();
+  if(!e)return void showToast("أدخل اسمًا صحيحًا");
+  const t=activePersonCallback,a=getPeopleList();
+  a.includes(e)?showToast("الاسم موجود بالفعل — تم اختياره"):(a.push(e),savePeopleList(a),showToast("تمت إضافة الاسم بنجاح"));
+  populatePeopleSelects();
+  t&&[...t.options].some(x=>x.value===e)&&(t.value=e);
+  closePersonModal();
+}
+
+function openInputForm(e){
+  if(editingTxId&&!confirm("سيتم إلغاء تعديل المعاملة الحالية والانتقال لتسجيل جديد. متابعة؟"))return void resetInputForm();
+  $("view-input").classList.remove("hidden");
+  switchInputTab(e,{force:!0});
+}
+function switchInputTab(e,t={}){
+  if(!t.force&&editingTxId&&e!==currentInputTab){
+    if(!confirm("سيتم إلغاء تعديل المعاملة الحالية والانتقال لتبويب آخر. متابعة؟"))return false;
+  }
+  currentInputTab=e;
+  ["expense","income","transfer","debt","internal_transfer"].forEach(t=>{
+    $("subtab-"+t).classList.toggle("active",t===e);
+    $("section-"+t).classList.toggle("hidden",t!==e);
+  });
+  return true;
+}
+function addBeneficiary(){
+  const e=$("beneficiaries-list");
+  if(!e)return;
+  const t=getPeopleList(),a=document.createElement("div");
+  a.className="beneficiary";
+  a.style.display="flex";a.style.gap="4px";a.style.alignItems="center";a.style.marginTop="4px";
+  a.innerHTML=`<select class="beneficiary-name-select">${t.map(x=>`<option value="${escapeHTML(x)}">${escapeHTML(x)}</option>`).join("")}</select><input type="number" min="1" step="1" inputmode="numeric" placeholder="المبلغ (ج.م)" class="beneficiary-amount" oninput="calculateExchange()"><button type="button" class="btn btn-soft btn-plus" onclick="openPersonModal(this)" title="إضافة اسم جديد">+</button><button type="button" class="btn btn-danger" onclick="this.parentElement.remove();calculateExchange()">✕</button><div class="beneficiary-kwd-share" style="display:none">نصيبه بالدينار: 0.000 د.ك</div>`;
+  e.appendChild(a);
+  calculateExchange();
+}
+function calculateExchange(){
+  const e=Number($("total-kwd")?.value)||0;
+  let t=0;
+  const a=document.querySelectorAll(".beneficiary");
+  a.forEach(el=>{
+    const n=el.querySelector(".beneficiary-name-select")?.value||"";
+    const v=Number(el.querySelector(".beneficiary-amount")?.value)||0;
+    if(n&&v>0)t+=v;
+  });
+  const n=$("exchange-rate-display");
+  let s=0;
+  if(t>0&&e>0){s=e/t*1000;if(n)n.textContent=s.toFixed(3)+" د.ك / 1000 ج.م";}
+  else if(n)n.textContent="0.000 د.ك / 1000 ج.م";
+  a.forEach(el=>{
+    const s2=el.querySelector(".beneficiary-name-select")?.value||"";
+    const r=Number(el.querySelector(".beneficiary-amount")?.value)||0;
+    const o=el.querySelector(".beneficiary-kwd-share");
+    if(!o)return;
+    if(t>0&&e>0&&r>0&&s2)o.textContent=`نصيبه بالدينار: ${money(r/t*e)}`;
+    else o.textContent="نصيبه بالدينار: 0.000 د.ك";
+  });
+}
+
+function switchMainView(e){
+  ["dashboard","reports","backup"].forEach(t=>{$("view-"+t).classList.toggle("hidden",t!==e);});
+  ["dashboard","reports","backup"].forEach(x=>{const a=$("nav-"+x);a&&a.classList.toggle("active",x===e);});
+  if(e==="dashboard")refreshDashboard();
+  if(e==="reports")switchFinanceTab(currentFinanceTab);
+  if(e==="backup"){
+    renderExpenseCatsManageList();
+    renderPersonsManageList();
+    renderAccountsManageList();
+    loadTargetPercentages();
+    renderTargetValuesPreview();
+    renderBudgetCategorySelectOptions();
+  }
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function openDB(){
+  return db?Promise.resolve(db):new Promise((res,rej)=>{
+    const a=indexedDB.open(DB_NAME,DB_VERSION);
+    a.onupgradeneeded=e=>{
+      const t=e.target.result;
+      if(!t.objectStoreNames.contains(STORE_NAME)){
+        t.createObjectStore(STORE_NAME,{keyPath:"id"}).createIndex("date","date",{unique:!1});
+      }
+    };
+    a.onsuccess=t=>{db=t.target.result;res(db);};
+    a.onerror=e=>rej(e.target.error);
+  });
+}
+async function allTransactions(){
+  if(!db)await openDB();
+  return new Promise((res,rej)=>{
+    const a=db.transaction(STORE_NAME,"readonly").objectStore(STORE_NAME).getAll();
+    a.onsuccess=()=>{
+      const t=a.result.map(e=>{
+        if(e&&e.date){
+          const p=e.date.split("-");
+          if(p.length===3)e.date=formatStrictISO(p[0],p[1],p[2]);
+        }
+        return e;
+      });
+      res(t.sort((x,y)=>y.date.localeCompare(x.date)||(y.time||"").localeCompare(x.time||"")||y.id.localeCompare(x.id)));
+    };
+    a.onerror=()=>rej(a.error);
+  });
+}
+
+async function saveTransaction(){
+  const e=$("save-transaction");
+  if(e.disabled)return;
+  try{
+    e.disabled=true;
+    if(editingTxId){
+      if(!db)await openDB();
+      const existing=(await allTransactions()).find(x=>x.id===editingTxId);
+      if(existing&&existing.type!==currentInputTab)return void showToast("خطأ: نوع المعاملة لا يطابق التبويب — ألغِ التعديل أولاً");
+    }
+    const t=readDateParts("tx");
+    if(!t)return void showToast("أدخل تاريخ المعاملة بشكل صحيح.");
+    const a=$("tx-time").value||"00:00",
+          n=$("tx-notes").value.trim(),
+          s=editingTxId||`tx_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
+    const accountId=$("tx-account")?.value||"cash_default";
+    let r={id:s,date:t,time:a,notes:n,type:currentInputTab};
+    if(currentInputTab==="expense"){
+      const amount=Number($("expense-amount").value);
+      if(!Number.isFinite(amount)||amount<=0)return void showToast("أدخل مبلغًا صحيحًا.");
+      const cat=$("expense-category").value;
+      if(!cat)return void showToast("اختر تصنيف المصروف. لو القائمة فاضية أضف تصنيفًا من الإعدادات.");
+      r.amount=amount;r.category=cat;r.budgetId=getBudgetIdForCategory(cat);r.account=accountId;
+    }else if(currentInputTab==="income"){
+      const amount=Number($("income-amount").value);
+      if(!Number.isFinite(amount)||amount<=0)return void showToast("أدخل مبلغًا صحيحًا.");
+      r.amount=amount;r.category=$("income-category").value;r.isSalaryBase=$("is-salary-base").checked;r.account=accountId;
+    }else if(currentInputTab==="transfer"){
+      const amount=Number($("total-kwd").value);
+      if(!Number.isFinite(amount)||amount<=0)return void showToast("أدخل إجمالي المبلغ المدفوع.");
+      r.totalKwd=amount;r.budgetId="transfer";
+      const benefs=[];
+      document.querySelectorAll(".beneficiary").forEach(el=>{
+        const nm=el.querySelector(".beneficiary-name-select").value;
+        const v=Number(el.querySelector(".beneficiary-amount").value)||0;
+        if(v>0&&nm)benefs.push({name:nm,egp:v});
+      });
+      if(!benefs.length)return void showToast("أضف مستفيدًا ومبلغًا واحدًا على الأقل.");
+      const totalEGP=benefs.reduce((x,y)=>x+y.egp,0);
+      r.beneficiaries=benefs.map(b=>({...b,shareKwd:totalEGP>0?b.egp/totalEGP*amount:0}));
+      r.amount=amount;
+      r.exchangeRate=totalEGP>0&&amount>0?amount/totalEGP*1000:0;
+      r.account=accountId;
+    }else if(currentInputTab==="debt"){
+      const amount=Number($("debt-amount").value);
+      const person=$("debt-person-select").value;
+      if(!person)return void showToast("حدد الشخص أو الجهة.");
+      if(!Number.isFinite(amount)||amount<=0)return void showToast("أدخل مبلغًا صحيحًا.");
+      r.amount=amount;r.person=person;r.debtType=$("debt-type").value;r.account=accountId;
+      if(r.debtType==="debtor")r.budgetId="debt";
+      if(r.debtType==="opening_balance"){
+        const exists=(await allTransactions()).some(x=>x.id!==editingTxId&&x.type==="debt"&&x.debtType==="opening_balance"&&x.person===r.person);
+        if(exists)return void showToast(`"${r.person}" عنده رصيد أول المدة مسجّل بالفعل.`);
+      }
+    }else if(currentInputTab==="internal_transfer"){
+      const from=$("int-from-account").value,to=$("int-to-account").value,amount=Number($("int-amount").value);
+      if(!from||!to)return void showToast("اختر الحسابين.");
+      if(from===to)return void showToast("لا يمكن التحويل لنفس الحساب.");
+      if(!Number.isFinite(amount)||amount<=0)return void showToast("أدخل مبلغًا صحيحًا.");
+      r.amount=amount;r.account=from;r.toAccount=to;
+    }
+    if(!db)await openDB();
+    await new Promise((res,rej)=>{
+      const tx=db.transaction(STORE_NAME,"readwrite");
+      tx.objectStore(STORE_NAME).put(r);
+      tx.oncomplete=res;
+      tx.onerror=()=>rej(tx.error);
+    });
+    const finalType=r.type;
+    const finalBudgetId=r.budgetId;
+    showToast("تم حفظ المعاملة بنجاح ✅");
+    resetInputForm();
+    await refreshAllViews();
+    try{await updateReportTargetOptions()}catch(e){}
+    if(reportGenerated)try{await generateReport()}catch(e){}
+    switchMainView("dashboard");
+    if(finalBudgetId){
+      await showBudgetAlert(finalBudgetId,r);
+    }
+  }catch(e){console.error("Save Error:",e);showToast("فشل حفظ المعاملة")}finally{e.disabled=false;}
+}
+
+function resetInputForm(){
+  editingTxId=null;
+  $("edit-banner").classList.add("hidden");
+  $("save-transaction").textContent="حفظ المعاملة 💾";
+  $("expense-amount").value="";$("income-amount").value="";$("total-kwd").value="";$("debt-amount").value="";$("int-amount").value="";
+  $("tx-notes").value="";$("is-salary-base").checked=false;
+  $("tx-time").value="";$("beneficiaries-list").innerHTML="";
+  $("view-input").classList.add("hidden");
+  addBeneficiary();
+  writeDateParts("tx",todayISO());
+  initDates();
+  updateExpenseBudgetHint();
+}
+function cancelEdit(){resetInputForm();}
+
+async function refreshAllViews(e){
+  const t=e||await allTransactions();
+  $("backup-count").textContent=t.length;
+  $("last-saved").textContent=(new Date).toLocaleTimeString("en-US");
+  await refreshDashboard(t);
+  renderTargetValuesPreview();
+}
+
+function renderAccountsBalance(transactions){
+  const accs=getVisibleAccounts();
+  const breakdown=$("accounts-breakdown");
+  const totalEl=$("dash-total-wealth");
+  if(!breakdown||!totalEl)return;
+  let total=0;
+  breakdown.innerHTML=accs.map(acc=>{
+    const bal=getAccountBalance(transactions,acc.id);
+    total+=bal;
+    return `<div class="acc-chip"><div class="acc-chip-title">${acc.icon||"💳"} ${escapeHTML(acc.name)}</div><div class="acc-chip-val${bal<0?" neg":""}">${money(bal)}</div></div>`;
+  }).join("");
+  totalEl.textContent=money(total);
+}
+
+function renderRecentTransactions(t){
+  const box=$("dash-recent-transactions");
+  if(!box)return;
+  if(!t.length){box.innerHTML='<span class="small">لا توجد معاملات محفوظة بعد.</span>';return;}
+  const today=todayISO();
+  box.innerHTML=t.slice(0,5).map(e=>{
+    let label;
+    if(e.type==="expense"||e.type==="income")label=e.category;
+    else if(e.type==="transfer")label="حوالة";
+    else if(e.type==="debt")label=e.person?`دين — ${e.person}`:"دين";
+    else if(e.type==="internal_transfer")label=`${getAccountById(e.account).name} ← ${getAccountById(e.toAccount).name}`;
+    else label=e.type;
+    const accName=e.type==="internal_transfer"?"":(getAccountById(e.account||"cash_default").name||"");
+    const isIn=e.type==="income"||isCreditorEntry(e);
+    const isOut=e.type==="expense"||e.type==="transfer"||isDebtorEntry(e);
+    const color=isIn?"var(--green-val)":isOut?"var(--red-val)":"var(--ink-muted)";
+    const sign=isIn?"+":isOut?"−":"";
+    const when=e.date===today?"اليوم":fmtDate(e.date);
+    return `<div class="tx-item">
+      <div style="min-width:0"><strong>${escapeHTML(label)}</strong>${accName?` <span class="small">(${escapeHTML(accName)})</span>`:""}<br><small class="small">${when}</small></div>
+      <span class="amount" style="color:${color}">${sign}${money(realAmount(e))}</span>
+    </div>`;
+  }).join("");
+}
+
+async function refreshDashboard(e){
+  const t=e||await allTransactions();
+  $("dash-tx-count").textContent=t.length+" معاملة";
+  renderAccountsBalance(t);
+  renderRecentTransactions(t);
+  await renderDashBudgetCard(t);
+}
+
+function renderCycleFlow(txs,cycle){
+  const inEl=$("dash-cycle-in"),outEl=$("dash-cycle-out");
+  if(!inEl||!outEl)return;
+  inEl.textContent=money(cycle?totalIncomeFor(txs,cycle):0);
+  outEl.textContent=money(cycle?totalExpenseFor(txs,cycle,"all"):0);
+}
+
+function renderCyclePill(item){
+  const p=$("hdr-pill");
+  if(!p)return;
+  p.classList.remove("warn");
+  if(!item){p.textContent=DEFAULT_PILL_TEXT;return;}
+  if(item.daysRemaining<=0){p.textContent="⏰ الدورة انتهت";p.classList.add("warn");return;}
+  p.textContent=`📅 يوم ${Math.min(CYCLE_DAYS,item.elapsed+1)} / ${CYCLE_DAYS}`;
+}
+
+function renderTodayCard(items){
+  const val=$("dash-today-val"),bar=$("dash-today-bar"),note=$("dash-today-note");
+  if(!val||!bar||!note)return;
+  val.className="today-val";
+  if(!items){
+    val.textContent=money(0);bar.style.width="0%";
+    note.textContent="سجّل راتبًا أساسيًا لحساب حد اليوم.";
+    return;
+  }
+  const live=items.filter(i=>(i.budgetId==="regular"||i.budgetId==="personal")&&i.daysRemaining>0);
+  if(!live.length){
+    val.textContent=money(0);bar.style.width="0%";
+    note.textContent="الدورة انتهت — سجّل راتبك الجديد.";
+    return;
+  }
+  const allowed=live.reduce((s,i)=>s+Math.max(0,i.dailyActual),0);
+  const spent=live.reduce((s,i)=>s+i.spentToday,0);
+  const left=live.reduce((s,i)=>s+i.remainingToday,0);
+  const over=spent>allowed;
+  const pct=allowed>0?Math.min(100,spent/allowed*100):(spent>0?100:0);
+  const level=over?"bad":pct>=80?"warning":"good";
+  if(level!=="good")val.classList.add(level);
+  val.textContent=money(left);
+  bar.style.width=pct+"%";
+  bar.style.background=level==="bad"?"var(--red-val)":level==="warning"?"var(--amber-val)":"var(--emerald-neon)";
+  note.textContent=over?`تجاوزت حد اليوم بـ ${money(spent-allowed)}`:`من حد يومي ${money(allowed)} (عادية + شخصية)`;
+}
+
+function renderAlertStrip(items){
+  const el=$("dash-alert-strip");
+  if(!el)return;
+  if(!items){el.classList.add("hidden");el.innerHTML="";return;}
+  const bad=[],warn=[];
+  items.forEach(it=>{
+    if(it.max<=0&&it.spent<=0)return;
+    const b=BUDGET_BY_KEY[it.budgetId];
+    const nm=`${b.icon} ${b.short}`;
+    const st=computeBudgetStatus(it.max,it.spent);
+    if(it.max<=0||st.pct>=100)bad.push(nm);
+    else if(st.pct>=80)warn.push(`${nm} ${st.pct.toFixed(0)}%`);
+  });
+  if(!bad.length&&!warn.length){el.classList.add("hidden");el.innerHTML="";return;}
+  let html="";
+  if(bad.length)html+=`<div>🚨 تعدّى حده: ${bad.join("، ")}</div>`;
+  if(warn.length)html+=`<div>⚠️ قارب على حده: ${warn.join("، ")}</div>`;
+  el.className="alert-strip "+(bad.length?"bad":"warning");
+  el.innerHTML=html;
+}
+
+function renderBudgetRowHTML(data){
+  const b=BUDGET_BY_KEY[data.budgetId];
+  const noLimit=data.max<=0;
+  const st=computeBudgetStatus(data.max,data.spent);
+  let level=st.level;
+  if(noLimit&&data.spent>0)level="bad";
+  const pctW=noLimit?(data.spent>0?100:0):Math.min(100,st.pct);
+  const pctTxt=noLimit?(data.spent>0?"—":"0%"):st.pct.toFixed(0)+"%";
+  const barColor=level==="bad"?"var(--red-val)":level==="warning"?"var(--amber-val)":"var(--emerald-neon)";
+  const cls=level==="bad"?"bad":level==="warning"?"warning":"good";
+  const dailyTxt=(data.daysRemaining>0&&data.remaining>0)?money(data.dailyActual):"—";
+  return `<div class="bud-mini-card" data-bkey="${data.budgetId}">
+    <div class="bud-mini-head">
+      <span class="bud-mini-name">${b.icon} ${b.short}</span>
+      <span class="bud-mini-pct ${cls}">${pctTxt}</span>
+    </div>
+    <div class="cap-track"><div class="cap-bar" style="width:${pctW}%;background:${barColor}"></div></div>
+    <div class="bud-mini-meta">
+      <div>متبقي: <strong class="${cls}">${money(data.remaining)}</strong></div>
+      <div>⚡ يوميًا: <strong>${dailyTxt}</strong></div>
+    </div>
+  </div>`;
+}
+
+async function renderDashBudgetCard(transactions){
+  const el=$("dash-budget-summary");
+  if(!el)return;
+  try{
+    const txs=transactions||await allTransactions();
+    const cycle=getCurrentSalaryCycle(txs);
+    const hasSalary=txs.some(x=>x.type==="income"&&x.isSalaryBase);
+    const income=cycle?totalIncomeFor(txs,cycle):0;
+    renderCycleFlow(txs,cycle);
+    if(!cycle||(!hasSalary&&income<=0)){
+      el.innerHTML='<span class="small" style="grid-column: span 2">سجّل راتبًا أساسيًا لعرض الميزانية.</span>';
+      renderTodayCard(null);
+      renderAlertStrip(null);
+      renderCyclePill(null);
+      return;
+    }
+    const {items}=computeAllBudgetData(txs,cycle);
+    el.innerHTML=items.map(renderBudgetRowHTML).join("");
+    renderTodayCard(items);
+    renderAlertStrip(items);
+    renderCyclePill(hasSalary?items[0]:null);
+  }catch(e){console.warn("renderDashBudgetCard:",e)}
+}
+
+function realAmount(e){return e?(e.type==="transfer"||e.type==="internal_transfer")?Number(e.totalKwd??e.amount)||0:Number(e.amount)||0:0}
+function isCreditorEntry(e){return e.type==="debt"&&e.debtType==="creditor"}
+function isDebtorEntry(e){return e.type==="debt"&&e.debtType==="debtor"}
+function isOpeningEntry(e){return e.type==="debt"&&e.debtType==="opening_balance"}
+function debtTypeLabel(e){return{creditor:"أخدنا منه (زيادة الدين)",debtor:"أدّينا له (سداد)",opening_balance:"رصيد أول المدة"}[e]||e||""}
+
+function getCurrentSalaryCycle(transactions){
+  const cycles=getAllSalaryCycles(transactions||[]);
+  if(!cycles.length)return null;
+  return cycles[cycles.length-1];
+}
+
+function getTxBudgetId(tx){
+  if(!tx)return null;
+  if(tx.type==="expense"){
+    if(tx.budgetId&&BUDGET_BY_KEY[tx.budgetId])return tx.budgetId;
+    if(tx.isFixed)return "fixed";
+    if(tx.isPersonalPurchase)return "personal";
+    if(tx.category==="أدوات ومشتريات شخصية"||tx.category==="نثريات ومتفرقات")return "personal";
+    return "regular";
+  }
+  if(tx.type==="transfer")return "transfer";
+  if(tx.type==="debt"&&tx.debtType==="debtor")return "debt";
+  return null;
+}
+
+function totalBudgetSpentInCycle(txs,cycle,budgetId){
+  return (txs||[]).filter(tx=>inPeriod(tx,cycle)&&getTxBudgetId(tx)===budgetId).reduce((s,tx)=>s+realAmount(tx),0);
+}
+
+function dailyBudgetSpent(txs,cycle,budgetId,dayISO){
+  return (txs||[]).filter(tx=>{
+    if(!inPeriod(tx,cycle))return false;
+    if(getTxBudgetId(tx)!==budgetId)return false;
+    return formatStrictISO(...tx.date.split("-"))===dayISO;
+  }).reduce((s,tx)=>s+realAmount(tx),0);
+}
+
+function computeBudgetItemData(txs,cycle,income,budgetId){
+  const targets=getTargetPercentages();
+  const elapsed=Math.max(0,Math.min(CYCLE_DAYS,dateDiffDays(cycle.start,todayISO())));
+  const daysRemaining=Math.max(0,CYCLE_DAYS-elapsed);
+  const today=todayISO();
+  const cycleEndDate=dateAddDays(cycle.start,CYCLE_DAYS-1);
+
+  if(budgetId==="emergency"){
+    const baseKeys=["fixed","regular","personal","transfer","debt"];
+    let accumulatedSurplus=0;
+    let totalMaxBase=0;
+    
+    baseKeys.forEach(k=>{
+      const pct=targets[k]||0;
+      const bMax=income*(pct/100);
+      const bSpent=totalBudgetSpentInCycle(txs,cycle,k);
+      accumulatedSurplus+=(bMax-bSpent);
+      totalMaxBase+=bMax;
+    });
+
+    const unallocatedMax=Math.max(0,income-totalMaxBase);
+    const max=unallocatedMax+Math.max(0,accumulatedSurplus);
+    const spent=totalBudgetSpentInCycle(txs,cycle,"emergency");
+    const remaining=accumulatedSurplus-spent;
+    const fixedPct=income>0?Math.max(0,Number(((remaining/income)*100).toFixed(1))):0;
+
+    const dailyReference=max/CYCLE_DAYS;
+    const dailyActual=daysRemaining>0?remaining/daysRemaining:0;
+    const spentToday=dailyBudgetSpent(txs,cycle,"emergency",today);
+    const remainingToday=Math.max(0,dailyActual-spentToday);
+
+    return {
+      budgetId,
+      max,
+      spent,
+      remaining,
+      pct:fixedPct,
+      elapsed,
+      daysRemaining,
+      dailyReference,
+      dailyActual,
+      spentToday,
+      remainingToday,
+      cycleEndDate,
+      isDynamic:true
+    };
+  }
+
+  const pct=(targets[budgetId]||0);
+  const max=income*(pct/100);
+  const spent=totalBudgetSpentInCycle(txs,cycle,budgetId);
+  const remaining=max-spent;
+  const dailyReference=max/CYCLE_DAYS;
+  const dailyActual=daysRemaining>0?remaining/daysRemaining:0;
+  const spentToday=dailyBudgetSpent(txs,cycle,budgetId,today);
+  const remainingToday=Math.max(0,dailyActual-spentToday);
+  return {budgetId,max,spent,remaining,pct,elapsed,daysRemaining,dailyReference,dailyActual,spentToday,remainingToday,cycleEndDate};
+}
+
+function computeAllBudgetData(txs,cycle){
+  if(!cycle)return {income:0,items:[]};
+  const income=totalIncomeFor(txs,cycle);
+  const items=BUDGET_ITEMS.map(b=>computeBudgetItemData(txs,cycle,income,b.key));
+  return {income,items};
+}
+
+function renderBudgetCardHTML(data){
+  const b=BUDGET_BY_KEY[data.budgetId];
+  const st=computeBudgetStatus(data.max,data.spent);
+  const pctBar=Math.min(100,st.pct);
+  const barColor=st.level==="bad"?"var(--red-val)":st.level==="warning"?"var(--amber-val)":"var(--emerald-neon)";
+  const remainingColor=st.level==="bad"?"bad":st.level==="warning"?"warning":"good";
+
+  let liveAlert="";
+  if(data.daysRemaining<=0){
+    liveAlert=`<div class="budget-alert-live bad" style="margin-top:4px;font-size:10.5px;font-weight:700">⏰ الدورة انتهت — سجّل راتبك الجديد لبدء دورة جديدة.</div>`;
+  }else if(data.spentToday>data.dailyActual){
+    liveAlert=`<div class="budget-alert-live warning" style="margin-top:4px;font-size:10.5px;font-weight:700">⚠️ تجاوزت حد اليوم بـ ${money(data.spentToday-data.dailyActual)} — متبقي في الدورة: ${money(data.remaining)}</div>`;
+  }else if(data.remaining<0){
+    liveAlert=`<div class="budget-alert-live bad" style="margin-top:4px;font-size:10.5px;font-weight:700">🚨 تعديت الحد الكلي بـ ${money(Math.abs(data.remaining))}</div>`;
+  }else{
+    liveAlert=`<div class="budget-alert-live good" style="margin-top:4px;font-size:10.5px;font-weight:700">✅ متبقي لك اليوم: ${money(data.remainingToday)}</div>`;
+  }
+
+  return `<div class="budget-card" data-bkey="${data.budgetId}">
+    <div class="budget-card-head">
+      <span class="budget-card-title">${b.label}</span>
+      <span class="budget-card-pct">${data.isDynamic?'تجميع فائض':data.pct+'% من الدخل'}</span>
+    </div>
+    <div class="budget-stats">
+      <div class="budget-stat"><div class="budget-stat-label">${data.isDynamic?'إجمالي المتاح':'الحد الأقصى'}</div><div class="budget-stat-value">${money(data.max)}</div></div>
+      <div class="budget-stat"><div class="budget-stat-label">المنصرف</div><div class="budget-stat-value bad">${money(data.spent)}</div></div>
+      <div class="budget-stat"><div class="budget-stat-label">المتبقي الفعلي</div><div class="budget-stat-value ${remainingColor}">${money(data.remaining)}</div></div>
+    </div>
+    <div class="cap-track"><div class="cap-bar" style="width:${pctBar}%;background:${barColor}"></div></div>
+    <div class="budget-daily">
+      <div class="budget-daily-item"><span class="budget-daily-label">📅 متبقي من الدورة</span><span class="budget-daily-value">${data.daysRemaining} / ${CYCLE_DAYS} يوم</span></div>
+      <div class="budget-daily-item"><span class="budget-daily-label">🎯 الحد اليومي المرجعي</span><span class="budget-daily-value">${money(data.dailyReference)}</span></div>
+      <div class="budget-daily-item"><span class="budget-daily-label">⚡ الحد اليومي الفعلي</span><span class="budget-daily-value">${data.daysRemaining>0?money(data.dailyActual):"—"}</span></div>
+      <div class="budget-daily-item"><span class="budget-daily-label">📈 صرفت اليوم</span><span class="budget-daily-value">${money(data.spentToday)}</span></div>
+    </div>
+    ${liveAlert}
+  </div>`;
+}
+
+function computeBudgetStatus(max,spent){
+  const remaining=max-spent;
+  const pct=max>0?(spent/max)*100:0;
+  let level="good";
+  if(pct>=100)level="bad";
+  else if(pct>=80)level="warning";
+  return {remaining,pct,level};
+}
+
+async function renderBudgetPage(){
+  try{
+    const txs=await allTransactions();
+    const cycle=getCurrentSalaryCycle(txs);
+    const labelEl=$("budget-cycle-label");
+    const incomeEl=$("budget-income-line");
+    const daysEl=$("budget-days-line");
+    const cards=$("budget-cards-container");
+    const alerts=$("budget-alerts-container");
+    if(!cards)return;
+    if(!cycle){
+      if(labelEl)labelEl.textContent="لا توجد دورة راتب";
+      if(incomeEl)incomeEl.textContent="سجّل راتبًا أساسيًا للبدء";
+      if(daysEl)daysEl.textContent="—";
+      cards.innerHTML='<div class="panel small">لا توجد دورة راتب حالية. سجّل راتبًا أساسيًا ليتم احتساب الميزانية.</div>';
+      if(alerts)alerts.innerHTML="";
+      return;
+    }
+    const {income,items}=computeAllBudgetData(txs,cycle);
+    const cycleEnd=dateAddDays(cycle.start,CYCLE_DAYS-1);
+    if(labelEl)labelEl.textContent=`${fmtDate(cycle.start)} ← ${fmtDate(cycleEnd)}`;
+    if(incomeEl)incomeEl.textContent=`الدخل المرجعي: ${money(income)}`;
+    const elapsed=Math.max(0,Math.min(CYCLE_DAYS,dateDiffDays(cycle.start,todayISO())));
+    if(daysEl)daysEl.textContent=`الأيام: ${elapsed} / ${CYCLE_DAYS} — متبقي ${Math.max(0,CYCLE_DAYS-elapsed)} يوم`;
+    let alertsHTML="";
+    items.forEach(it=>{
+      const st=computeBudgetStatus(it.max,it.spent);
+      if(st.pct>=100){
+        alertsHTML+=`<div class="hint" style="background:rgba(251,113,133,0.1);border-color:rgba(251,113,133,0.3);color:var(--red-val);font-weight:700">🚨 <strong>${BUDGET_BY_KEY[it.budgetId].label}:</strong> تجاوزت الحد الأقصى للدورة بـ ${money(it.spent-it.max)}.</div>`;
+      }else if(st.pct>=80){
+        alertsHTML+=`<div class="hint" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.3);color:var(--amber-val);font-weight:700">⚠️ <strong>${BUDGET_BY_KEY[it.budgetId].label}:</strong> وصلت لـ ${st.pct.toFixed(0)}% من الحد — متبقي ${money(it.remaining)}.</div>`;
+      }
+      if(it.daysRemaining>0&&it.spentToday>it.dailyActual){
+        alertsHTML+=`<div class="hint" style="background:rgba(251,113,133,0.1);border-color:rgba(251,113,133,0.3);color:var(--red-val);font-weight:700">🔔 <strong>${BUDGET_BY_KEY[it.budgetId].label}:</strong> تجاوزت حد اليوم (${money(it.dailyActual)}) — صرفت ${money(it.spentToday)}.</div>`;
+      }
+    });
+    if(alerts)alerts.innerHTML=alertsHTML||'<div class="hint" style="background:rgba(16,185,129,0.1);border-color:var(--border-neon);color:var(--green-val);font-weight:700">✅ <strong>ممتاز!</strong> كل بنود الميزانية ضمن الحدود.</div>';
+    cards.innerHTML=items.map(renderBudgetCardHTML).join("");
+  }catch(e){console.error("renderBudgetPage:",e)}
+}
+
+async function showBudgetAlert(budgetId,tx){
+  if(!BUDGET_BY_KEY[budgetId])return;
+  try{
+    const txs=await allTransactions();
+    const cycle=getCurrentSalaryCycle(txs);
+    if(!cycle)return;
+    const income=totalIncomeFor(txs,cycle);
+    const data=computeBudgetItemData(txs,cycle,income,budgetId);
+    const b=BUDGET_BY_KEY[budgetId];
+    const st=computeBudgetStatus(data.max,data.spent);
+    if(data.daysRemaining<=0){
+      showToast(`⏰ ${b.label}: الدورة انتهت — سجّل راتبك الجديد`);
+      return;
+    }
+    if(data.remaining<0){
+      showToast(`🚨 ${b.label}: تعديت الحد الكلي بـ ${Math.abs(data.remaining).toFixed(3)} د.ك`);
+      return;
+    }
+    if(data.spentToday>data.dailyActual){
+      showToast(`⚠️ ${b.label}: تجاوزت حد اليوم (${data.dailyActual.toFixed(3)}) — صرفت ${data.spentToday.toFixed(3)} | متبقي في الدورة: ${data.remaining.toFixed(3)} د.ك`);
+      return;
+    }
+    if(st.pct>=80){
+      showToast(`⚠️ ${b.label}: وصلت لـ ${st.pct.toFixed(0)}% من الحد — متبقي ${data.remaining.toFixed(3)} د.ك`);
+      return;
+    }
+    showToast(`✅ ${b.label}: متبقي لك اليوم ${data.remainingToday.toFixed(3)} د.ك — ومتبقي في الدورة ${data.remaining.toFixed(3)} د.ك`);
+  }catch(e){console.warn("showBudgetAlert:",e)}
+}
+
+async function onReportTypeChange(){
+  const e=$("report-type").value,t=$("report-subtype-wrap"),a=$("report-subtype");
+  t.classList.remove("hidden");
+  if(e==="expense")a.innerHTML='<option value="all">كل التصنيفات (شامل)</option>'+getExpenseCategories().map(c=>`<option value="${escapeHTML(c.name)}">${escapeHTML(c.name)}</option>`).join("");
+  else if(e==="income")a.innerHTML='<option value="all">كل المصادر (شامل)</option>'+getIncomeCategories().map(c=>`<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
+  else if(e==="debt")a.innerHTML='<option value="all">كل الحركات (شامل)</option><option value="creditor">أخدنا منه</option><option value="debtor">أدّينا له (سداد)</option><option value="opening_balance">رصيد أول المدة</option>';
+  else t.classList.add("hidden");
+  a.value="all";
+  $("report-target-wrap").classList.toggle("hidden",!(e==="debt"||e==="transfer"||e==="all"||e==="internal_transfer"));
+  await updateReportTargetOptions();
+}
+
+async function updateReportTargetOptions(){
+  try{
+    const e=await allTransactions(),t=new Set;
+    e.forEach(x=>{
+      if(x.type==="debt"&&x.person)t.add(x.person);
+      if(x.type==="transfer")(x.beneficiaries||[]).forEach(b=>{if(b.name)t.add(b.name);});
+    });
+    const a=[...t].sort((x,y)=>x.localeCompare(y,"ar")),n=$("beneficiary-select");
+    if(!n)return;
+    const s=n.value;
+    n.innerHTML='<option value="all">الكل</option>'+a.map(x=>`<option value="${escapeHTML(x)}">${escapeHTML(x)}</option>`).join("");
+    if(a.includes(s))n.value=s;
+  }catch(e){console.warn("updateReportTargetOptions:",e)}
+}
+
+async function setSalaryCycleDates(){
+  try{
+    const cycles=getAllSalaryCycles(await allTransactions());
+    if(cycles.length>0){
+      const t=cycles[cycles.length-1];
+      writeDateParts("date-from",t.start);
+      writeDateParts("date-to",t.end);
+      showToast("تم تحديد فترة آخر دورة راتب 📅");
+    }else showToast("لم يتم تسجيل أي راتب أساسي بعد");
+  }catch(e){console.warn(e);showToast("تعذر تحديد فترة الراتب")}
+}
+
+async function generateReport(){
+  const e=await allTransactions(),
+        t=$("report-type").value,
+        a=$("report-subtype").value,
+        n=$("beneficiary-select").value,
+        s=readDateParts("date-from"),
+        r=readDateParts("date-to");
+  if($("report-search"))$("report-search").value="";
+  const o=e.filter(x=>{
+    const iso=formatStrictISO(...x.date.split("-"));
+    if(t!=="all"&&x.type!==t)return false;
+    if(t==="expense"&&a!=="all"&&x.category!==a)return false;
+    if(t==="income"&&a!=="all"&&x.category!==a)return false;
+    if(t==="debt"&&a!=="all"&&x.debtType!==a)return false;
+    if(n!=="all"&&((x.type==="debt"&&x.person!==n)||(x.type==="transfer"&&!(x.beneficiaries||[]).some(b=>b.name===n))))return false;
+    if(s&&iso<s)return false;
+    if(r&&iso>r)return false;
+    return true;
+  });
+  cachedReportRecords=o;
+  visibleReportRecords=o.slice();
+  cachedReportRange={from:s,to:r};
+  $("filter-section").classList.add("hidden");
+  $("report-section").classList.remove("hidden");
+  reportGenerated=true;
+  $("display-date-range").textContent=(s?fmtDate(s):"البداية")+" إلى "+(r?fmtDate(r):"النهاية");
+  $("display-target").textContent=n==="all"?"الكل":n;
+  $("display-count").textContent=o.length+" حركة";
+  if(t==="transfer")$("report-title").textContent="كشف حساب المعاملات الخارجية (الحوالات)";
+  else if(t==="debt")$("report-title").textContent="كشف حساب الديون والعلاقات المالية الرسمية";
+  else if(t==="internal_transfer")$("report-title").textContent="كشف التحويلات بين الحسابات";
+  else if(t==="expense")$("report-title").textContent="تقرير المصروفات المصنف";
+  else if(t==="income")$("report-title").textContent="تقرير الدخل والإيرادات";
+  else $("report-title").textContent="كشف حساب مالي — سجل المعاملات";
+  $("capture-area").querySelector(".table-wrap").innerHTML='<table><thead id="report-table-head"></thead><tbody id="report-table-body"></tbody></table>';
+  renderReportTableRows(o);
+  updateReportSummaries(o);
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function renderReportTableRows(e){
+  const t=$("report-table-body"),a=$("report-table-head");
+  if(!t||!a)return;
+  const typeVal=$("report-type").value;
+  const isTransfer=typeVal==="transfer";
+  const isDebt=typeVal==="debt";
+  const isExpense=typeVal==="expense";
+  const s=$("beneficiary-select")?$("beneficiary-select").value:"all";
+  
+  if(isTransfer){
+    a.innerHTML='<tr><th style="width:12%">التاريخ</th><th style="width:20%">التفاصيل</th><th style="width:16%">المستفيد</th><th style="width:12%">السعر</th><th class="amount" style="width:12%">المصري</th><th class="amount" style="width:12%">الكويتي</th><th class="amount" style="width:12%">الرصيد</th><th class="no-print" style="width:4%;display:none">إجراء</th></tr>';
+  }else if(isDebt){
+    a.innerHTML='<tr><th style="width:14%">التاريخ</th><th style="width:22%">نوع الحركة</th><th style="width:22%">الطرف / الجهة</th><th class="amount" style="width:14%">المبلغ</th><th class="amount" style="width:14%">رصيد الدين</th><th class="no-print" style="width:0%;display:none">إجراء</th></tr>';
+  }else if(isExpense){
+    a.innerHTML='<tr><th style="width:16%">التاريخ</th><th style="width:24%">التصنيف</th><th style="width:20%">البند</th><th style="width:18%">الحساب</th><th class="amount" style="width:16%">المبلغ</th><th class="no-print" style="width:0%;display:none">إجراء</th></tr>';
+  }else{
+    a.innerHTML='<tr><th style="width:14%">التاريخ</th><th style="width:26%">النوع / البيان</th><th style="width:16%">الطرف</th><th style="width:14%">الحساب</th><th class="amount" style="width:15%">المبلغ</th><th class="amount" style="width:15%">الرصيد</th><th class="no-print" style="width:0%;display:none">إجراء</th></tr>';
+  }
+
+  if(!e.length)return void(t.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:15px">لا توجد حركات مطابقة.</td></tr>`);
+  let r=0;
+  const sorted=[...e].sort((a,b)=>a.date.localeCompare(b.date)||(a.time||"").localeCompare(b.time||"")||a.id.localeCompare(b.id));
+  const running={};
+  
+  if(isDebt){
+    let debtRunning={};
+    sorted.forEach(x=>{
+      const p=x.person||"غير محدد";
+      if(!debtRunning[p])debtRunning[p]=0;
+      if(isCreditorEntry(x)||isOpeningEntry(x))debtRunning[p]+=realAmount(x);
+      else if(isDebtorEntry(x))debtRunning[p]-=realAmount(x);
+      running[x.id]=debtRunning[p];
+    });
+  }else{
+    sorted.forEach(x=>{
+      if(x.type==="internal_transfer"){running[x.id]=r;return;}
+      if(x.type==="income"||isCreditorEntry(x))r+=realAmount(x);
+      else if(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))r-=realAmount(x);
+      running[x.id]=r;
+    });
+  }
+
+  let html="";
+  e.forEach(x=>{
+    const balance=running[x.id]!==undefined?running[x.id]:0;
+    const accFromName=getAccountById(x.account||"cash_default").name||"—";
+    const accToName=x.toAccount?getAccountById(x.toAccount).name:"";
+    
+    const actionBtns = `<td class="no-print" style="white-space:nowrap;text-align:center;display:none"><button class="btn btn-muted action-btn-mini" title="تعديل" data-action="edit-report" data-id="${x.id}">✏️</button><button class="btn btn-danger action-btn-mini" title="حذف" data-action="delete-report" data-id="${x.id}">🗑️</button></td>`;
+
+    if(x.type==="transfer"&&isTransfer){
+      const benefs=x.beneficiaries||[];
+      const totalEGP=benefs.reduce((s,b)=>s+(Number(b.egp)||0),0);
+      const kwd=Number(x.totalKwd??x.amount)||0;
+      const rate=x.exchangeRate||(totalEGP>0?kwd/totalEGP*1000:0);
+      benefs.forEach(b=>{
+        if(s!=="all"&&b.name!==s)return;
+        const share=b.shareKwd!==undefined?b.shareKwd:(totalEGP>0?b.egp/totalEGP*kwd:0);
+        html+=`<tr data-id="${x.id}"><td>${fmtDate(x.date)}</td><td>${escapeHTML(x.notes||"حوالة خارجية")}</td><td><strong>${escapeHTML(b.name)}</strong></td><td><span style="color:var(--emerald-neon);font-weight:bold">${rate.toFixed(3)}</span></td><td class="amount">${moneyEGP(b.egp)}</td><td class="amount">${money(share)}</td><td class="amount"><strong>${money(balance)}</strong></td>${actionBtns}</tr>`;
+      });
+    }else if(isDebt){
+      const debtLbl=debtTypeLabel(x.debtType);
+      const amt=realAmount(x);
+      html+=`<tr data-id="${x.id}"><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(debtLbl)}</strong><br><small>${escapeHTML(x.notes||"")}</small></td><td>${escapeHTML(x.person||"—")}</td><td class="amount">${money(amt)}</td><td class="amount"><strong>${money(balance)}</strong></td>${actionBtns}</tr>`;
+    }else if(isExpense){
+      const amt=realAmount(x);
+      const budName=BUDGET_BY_KEY[x.budgetId]?.label||"عادي";
+      html+=`<tr data-id="${x.id}"><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(x.category)}</strong><br><small>${escapeHTML(x.notes||"")}</small></td><td>${escapeHTML(budName)}</td><td><small>${escapeHTML(accFromName)}</small></td><td class="amount">${money(amt)}</td>${actionBtns}</tr>`;
+    }else{
+      const amt=realAmount(x);
+      let label;
+      if(x.type==="expense"||x.type==="income")label=x.category;
+      else if(x.type==="transfer")label="حوالة ("+(x.beneficiaries||[]).map(b=>b.name+" "+moneyEGP(b.egp)).join("، ")+")";
+      else if(x.type==="debt")label=debtTypeLabel(x.debtType);
+      else if(x.type==="internal_transfer")label=`تحويل: ${accFromName} → ${accToName}`;
+      else label=x.type;
+      const party=x.person||(x.beneficiaries||[]).map(b=>b.name).join(" ")||"—";
+      const accDisplay=x.type==="internal_transfer"?"—":accFromName;
+      html+=`<tr data-id="${x.id}"><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(label)}</strong><br><small>${escapeHTML(x.notes||"")}</small></td><td>${escapeHTML(party)}</td><td><small>${escapeHTML(accDisplay)}</small></td><td class="amount">${x.type==="internal_transfer"?"—":money(amt)}</td><td class="amount"><strong>${money(balance)}</strong></td>${actionBtns}</tr>`;
+    }
+  });
+  t.innerHTML=html;
+}
+
+function updateReportSummaries(e){
+  const n=$("report-type").value,
+        s=$("beneficiary-select")?$("beneficiary-select").value:"all",
+        r=e.reduce((a,x)=>(x.type==="income"||isCreditorEntry(x))?a+realAmount(x):a,0),
+        o=e.reduce((a,x)=>(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))?a+realAmount(x):a,0),
+        l=e.reduce((a,x)=>isDebtorEntry(x)?a+realAmount(x):a,0),
+        i=e.reduce((a,x)=>(isCreditorEntry(x)||isOpeningEntry(x))?a+realAmount(x):a,0),
+        c=l-i,
+        d=r-o,
+        m=n==="debt"?c:d;
+  let p="";
+  const u=Math.abs(c),
+        g=numberToArabicWords(u);
+  let h=0,y=0;
+  if(n==="transfer")e.forEach(x=>{
+    const kwd=Number(x.totalKwd??x.amount)||0;
+    const benefs=x.beneficiaries||[];
+    const totalEGP=benefs.reduce((s,b)=>s+(Number(b.egp)||0),0);
+    benefs.forEach(b=>{
+      if(s!=="all"&&b.name!==s)return;
+      h+=b.shareKwd!==undefined?b.shareKwd:(totalEGP>0?b.egp/totalEGP*kwd:0);
+      y+=Number(b.egp)||0;
+    });
+  });
+  if(n==="debt"){
+    if(c>0)p=`<div class="hint" style="background:rgba(16,185,129,0.1);border-color:var(--border-neon);color:var(--green-val);font-weight:700">⚖️ <strong>النتيجة النهائية:</strong> أنت الدائن بمبلغ <strong>${money(u)}</strong> (${g}).</div>`;
+    else if(c<0)p=`<div class="hint" style="background:rgba(251,113,133,0.1);border-color:rgba(251,113,133,0.3);color:var(--red-val);font-weight:700">⚠️ <strong>النتيجة النهائية (المتبقي عليك):</strong> ${money(u)} (${g}).</div>`;
+    else p='<div class="hint" style="background:var(--bg-card);border-color:var(--border-subtle);color:var(--ink);font-weight:700">✅ <strong>الحساب خالص:</strong> الرصيد صفر.</div>';
+  }else if(n==="transfer"){
+    p=`<div class="hint" style="background:rgba(16,185,129,0.1);border-color:var(--border-neon);color:var(--green-val);font-weight:700">✈️ <strong>إجمالي التحويلات:</strong> ${money(h)} | ${moneyEGP(y)}.</div>`;
+  }
+  $("report-summary").innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div class="row-between"><span>${n==="debt"?"📥 إجمالي المسدد (أدّينا له):":n==="transfer"?"✈️ إجمالي التحويلات (د.ك):":"📥 إجمالي الواردات:"}</span><strong class="amount good" style="font-size:13px">${money(n==="debt"?l:n==="transfer"?h:r)}</strong></div>
+      ${n!=="transfer"?`<div class="row-between"><span>${n==="debt"?"💸 إجمالي الالتزامات (أخدنا منه + أول المدة):":"💸 إجمالي المصروفات:"}</span><strong class="amount bad" style="font-size:13px">${money(n==="debt"?i:o)}</strong></div>`:""}
+      ${n!=="transfer"?`<div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px"><span>⚖️ صافي الحساب الختامي:</span><strong class="amount ${m>=0?"good":"bad"}" style="font-size:14px">${m>=0?"+":""}${money(m)}</strong></div>`:""}
+    </div>${p}`;
+  $("tafqit-box").textContent="التفقيط المالي الرسمي: "+numberToArabicWords(Math.abs(m));
+}
+
+function backToFilters(){$("report-section").classList.add("hidden");$("filter-section").classList.remove("hidden");reportGenerated=false;}
+function filterReportTable(){
+  const e=$("report-search").value.toLowerCase().trim();
+  if(!cachedReportRecords.length)return;
+  const t=e?cachedReportRecords.filter(x=>{
+    const accName=getAccountById(x.account||"cash_default").name||"";
+    const str=`${x.category||""} ${x.person||""} ${(x.beneficiaries||[]).map(b=>b.name).join(" ")} ${x.notes||""} ${fmtDate(x.date)} ${accName}`;
+    return str.toLowerCase().includes(e);
+  }):cachedReportRecords.slice();
+  visibleReportRecords=t;
+  renderReportTableRows(t);
+  updateReportSummaries(t);
+  $("display-count").textContent=t.length+(e?" حركة (مفلترة)":" حركة");
+}
+
+async function editFromReport(id){
+  const t=(await allTransactions()).find(x=>x.id===id);
+  if(!t)return;
+  editingTxId&&resetInputForm();
+  $("view-input").classList.remove("hidden");
+  switchInputTab(t.type,{force:!0});
+  editingTxId=t.id;
+  writeDateParts("tx",t.date);
+  $("tx-time").value=t.time||"00:00";
+  $("tx-notes").value=t.notes||"";
+  if(t.account){const sel=$("tx-account");if(sel&&[...sel.options].some(o=>o.value===t.account))sel.value=t.account;}
+  if(t.type==="expense"){
+    $("expense-amount").value=t.amount;
+    const sel=$("expense-category");
+    if([...sel.options].some(o=>o.value===t.category))sel.value=t.category;
+    updateExpenseBudgetHint();
+  }else if(t.type==="income"){
+    $("income-amount").value=t.amount;$("income-category").value=t.category;$("is-salary-base").checked=!!t.isSalaryBase;
+  }else if(t.type==="transfer"){
+    $("total-kwd").value=t.totalKwd??t.amount??"";
+    const e=$("beneficiaries-list");e.innerHTML="";
+    (t.beneficiaries||[]).forEach(b=>{
+      addBeneficiary();
+      const all=e.querySelectorAll(".beneficiary");
+      const last=all[all.length-1];
+      const n=last.querySelector(".beneficiary-name-select");
+      if([...n.options].some(o=>o.value===b.name))n.value=b.name;
+      else{const opt=document.createElement("option");opt.value=b.name;opt.textContent=b.name;n.appendChild(opt);n.value=b.name;}
+      last.querySelector(".beneficiary-amount").value=b.egp;
+    });
+    calculateExchange();
+  }else if(t.type==="debt"){
+    $("debt-amount").value=t.amount;
+    const sel=$("debt-person-select");
+    if([...sel.options].some(o=>o.value===t.person))sel.value=t.person;
+    else if(t.person){const opt=document.createElement("option");opt.value=t.person;opt.textContent=t.person;sel.appendChild(opt);sel.value=t.person;}
+    $("debt-type").value=t.debtType;
+  }else if(t.type==="internal_transfer"){
+    $("int-amount").value=t.amount;
+    const f=$("int-from-account"),to=$("int-to-account");
+    if(f&&t.account&&[...f.options].some(o=>o.value===t.account))f.value=t.account;
+    if(to&&t.toAccount&&[...to.options].some(o=>o.value===t.toAccount))to.value=t.toAccount;
+  }
+  $("edit-banner").classList.remove("hidden");
+  $("save-transaction").textContent="تحديث المعاملة ✏️";
+}
+
+async function deleteTransactionFromReport(id){
+  if(!confirm("هل أنت متأكد من حذف هذه المعاملة؟"))return;
+  if(!db)await openDB();
+  const t=db.transaction(STORE_NAME,"readwrite");
+  t.objectStore(STORE_NAME).delete(id);
+  t.oncomplete=async()=>{
+    showToast("تم الحذف بنجاح");
+    await refreshAllViews();
+    updateReportTargetOptions().catch(()=>{});
+    if(reportGenerated)await generateReport();
+  };
+  t.onerror=()=>{console.error("delete error:",t.error);showToast("فشل حذف المعاملة")};
+}
+
+function buildBackupPayload(e){
+  return{version:16,savedAt:(new Date).toISOString(),transactions:e,people:getPeopleList(),expenseCategories:getExpenseCategories(),accounts:getAccounts(),targetPercentages:getTargetPercentages()};
+}
+function getSmartFilename(e,t="json"){
+  const a=$("beneficiary-select")?$("beneficiary-select").value:"all",
+        n=$("report-type")?$("report-type").value:"general",
+        s=todayISO();
+  if(e==="backup")return`نسخة_احتياطية_${s}.${t}`;
+  let r="";
+  if(a&&a!=="all")r=`_${a}`;
+  else if(n==="expense")r="_مصروفات";
+  else if(n==="income")r="_دخل";
+  else if(n==="debt")r="_ديون_وعلاقات";
+  else if(n==="transfer")r="_حوالات_خارجية";
+  else if(n==="internal_transfer")r="_تحويلات_داخلية";
+  return `${e}${r}_${s}.${t}`;
+}
+async function downloadBackup(){
+  const e=await allTransactions();
+  const t=buildBackupPayload(e);
+  const a=new Blob([JSON.stringify(t,null,2)],{type:"application/json"});
+  const n=URL.createObjectURL(a);
+  const s=document.createElement("a");
+  s.href=n;s.download=getSmartFilename("backup","json");
+  document.body.appendChild(s);s.click();s.remove();
+  setTimeout(()=>URL.revokeObjectURL(n),1000);
+  $("backup-status").textContent="آخر تنزيل: "+(new Date).toLocaleTimeString("en-US");
+  showToast("تم تنزيل النسخة الاحتياطية ✅");
+}
+async function shareBackup(){
+  try{
+    const e=await allTransactions();
+    const t=JSON.stringify(buildBackupPayload(e),null,2);
+    const a=getSmartFilename("backup","json");
+    if(navigator.share)try{const file=new File([t],a,{type:"application/json"});return void await navigator.share({title:"نسخة احتياطية",files:[file]});}catch(e){}
+    if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("تم النسخ للحافظة");}
+    else{
+      const ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+      try{document.execCommand("copy");showToast("تم النسخ");}catch(e){showToast("تعذر النسخ");}
+      ta.remove();
+    }
+  }catch(e){console.error("shareBackup:",e);showToast("تعذر المشاركة")}
+}
+function restoreBackup(){
+  const e=$("restore-file");
+  if(!e.files.length)return void showToast("اختر ملف النسخة أولاً");
+  if(!confirm("⚠️ سيتم استبدال كل البيانات بالنسخة. متابعة؟"))return;
+  const t=new FileReader;
+  t.onload=async ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      const txs=Array.isArray(data.transactions)?data.transactions:[];
+      if(!db)await openDB();
+      const tx=db.transaction(STORE_NAME,"readwrite");
+      const store=tx.objectStore(STORE_NAME);
+      store.clear();
+      txs.forEach(x=>{
+        if(x.date){const p=x.date.split("-");if(p.length===3)x.date=formatStrictISO(p[0],p[1],p[2]);}
+        store.put(x);
+      });
+      tx.oncomplete=async()=>{
+        if(Array.isArray(data.people))savePeopleList(data.people);
+        if(Array.isArray(data.expenseCategories))saveExpenseCategories(data.expenseCategories);
+        if(Array.isArray(data.accounts)&&data.accounts.length)saveAccounts(data.accounts);
+        if(data.targetPercentages){localStorage.setItem(TARGET_PCT_KEY,JSON.stringify(data.targetPercentages));loadTargetPercentages();}
+        localStorage.setItem(SETUP_DONE_KEY,"1");
+        showToast("تمت الاستعادة ✅");
+        await refreshAllViews();
+        updateReportTargetOptions().catch(()=>{});
+      };
+      tx.onerror=()=>{console.error("restore error:",tx.error);showToast("فشلت الاستعادة")};
+    }catch(e){showToast("ملف غير صالح")}
+  };
+  t.readAsText(e.files[0]);
+}
+async function clearAllTransactions(){
+  if(!confirm("تحذير: سيتم حذف كل المعاملات نهائيًا. متابعة؟"))return;
+  if(!db)await openDB();
+  const t=db.transaction(STORE_NAME,"readwrite");
+  t.objectStore(STORE_NAME).clear();
+  t.oncomplete=async()=>{
+    showToast("تم تفريغ البيانات");
+    localStorage.removeItem(SETUP_DONE_KEY);
+    await refreshAllViews();
+    updateReportTargetOptions().catch(()=>{});
+  };
+  t.onerror=()=>{console.error("clear error:",t.error);showToast("فشل التفريغ")};
+}
+
+/* ============ EXPORT REPORT TO EXCEL ============ */
+function exportReportExcel(){
+  try{
+    if(!window.XLSX)return void showToast("مكتبة Excel غير متوفرة");
+    if(!visibleReportRecords.length&&!cachedReportRecords.length)return void showToast("لا يوجد تقرير للتصدير");
+    const e=visibleReportRecords;
+    if(!e.length)return void showToast("لا توجد نتائج مطابقة للتصدير");
+    const t=$("report-title")?.textContent.trim()||"تقرير";
+    const a=$("display-date-range")?.textContent.trim()||"—";
+    const n=$("display-target")?.textContent.trim()||"—";
+    const s=$("display-count")?.textContent.trim()||"0";
+    const typeVal=$("report-type").value;
+    const r=typeVal==="transfer";
+    const isDebt=typeVal==="debt";
+    const o=$("beneficiary-select")?$("beneficiary-select").value:"all";
+    let rows=[[t],["الفترة",a],["الطرف / التصنيف",n],["عدد الحركات",s],[]];
+    if(r){
+      rows.push(["التاريخ","التفاصيل","المستفيد","السعر","المصري","الكويتي","الرصيد"]);
+      let run=0;
+      const rr={};
+      [...e].sort((x,y)=>x.date.localeCompare(y.date)||(x.time||"").localeCompare(y.time||"")).forEach(x=>{
+        if(x.type==="internal_transfer")return;
+        if(x.type==="income"||isCreditorEntry(x))run+=realAmount(x);
+        else if(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))run-=realAmount(x);
+        rr[x.id]=run;
+      });
+      e.forEach(x=>{
+        const kwd=Number(x.totalKwd??x.amount)||0;
+        const benefs=x.beneficiaries||[];
+        const totalEGP=benefs.reduce((s,b)=>s+(Number(b.egp)||0),0);
+        const rate=x.exchangeRate||(totalEGP>0?kwd/totalEGP*1000:0);
+        benefs.forEach(b=>{
+          if(o!=="all"&&b.name!==o)return;
+          const share=b.shareKwd!==undefined?b.shareKwd:(totalEGP>0?b.egp/totalEGP*kwd:0);
+          rows.push([fmtDate(x.date),x.notes||"حوالة",b.name,Number(rate.toFixed(3)),Number(b.egp),Number(share.toFixed(3)),Number((rr[x.id]||0).toFixed(3))]);
+        });
+      });
+    }else if(isDebt){
+      rows.push(["التاريخ","نوع الحركة","الطرف","ملاحظات","المبلغ","رصيد الدين"]);
+      let debtRunning={};
+      [...e].sort((x,y)=>x.date.localeCompare(y.date)||(x.time||"").localeCompare(y.time||"")).forEach(x=>{
+        const p=x.person||"غير محدد";
+        if(!debtRunning[p])debtRunning[p]=0;
+        if(isCreditorEntry(x)||isOpeningEntry(x))debtRunning[p]+=realAmount(x);
+        else if(isDebtorEntry(x))debtRunning[p]-=realAmount(x);
+        rows.push([fmtDate(x.date),debtTypeLabel(x.debtType),x.person||"—",x.notes||"—",Number(realAmount(x).toFixed(3)),Number(debtRunning[p].toFixed(3))]);
+      });
+    }else{
+      rows.push(["التاريخ","النوع","الطرف","الحساب","المبلغ","الرصيد"]);
+      let run=0;
+      const rr={};
+      [...e].sort((x,y)=>x.date.localeCompare(y.date)||(x.time||"").localeCompare(y.time||"")).forEach(x=>{
+        if(x.type==="internal_transfer"){rr[x.id]=run;return;}
+        if(x.type==="income"||isCreditorEntry(x))run+=realAmount(x);
+        else if(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))run-=realAmount(x);
+        rr[x.id]=run;
+      });
+      e.forEach(x=>{
+        let lbl;
+        if(x.type==="expense"||x.type==="income")lbl=x.category;
+        else if(x.type==="debt")lbl=debtTypeLabel(x.debtType);
+        else if(x.type==="internal_transfer")lbl="تحويل بين الحسابات";
+        else lbl=x.type;
+        const acc=getAccountById(x.account||"cash_default").name||"—";
+        const party=x.person||(x.beneficiaries||[]).map(b=>b.name).join("، ")||"—";
+        rows.push([fmtDate(x.date),lbl+(x.notes?" — "+x.notes:""),party,acc,x.type==="internal_transfer"?"—":Number(realAmount(x).toFixed(3)),Number((rr[x.id]||0).toFixed(3))]);
+      });
+    }
+    rows.push([]);
+    const summary=$("report-summary");
+    if(summary){
+      rows.push(["ملخص التقرير"]);
+      summary.querySelectorAll(".row-between").forEach(el=>{
+        const parts=el.querySelectorAll("span, strong");
+        if(parts.length>=2)rows.push([parts[0].textContent.trim(),parts[1].textContent.trim()]);
+      });
+    }
+    const wb=XLSX.utils.book_new();
+    const ws=XLSX.utils.aoa_to_sheet(rows);
+    ws["!cols"]=[{wch:15},{wch:25},{wch:20},{wch:20},{wch:20},{wch:18},{wch:18}];
+    XLSX.utils.book_append_sheet(wb,ws,"Report");
+    wb.Workbook={Views:[{RTL:true}]};
+    XLSX.writeFile(wb,getSmartFilename("كشف_حساب","xlsx"));
+    showToast("تم التصدير ✅");
+  }catch(e){console.error("exportReportExcel:",e);showToast("فشل التصدير")}
+}
+
+/* ============ NEW EXPORT HELPERS ============ */
+function applyPrintStyles() {
+  const old = document.getElementById("pf-print-styles");
+  if (old) old.remove();
+  const style = document.createElement("style");
+  style.id = "pf-print-styles";
+  style.textContent = `
+    #capture-area .report-head {
+      background: #ffffff !important; background-image: none !important;
+      color: #0f172a !important; border: 1px solid #cbd5e1 !important;
+    }
+    #capture-area .report-head h2,
+    #capture-area .report-head div,
+    #capture-area .report-head span { color: #0f172a !important; text-shadow: none !important; }
+    #capture-area .report-meta,
+    #capture-area .report-summary,
+    #capture-area .panel {
+      background: #ffffff !important; border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    #capture-area .report-summary strong { color: inherit !important; }
+    #capture-area th { background: #f1f5f9 !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
+    #capture-area td { background: #ffffff !important; color: #0f172a !important; border-color: #e2e8f0 !important; }
+    #capture-area .table-wrap { background: #ffffff !important; border-color: #cbd5e1 !important; }
+    #capture-area .hint { background: #fef3c7 !important; border-color: #fbbf24 !important; color: #78350f !important; }
+    #capture-area .good { color: #047857 !important; }
+    #capture-area .bad { color: #b91c1c !important; }
+    #capture-area .warning { color: #b45309 !important; }
+    #capture-area { background: #ffffff !important; }
+  `;
+  document.head.appendChild(style);
+  return style;
+}
+function removePrintStyles() {
+  const el = document.getElementById("pf-print-styles");
+  if (el) el.remove();
+}
+
+function getSafeCutPoints(container, canvas) {
+  const rect = container.getBoundingClientRect();
+  if (rect.height <= 0) return [0, canvas.height];
+  const scaleY = canvas.height / rect.height;
+  const points = new Set([0, canvas.height]);
+  const selectors =
+    "tr,.report-head,.report-meta,.report-summary,.table-wrap," +
+    ".panel,.flow-item,.budget-card,.bud-mini-card,.tx-item,.person-item";
+  container.querySelectorAll(selectors).forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.height <= 0) return;
+    const top = Math.round((r.top - rect.top) * scaleY);
+    const bottom = Math.round((r.bottom - rect.top) * scaleY);
+    if (top > 0 && top < canvas.height) points.add(top);
+    if (bottom > 0 && bottom < canvas.height) points.add(bottom);
+  });
+  return [...points].sort((a, b) => a - b);
+}
+
+function cutCanvasRegion(source, y1, y2) {
+  const h = y2 - y1;
+  if (h <= 0) return null;
+  const c = document.createElement("canvas");
+  c.width = source.width;
+  c.height = h;
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.drawImage(source, 0, y1, source.width, h, 0, 0, source.width, h);
+  return { canvas: c, height: h, y: y1 };
+}
+
+function computeSlicesWithHeader(canvas, pageCapacityPx, headerReservedPx, safeCuts) {
+  const slices = [];
+  const H = canvas.height;
+  if (pageCapacityPx <= 0 || H <= 0)
+    return [{ canvas, height: H, y: 0, needsHeader: false }];
+
+  let cursor = 0;
+  let isFirstPage = true;
+  let guard = 0;
+
+  while (cursor < H && guard++ < 500) {
+    const capacity = isFirstPage
+      ? pageCapacityPx
+      : Math.max(Math.floor(pageCapacityPx * 0.4), pageCapacityPx - headerReservedPx);
+
+    const remaining = H - cursor;
+
+    if (remaining <= capacity) {
+      const slice = cutCanvasRegion(canvas, cursor, H);
+      if (slice) slices.push({ ...slice, needsHeader: !isFirstPage });
+      break;
+    }
+
+    const idealEnd = cursor + capacity;
+    let cut = -1;
+    for (const p of safeCuts) {
+      if (p > cursor && p <= idealEnd) cut = p;
+      else if (p > idealEnd) break;
+    }
+    if (cut <= cursor) cut = idealEnd;
+
+    const minHeight = Math.max(100, Math.floor(capacity * 0.3));
+    if (cut - cursor < minHeight && cursor + capacity <= H) cut = cursor + capacity;
+    if (cut <= cursor) cut = Math.min(H, cursor + capacity);
+    if (cut <= cursor) cut = H;
+
+    const slice = cutCanvasRegion(canvas, cursor, cut);
+    if (slice && slice.height > 0) slices.push({ ...slice, needsHeader: !isFirstPage });
+
+    cursor = cut;
+    isFirstPage = false;
+  }
+  return slices;
+}
+
+async function captureReportHeader(container) {
+  const head = container.querySelector(".report-head");
+  if (!head) return null;
+  const meta = container.querySelector(".report-meta");
+
+  const headRect = head.getBoundingClientRect();
+  const wrapper = document.createElement("div");
+  wrapper.style.cssText = `
+    position:absolute; left:-99999px; top:0;
+    width:${headRect.width || container.offsetWidth}px;
+    background:#ffffff; padding:0;
+    display:flex; flex-direction:column; gap:8px;
+  `;
+
+  const stripIds = (node) => {
+    node.removeAttribute("id");
+    node.querySelectorAll("[id]").forEach(el => el.removeAttribute("id"));
+    return node;
+  };
+
+  wrapper.appendChild(stripIds(head.cloneNode(true)));
+  if (meta) wrapper.appendChild(stripIds(meta.cloneNode(true)));
+  document.body.appendChild(wrapper);
+
+  try {
+    return await html2canvas(wrapper, {
+      scale: 2, backgroundColor: "#ffffff",
+      useCORS: true, logging: false
+    });
+  } catch (e) {
+    console.warn("Header capture failed:", e);
+    return null;
+  } finally {
+    wrapper.remove();
+  }
+}
+
+function createArabicFooterCanvas() {
+  const c = document.createElement("canvas");
+  c.width = 1600;
+  c.height = 120;
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.fillStyle = "#475569";
+  ctx.font = "bold 56px system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.direction = "rtl";
+  ctx.fillText("النظام المالي الشخصي — تقرير رسمي معتمد", c.width / 2, c.height / 2);
+  return c.toDataURL("image/png");
+}
+
+async function exportPDF(captureId, reportName, orientation) {
+  if (!window.jspdf || !window.html2canvas) return showToast("مكتبات PDF غير متوفرة");
+  const container = document.getElementById(captureId);
+  if (!container) return showToast("لا يوجد محتوى");
+
+  showToast("جاري تجهيز PDF...");
+
+  const originalTheme = document.documentElement.getAttribute("data-theme") || "dark";
+  document.documentElement.setAttribute("data-theme", "light");
+  applyPrintStyles();
+  const cleanup = prepareForCapture(container);
+
+  try {
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+    const headerCanvas = await captureReportHeader(container);
+    const headerHeightPx = headerCanvas ? headerCanvas.height : 0;
+
+    const canvas = await html2canvas(container, {
+      scale: 2, backgroundColor: "#ffffff",
+      useCORS: true, logging: false, scrollX: 0, scrollY: 0
+    });
+    if (canvas.width < 10 || canvas.height < 10) throw new Error("Canvas too small");
+
+    const isLandscape = orientation === "l" || orientation === "landscape";
+    const pageW = isLandscape ? 297 : 210;
+    const pageH = isLandscape ? 210 : 297;
+    const margin = 10;
+    const usableW = pageW - margin * 2;
+    const usableH = pageH - margin * 2;
+    const footerSpaceMm = 12;
+    const usableHEffective = usableH - footerSpaceMm;
+
+    const pxPerMm = canvas.width / usableW;
+    const pageCapacityPx = Math.floor(usableHEffective * pxPerMm);
+
+    const headerGapMm = 3;
+    const headerGapPx = Math.ceil(headerGapMm * pxPerMm);
+    const headerReservedPx = headerHeightPx > 0 ? headerHeightPx + headerGapPx : 0;
+
+    const safeCuts = getSafeCutPoints(container, canvas);
+    const slices = computeSlicesWithHeader(canvas, pageCapacityPx, headerReservedPx, safeCuts);
+    if (slices.length === 0) throw new Error("No slices generated");
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF(isLandscape ? "l" : "p", "mm", "a4");
+    pdf.setProperties({ title: reportName || "تقرير مالي", creator: "Personal Finance System" });
+
+    const footerDataURL = createArabicFooterCanvas();
+    const headerMmHeight = headerHeightPx / pxPerMm;
+    const totalPages = slices.length;
+    let pageNum = 0;
+
+    for (const s of slices) {
+      if (!s || s.height <= 0) continue;
+      if (pageNum > 0) pdf.addPage();
+
+      let yOffset = margin;
+
+      if (s.needsHeader && headerCanvas) {
+        const headerImg = headerCanvas.toDataURL("image/jpeg", 0.92);
+        if (headerImg && headerImg.length > 500) {
+          pdf.addImage(headerImg, "JPEG", margin, yOffset, usableW, headerMmHeight, undefined, "FAST");
+          yOffset += headerMmHeight + headerGapMm;
+        }
+      }
+
+      const imgData = s.canvas.toDataURL("image/jpeg", 0.92);
+      if (!imgData || imgData.length < 500) continue;
+
+      const availableHeightMm = usableHEffective - (yOffset - margin);
+      const imgHeightMm = Math.min(s.height / pxPerMm, availableHeightMm);
+      pdf.addImage(imgData, "JPEG", margin, yOffset, usableW, imgHeightMm, undefined, "FAST");
+
+      pdf.addImage(footerDataURL, "PNG", margin, pageH - footerSpaceMm + 1, usableW, 6);
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(8);
+      pdf.setTextColor(100, 116, 139);
+      pdf.text(`${pageNum + 1} / ${totalPages}`, pageW - margin, pageH - 3, { align: "right" });
+
+      pageNum++;
+    }
+
+    if (pageNum === 0) throw new Error("No pages rendered");
+    pdf.save(getSmartFilename("تقرير_مالي", "pdf"));
+    showToast(`تم إنشاء PDF بنجاح (${pageNum} صفحة) ✅`);
+  } catch (err) {
+    console.error("PDF Export error:", err);
+    showToast("حدث خطأ أثناء تصدير PDF");
+  } finally {
+    restoreAfterCapture(cleanup);
+    removePrintStyles();
+    document.documentElement.setAttribute("data-theme", originalTheme);
+  }
+}
+
+function prepareForCapture(e) {
+  const r = [];
+  e.querySelectorAll(".no-print").forEach(el => {
+    r.push({ el, prop: "display", val: el.style.display });
+    el.style.display = "none";
+  });
+  const app = document.querySelector(".app");
+  if (app) {
+    r.push({ el: app, prop: "maxWidth", val: app.style.maxWidth });
+    r.push({ el: app, prop: "width", val: app.style.width });
+    app.style.maxWidth = "none";
+    app.style.width = "1000px";
+  }
+  r.push({ el: e, prop: "maxWidth", val: e.style.maxWidth });
+  r.push({ el: e, prop: "width", val: e.style.width });
+  r.push({ el: e, prop: "minWidth", val: e.style.minWidth });
+  r.push({ el: e, prop: "padding", val: e.style.padding });
+  r.push({ el: e, prop: "background", val: e.style.background });
+  e.style.maxWidth = "none";
+  e.style.width = "100%";
+  e.style.minWidth = "950px";
+  e.style.padding = "20px";
+  e.style.background = "#ffffff";
+
+  e.querySelectorAll(".table-wrap").forEach(el => {
+    r.push({ el, prop: "overflow", val: el.style.overflow });
+    r.push({ el, prop: "overflowX", val: el.style.overflowX });
+    r.push({ el, prop: "maxWidth", val: el.style.maxWidth });
+    el.style.overflow = "visible";
+    el.style.overflowX = "visible";
+    el.style.maxWidth = "none";
+  });
+  e.querySelectorAll("table").forEach(el => {
+    r.push({ el, prop: "width", val: el.style.width });
+    r.push({ el, prop: "minWidth", val: el.style.minWidth });
+    el.style.width = "100%";
+    el.style.minWidth = "100%";
+  });
+  return { restores: r };
+}
+
+function restoreAfterCapture(e) {
+  if (!e || !e.restores) return;
+  e.restores.forEach(item => {
+    item.el.style[item.prop] = item.val;
+  });
+}
+
+async function shareAsImageSafe(captureId, reportName) {
+  if (!window.html2canvas) return showToast("مكتبة الصور غير متوفرة");
+  const container = document.getElementById(captureId);
+  if (!container) return showToast("لا يوجد محتوى");
+
+  showToast("جاري تجهيز الصور...");
+
+  const originalTheme = document.documentElement.getAttribute("data-theme") || "dark";
+  document.documentElement.setAttribute("data-theme", "light");
+  applyPrintStyles();
+  const cleanup = prepareForCapture(container);
+
+  try {
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+    const headerCanvas = await captureReportHeader(container);
+    const headerHeightPx = headerCanvas ? headerCanvas.height : 0;
+
+    const canvas = await html2canvas(container, {
+      scale: 2, backgroundColor: "#ffffff",
+      useCORS: true, logging: false
+    });
+
+    const pageCapacityPx = Math.floor(canvas.width * 1.414);
+    const headerGapPx = 40;
+    const headerReservedPx = headerHeightPx > 0 ? headerHeightPx + headerGapPx : 0;
+
+    const safeCuts = getSafeCutPoints(container, canvas);
+    const slices = computeSlicesWithHeader(canvas, pageCapacityPx, headerReservedPx, safeCuts);
+
+    if (headerCanvas) {
+      slices.forEach(s => {
+        if (!s.needsHeader || s.height <= 0) return;
+        const combined = document.createElement("canvas");
+        combined.width = s.canvas.width;
+        combined.height = s.canvas.height + headerHeightPx + headerGapPx;
+        const ctx = combined.getContext("2d");
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, combined.width, combined.height);
+        ctx.drawImage(headerCanvas, 0, 0, combined.width, headerHeightPx);
+        ctx.drawImage(s.canvas, 0, headerHeightPx + headerGapPx, s.canvas.width, s.canvas.height);
+        s.canvas = combined;
+        s.height = combined.height;
+      });
+    }
+
+    const files = [];
+    const baseName = getSmartFilename("صورة_تقرير", "jpg").replace(".jpg", "");
+    const total = slices.length;
+
+    for (let i = 0; i < slices.length; i++) {
+      const s = slices[i];
+      if (!s || s.height <= 0) continue;
+      const blob = await new Promise(res => s.canvas.toBlob(res, "image/jpeg", 0.92));
+      if (!blob) continue;
+      const fname = total === 1 ? `${baseName}.jpg` : `${baseName}_${i + 1}_من_${total}.jpg`;
+      files.push(new File([blob], fname, { type: "image/jpeg" }));
+    }
+    if (files.length === 0) throw new Error("No images generated");
+
+    const canShare = typeof navigator.share === "function" &&
+                     typeof navigator.canShare === "function" &&
+                     navigator.canShare({ files });
+    let shared = false;
+
+    if (canShare) {
+      try {
+        await navigator.share({ title: reportName || "تقرير مالي", files });
+        shared = true;
+        showToast("تمت المشاركة ✅");
+      } catch (err) {
+        if (err && err.name === "AbortError") return showToast("تم إلغاء المشاركة");
+        console.warn("share failed:", err);
+      }
+    }
+
+    if (!shared) {
+      for (let i = 0; i < files.length; i++) {
+        const url = URL.createObjectURL(files[i]);
+        const a = document.createElement("a");
+        a.href = url; a.download = files[i].name;
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+        if (files.length > 1) await new Promise(r => setTimeout(r, 400));
+      }
+      showToast(`تم تنزيل ${files.length} صورة ✅`);
+    }
+  } catch (err) {
+    console.error("shareAsImageSafe error:", err);
+    showToast("تعذر إنشاء الصور");
+  } finally {
+    restoreAfterCapture(cleanup);
+    removePrintStyles();
+    document.documentElement.setAttribute("data-theme", originalTheme);
+  }
+}
+
+function shareReport(){
+  const e=$("report-title")?$("report-title").textContent.trim():"كشف حساب",
+        t=$("display-date-range")?$("display-date-range").textContent.trim():"—",
+        a=$("display-target")?$("display-target").textContent.trim():"الكل",
+        n=$("display-count")?$("display-count").textContent.trim():"0",
+        s=$("report-type").value==="transfer",
+        r=$("beneficiary-select")?$("beneficiary-select").value:"all";
+  let o=`📄 *${e}*\n━━━━━━━━━━━━━━━━━━━━━\n📅 *الفترة:* ${t}\n👤 *الطرف:* ${a}\n🔢 *عدد الحركات:* ${n}\n━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  const l=visibleReportRecords;
+  if(l&&l.length>0){
+    let idx=1;
+    l.forEach(x=>{
+      if(x.type==="transfer"&&s){
+        const kwd=Number(x.totalKwd??x.amount)||0;
+        const benefs=x.beneficiaries||[];
+        const totalEGP=benefs.reduce((s,b)=>s+(Number(b.egp)||0),0);
+        const rate=x.exchangeRate||(totalEGP>0?kwd/totalEGP*1000:0);
+        benefs.forEach(b=>{
+          if(r!=="all"&&b.name!==r)return;
+          const share=b.shareKwd!==undefined?b.shareKwd:(totalEGP>0?b.egp/totalEGP*kwd:0);
+          o+=`${idx++}. *${fmtDate(x.date)}* | المستفيد: *${b.name}*\n • السعر: *${rate.toFixed(3)} د.ك/1000ج*\n • ${moneyEGP(b.egp)} | ${money(share)}\n\n`;
+        });
+      }else{
+        const amt=realAmount(x);
+        let lbl;
+        if(x.type==="expense"||x.type==="income")lbl=x.category;
+        else if(x.type==="debt")lbl=debtTypeLabel(x.debtType);
+        else if(x.type==="internal_transfer")lbl=`تحويل: ${getAccountById(x.account||"cash_default").name} → ${getAccountById(x.toAccount).name}`;
+        else lbl=x.type;
+        const party=x.person||(x.beneficiaries||[]).map(b=>b.name).join(" ")||"—";
+        o+=`${idx++}. *${fmtDate(x.date)}* | ${lbl}${x.notes?" ("+x.notes+")":""}\n الطرف: ${party} | المبلغ: *${x.type==="internal_transfer"?"—":money(amt)}*\n\n`;
+      }
+    });
+  }
+  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(o)}`,"_blank");
+}
+
+function dayBefore(e){
+  const p=e.split("-");
+  const d=new Date(Date.UTC(+p[0],+p[1]-1,+p[2]));
+  d.setUTCDate(d.getUTCDate()-1);
+  return formatStrictISO(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate());
+}
+function inPeriod(e,t){
+  if(!e||!e.date||!t||!t.start||!t.end)return false;
+  const iso=formatStrictISO(...e.date.split("-"));
+  return iso>=t.start&&iso<=t.end;
+}
+function getAllSalaryCycles(e){
+  const today=todayISO();
+  const arr=(e||[]).map(x=>{
+    if(x&&x.date){const p=x.date.split("-");if(p.length===3)x.date=formatStrictISO(p[0],p[1],p[2]);}
+    return x;
+  }).filter(x=>x&&x.date);
+  const salaryDates=[...new Set(arr.filter(x=>x.type==="income"&&x.isSalaryBase).map(x=>x.date).sort())];
+  const cycles=[];
+  if(!salaryDates.length){
+    const dates=arr.map(x=>x.date).sort();
+    const start=dates.length?dates[0]:firstOfMonthISO();
+    cycles.push({id:`cycle_${start}_${today}`,label:`الدورة الحالية`,start,end:today,isCurrent:true,cycleIndex:1});
+    return cycles;
+  }
+  const first=salaryDates[0];
+  const earlier=arr.filter(x=>x.date<first);
+  if(earlier.length>0){
+    earlier.sort((a,b)=>a.date.localeCompare(b.date));
+    const start=earlier[0].date;
+    const end=dayBefore(first);
+    cycles.push({id:`cycle_prior_${start}_${end}`,label:`الأرصدة القديمة (${fmtDate(start)} ← ${fmtDate(end)})`,start,end,isCurrent:false,isPriorPeriod:true});
+  }
+  for(let k=0;k<salaryDates.length;k++){
+    const start=salaryDates[k];
+    const isLast=k===salaryDates.length-1;
+    const end=isLast?today:dayBefore(salaryDates[k+1]);
+    cycles.push({id:`cycle_${start}_${end}`,label:isLast?`الدورة الحالية ${k+1}`:`دورة ${k+1}`,start,end,isCurrent:isLast,cycleIndex:k+1});
+  }
+  return cycles;
+}
+
+function switchFinanceTab(e){
+  currentFinanceTab=e;
+  ["budget","ledger"].forEach(t=>{
+    const view=$("finance-"+t+"-view");
+    const tab=$("finance-tab-"+t);
+    if(view)view.classList.toggle("hidden",t!==e);
+    if(tab)tab.classList.toggle("active",t===e);
+  });
+  if(e==="budget")renderBudgetPage();
+  if(e==="ledger"){
+    if(reportGenerated){$("filter-section").classList.add("hidden");$("report-section").classList.remove("hidden");}
+    else{$("filter-section").classList.remove("hidden");$("report-section").classList.add("hidden");}
+    updateReportTargetOptions().catch(()=>{});
+  }
+}
+
+function totalIncomeFor(e,t){return e.filter(x=>inPeriod(x,t)).reduce((s,x)=>(x.type==="income"||isCreditorEntry(x))?s+realAmount(x):s,0)}
+function totalExpenseFor(e,t,a){
+  const n=a||"all";
+  return e.filter(x=>inPeriod(x,t)).reduce((s,x)=>{
+    if(n==="personal"&&(x.type==="transfer"||x.type==="debt"||x.type==="internal_transfer"))return s;
+    if(n==="transfers"&&x.type!=="transfer")return s;
+    if(n==="debts"&&x.type!=="debt")return s;
+    if(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))return s+realAmount(x);
+    return s;
+  },0);
+}
+
+function numberToArabicWords(e){
+  if(e===0)return"صفر دينار كويتي لا غير";
+  const ones=["","واحد","اثنان","ثلاثة","أربعة","خمسة","ستة","سبعة","ثمانية","تسعة","عشرة","أحد عشر","اثنا عشر","ثلاثة عشر","أربعة عشر","خمسة عشر","ستة عشر","سبعة عشر","ثمانية عشر","تسعة عشر"];
+  const tens=["","","عشرون","ثلاثون","أربعون","خمسون","ستون","سبعون","ثمانون","تسعون"];
+  const hundreds=["","مائة","مائتان","ثلاثمائة","أربعمائة","خمسمائة","ستمائة","سبعمائة","ثمانمائة","تسعمائة"];
+  function c3(n){
+    if(n===0)return"";
+    const h=Math.floor(n/100),r=n%100;
+    let s=hundreds[h]||"";
+    if(r>0){
+      if(s)s+=" و";
+      if(r<20)s+=ones[r];
+      else{s+=ones[r%10]?(ones[r%10]+" و"):"";s+=tens[Math.floor(r/10)];}
+    }
+    return s;
+  }
+  const intPart=Math.floor(e);
+  let frac=Math.round(1000*(e-intPart)),int2=intPart;
+  if(frac>=1000){int2+=1;frac-=1000;}
+  const m=Math.floor(int2/1e6),k=Math.floor(int2%1e6/1e3),r=int2%1000;
+  const parts=[];
+  if(m===1)parts.push("مليون");
+  else if(m===2)parts.push("مليونان");
+  else if(m>0)parts.push(c3(m)+(m<=10?" ملايين":" مليون"));
+  if(k===1)parts.push("ألف");
+  else if(k===2)parts.push("ألفان");
+  else if(k>0)parts.push(c3(k)+(k<=10?" آلاف":" ألف"));
+  if(r>0&&c3(r))parts.push(c3(r));
+  let out=parts.length>0?parts.join(" و")+" دينار كويتي":"";
+  if(frac>0)out+=(out?" و":"")+c3(frac)+" فلس";
+  if(!out)out="صفر دينار كويتي";
+  return out.trim()+" لا غير";
+}
+
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-action]");
+  if(!t)return;
+  const action=t.dataset.action;
+  if(action==="edit-report")editFromReport(t.dataset.id);
+  else if(action==="delete-report")deleteTransactionFromReport(t.dataset.id);
+  else if(action==="del-person")deletePerson(t.dataset.person);
+  else if(action==="del-exp-cat")deleteExpenseCategory(t.dataset.cat);
+  else if(action==="del-account")deleteAccount(t.dataset.id);
+});
+
+$("view-input").addEventListener("click", e => {
+  if (e.target === $("view-input")) cancelEdit();
+});
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){
+    if(!$("person-modal").classList.contains("hidden"))closePersonModal();
+    if(!$("view-input").classList.contains("hidden"))cancelEdit();
+  }
+});
+
+$("person-modal-input").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();confirmAddPerson();}});
+$("new-person-name").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addPersonFromSettings();}});
+$("new-expense-cat-name").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addExpenseCategoryFromSettings();}});
+$("new-account-name").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addAccountFromSettings();}});
+
+document.addEventListener("change",e=>{
+  if(e.target&&e.target.id==="expense-category")updateExpenseBudgetHint();
+});
+
+window.addEventListener("beforeunload",e=>{
+  if(editingTxId){e.preventDefault();e.returnValue="لديك تعديلات غير محفوظة.";return e.returnValue;}
+});
+
+window.addEventListener("DOMContentLoaded",async()=>{
+  try{
+    initTheme();
+    initDates();
+    loadTargetPercentages();
+    renderBudgetCategorySelectOptions();
+    populateCategorySelects();
+    populatePeopleSelects();
+    populateAccountSelects();
+    renderPersonsManageList();
+    renderExpenseCatsManageList();
+    renderAccountsManageList();
+    addBeneficiary();
+    await openDB();
+    await refreshAllViews();
+    await onReportTypeChange();
+    if(shouldShowSetup())openOpeningSetupModal();
+  }catch(e){console.warn("Init warning:",e)}
+});
+</script>
+</body>
+</html>
