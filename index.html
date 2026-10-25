@@ -891,7 +891,7 @@ function populatePeopleSelects(){
 function renderPeopleHints(){
   const e=getPeopleList(),t=$("debt-people-hint"),a=$("transfer-people-hint");
   t&&(e.length===0?(t.className="field-note warn",t.textContent="لسه مفيش أسماء. اضغط زر ➕ لإضافة أول اسم."):(t.className="field-note",t.textContent=""));
-  a&&(e.length===0?(a.className="field-note warn",a.textContent="لسه مفيش أسماء. اضغط زر ➕ جنب الصف لإضافة أول مستفيد."):(a.className="field-note",a.textContent="لو الاسم مش موجود، دوس زر ➕ جنبه لإضافته للقائمة."));
+  a&&(e.length===0?(a.className="field-note warn",a.textContent="لسه مفيش أسماء. اضغط زر ➕ جنب الصف لإضافة أول مستفيد."):(a.className="field-note",t.textContent="لو الاسم مش موجود، دوس زر ➕ جنبه لإضافته للقائمة."));
 }
 function renderPersonsManageList(){
   const e=$("persons-manage-list");
@@ -1710,9 +1710,21 @@ async function downloadBackup() {
     const jsonStr = JSON.stringify(t, null, 2);
     const filename = getSmartFilename("backup", "json");
 
-    // محاولة التنزيل المباشر عبر Data URL لضمان ظهور الامتداد داخل WebView
-    const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(jsonStr);
+    // 1. مشاركة الملف عبر Web Share API أولاً ليظهر في قائمة المشاركة (واتساب، تيليجرام، إلخ)
+    const file = new File([jsonStr], filename, { type: "application/json" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        title: "النسخة الاحتياطية",
+        text: "ملف النسخة الاحتياطية للنظام المالي الشخصي",
+        files: [file]
+      });
+      showToast("تمت المشاركة بنجاح ✅");
+      $("backup-status").textContent = "آخر مشاركة: " + (new Date).toLocaleTimeString("en-US");
+      return;
+    }
 
+    // 2. خطة بديلة للتنزيل المباشر في حال عدم دعم المشاركة
+    const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(jsonStr);
     const s = document.createElement("a");
     s.setAttribute("href", dataUri);
     s.setAttribute("download", filename);
@@ -1723,8 +1735,11 @@ async function downloadBackup() {
     $("backup-status").textContent = "آخر تنزيل: " + (new Date).toLocaleTimeString("en-US");
     showToast("تم تنزيل النسخة الاحتياطية ✅");
   } catch (err) {
-    console.warn("Direct download failed, falling back to share/copy:", err);
-    // خطة بديلة لو حصل أي تقييد في الـ WebView
+    if (err && err.name === "AbortError") {
+      showToast("تم إلغاء المشاركة");
+      return;
+    }
+    console.warn("فشلت المشاركة والتنزيل المباشر:", err);
     try {
       const e = await allTransactions();
       const t = JSON.stringify(buildBackupPayload(e), null, 2);
@@ -1732,10 +1747,10 @@ async function downloadBackup() {
         await navigator.clipboard.writeText(t);
         showToast("تم نسخ بيانات النسخة الاحتياطية للحافظة 📋");
       } else {
-        showToast("تعذر التنزيل المباشر، جرب زر المشاركة 📤");
+        showToast("تعذر التنزيل أو المشاركة ❌");
       }
     } catch (e2) {
-      showToast("تعذر تنزيل النسخة، جرب زر المشاركة 📤");
+      showToast("تعذر مشاركة النسخة ❌");
     }
   }
 }
