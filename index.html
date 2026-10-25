@@ -418,7 +418,7 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
         <div><label style="font-size:10.5px">تسديد الديون (%) 🤝</label><input id="target-debt-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="debt" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
         <div id="target-values-summary" class="panel stack" style="background:rgba(16,185,129,0.05);border-color:var(--border-neon);font-size:10.5px;gap:3px"></div>
         <button type="button" class="btn btn-primary" onclick="saveTargetPercentages()" style="padding:6px">حفظ المستهدفات 🎯</button>
-        <div class="field-note">تحدد هذه النسب الخطة المالية للصناديق الأساسية. وأي نسبة متبقية تذهب تلقائياً لصندوق الأمان والطوارئ.</div>
+        <div class="field-note">تحدد هذه النسب الخطة المالية للصناديق الأساسية. وأي نسبة متبقية تذهب تلقائيياً لصندوق الأمان والطوارئ.</div>
       </div>
     </div>
     <div class="acc-item open" id="acc-categories">
@@ -1459,7 +1459,7 @@ async function generateReport(){
     if(t==="expense"&&a!=="all"&&x.category!==a)return false;
     if(t==="income"&&a!=="all"&&x.category!==a)return false;
     if(t==="debt"&&a!=="all"&&x.debtType!==a)return false;
-    if(n!=="all"&&((x.type==="debt"&&x.person!==n)||(x.type==="transfer"&&!(x.beneficiaries||[]).some(b=>b.name===n))))return false;
+    if(n!=="all"&&((x.type==="debt"&&x.person!==n)||(x.type==="transfer"&&!(x.beneficiaries||[]).some(b=>b.name!==n))))return false;
     if(s&&iso<s)return false;
     if(r&&iso>r)return false;
     return true;
@@ -1702,18 +1702,44 @@ function getSmartFilename(e,t="json"){
   else if(n==="internal_transfer")r="_تحويلات_داخلية";
   return `${e}${r}_${s}.${t}`;
 }
-async function downloadBackup(){
-  const e=await allTransactions();
-  const t=buildBackupPayload(e);
-  const a=new Blob([JSON.stringify(t,null,2)],{type:"application/json"});
-  const n=URL.createObjectURL(a);
-  const s=document.createElement("a");
-  s.href=n;s.download=getSmartFilename("backup","json");
-  document.body.appendChild(s);s.click();s.remove();
-  setTimeout(()=>URL.revokeObjectURL(n),1000);
-  $("backup-status").textContent="آخر تنزيل: "+(new Date).toLocaleTimeString("en-US");
-  showToast("تم تنزيل النسخة الاحتياطية ✅");
+
+async function downloadBackup() {
+  try {
+    const e = await allTransactions();
+    const t = buildBackupPayload(e);
+    const jsonStr = JSON.stringify(t, null, 2);
+    const filename = getSmartFilename("backup", "json");
+
+    // محاولة التنزيل المباشر عبر Data URL لضمان ظهور الامتداد داخل WebView
+    const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(jsonStr);
+
+    const s = document.createElement("a");
+    s.setAttribute("href", dataUri);
+    s.setAttribute("download", filename);
+    document.body.appendChild(s);
+    s.click();
+    s.remove();
+
+    $("backup-status").textContent = "آخر تنزيل: " + (new Date).toLocaleTimeString("en-US");
+    showToast("تم تنزيل النسخة الاحتياطية ✅");
+  } catch (err) {
+    console.warn("Direct download failed, falling back to share/copy:", err);
+    // خطة بديلة لو حصل أي تقييد في الـ WebView
+    try {
+      const e = await allTransactions();
+      const t = JSON.stringify(buildBackupPayload(e), null, 2);
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(t);
+        showToast("تم نسخ بيانات النسخة الاحتياطية للحافظة 📋");
+      } else {
+        showToast("تعذر التنزيل المباشر، جرب زر المشاركة 📤");
+      }
+    } catch (e2) {
+      showToast("تعذر تنزيل النسخة، جرب زر المشاركة 📤");
+    }
+  }
 }
+
 async function shareBackup(){
   try{
     const e=await allTransactions();
