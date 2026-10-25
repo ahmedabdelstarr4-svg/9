@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#050806">
-<title>النظام المالي الشخصيي A&K — Neon Emerald Premium</title>
+<title>النظام المالي— Neon Emerald Premium</title>
 <style>
 :root[data-theme="dark"] {
   --bg-main: #050806; --bg-app: #090d0b; --bg-card: #0e1612; --bg-card-hover: #14201a;
@@ -119,6 +119,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .btn-green{background:#10b981;color:white}
 .btn-muted{background:rgba(255,255,255,0.05);color:var(--ink);border:1px solid var(--border-subtle)}
 .btn-danger{background:rgba(251, 113, 133, 0.1);color:var(--red-val);border:1px solid rgba(251, 113, 133, 0.3)}
+.action-btn-mini{padding:2px 6px;font-size:11px;min-height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;}
 #view-input .grid4{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;background:rgba(0,0,0,0.3);padding:4px;border-radius:12px;border:1px solid var(--border-subtle)}
 #view-input .tab{border:0;background:transparent;color:var(--ink-muted);border-radius:8px;padding:6px 2px;font-size:10px;font-weight:800;}
 #view-input .tab.active{background:linear-gradient(135deg,#10b981,#047857);color:#ffffff;box-shadow:0 3px 10px rgba(16,185,129,0.3)}
@@ -1495,16 +1496,16 @@ function renderReportTableRows(e){
   const s=$("beneficiary-select")?$("beneficiary-select").value:"all";
   
   if(isTransfer){
-    a.innerHTML='<tr><th style="width:12%">التاريخ</th><th style="width:20%">التفاصيل</th><th style="width:16%">المستفيد</th><th style="width:12%">السعر</th><th class="amount" style="width:12%">المصري</th><th class="amount" style="width:12%">الكويتي</th><th class="amount" style="width:12%">الرصيد</th><th class="no-print" style="width:4%;display:none">إجراء</th></tr>';
+    a.innerHTML='<tr><th style="width:12%">التاريخ</th><th style="width:18%">التفاصيل</th><th style="width:14%">المستفيد</th><th style="width:10%">السعر</th><th class="amount" style="width:11%">المصري</th><th class="amount" style="width:11%">الكويتي</th><th class="amount" style="width:14%">الرصيد</th><th class="no-print" style="width:10%">إجراء</th></tr>';
   }else if(isDebt){
-    a.innerHTML='<tr><th style="width:14%">التاريخ</th><th style="width:22%">نوع الحركة</th><th style="width:22%">الطرف / الجهة</th><th class="amount" style="width:14%">المبلغ</th><th class="amount" style="width:14%">رصيد الدين</th><th class="no-print" style="width:0%;display:none">إجراء</th></tr>';
+    a.innerHTML='<tr><th style="width:14%">التاريخ</th><th style="width:20%">نوع الحركة</th><th style="width:20%">الطرف / الجهة</th><th class="amount" style="width:14%">المبلغ</th><th class="amount" style="width:14%">رصيد الدين</th><th class="no-print" style="width:18%">إجراء</th></tr>';
   }else if(isExpense){
-    a.innerHTML='<tr><th style="width:16%">التاريخ</th><th style="width:24%">التصنيف</th><th style="width:20%">البند</th><th style="width:18%">الحساب</th><th class="amount" style="width:16%">المبلغ</th><th class="no-print" style="width:0%;display:none">إجراء</th></tr>';
+    a.innerHTML='<tr><th style="width:15%">التاريخ</th><th style="width:22%">التصنيف</th><th style="width:18%">البند</th><th style="width:15%">الحساب</th><th class="amount" style="width:15%">المبلغ</th><th class="no-print" style="width:15%">إجراء</th></tr>';
   }else{
-    a.innerHTML='<tr><th style="width:14%">التاريخ</th><th style="width:26%">النوع / البيان</th><th style="width:16%">الطرف</th><th style="width:14%">الحساب</th><th class="amount" style="width:15%">المبلغ</th><th class="amount" style="width:15%">الرصيد</th><th class="no-print" style="width:0%;display:none">إجراء</th></tr>';
+    a.innerHTML='<tr><th style="width:12%">التاريخ</th><th style="width:22%">النوع / البيان</th><th style="width:14%">الطرف</th><th style="width:12%">الحساب</th><th class="amount" style="width:13%">المبلغ</th><th class="amount" style="width:13%">الرصيد</th><th class="no-print" style="width:14%">إجراء</th></tr>';
   }
 
-  if(!e.length)return void(t.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:15px">لا توجد حركات مطابقة.</td></tr>`);
+  if(!e.length)return void(t.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:15px">لا توجد حركات مطابقة.</td></tr>`);
   let r=0;
   const sorted=[...e].sort((a,b)=>a.date.localeCompare(b.date)||(a.time||"").localeCompare(b.time||"")||a.id.localeCompare(b.id));
   const running={};
@@ -1533,7 +1534,7 @@ function renderReportTableRows(e){
     const accFromName=getAccountById(x.account||"cash_default").name||"—";
     const accToName=x.toAccount?getAccountById(x.toAccount).name:"";
     
-    const actionBtns = `<td class="no-print" style="white-space:nowrap;text-align:center;display:none"><button class="btn btn-muted action-btn-mini" title="تعديل" data-action="edit-report" data-id="${x.id}">✏️</button><button class="btn btn-danger action-btn-mini" title="حذف" data-action="delete-report" data-id="${x.id}">🗑️</button></td>`;
+    const actionBtns = `<td class="no-print" style="white-space:nowrap;text-align:center;"><button class="btn btn-muted action-btn-mini" title="تعديل" data-action="edit-report" data-id="${x.id}">✏️</button> <button class="btn btn-danger action-btn-mini" title="حذف" data-action="delete-report" data-id="${x.id}">🗑️</button></td>`;
 
     if(x.type==="transfer"&&isTransfer){
       const benefs=x.beneficiaries||[];
@@ -1710,7 +1711,6 @@ async function downloadBackup() {
     const jsonStr = JSON.stringify(t, null, 2);
     const filename = getSmartFilename("backup", "json");
 
-    // 1. مشاركة الملف عبر Web Share API أولاً ليظهر في قائمة المشاركة (واتساب، تيليجرام، إلخ)
     const file = new File([jsonStr], filename, { type: "application/json" });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       await navigator.share({
@@ -1723,7 +1723,6 @@ async function downloadBackup() {
       return;
     }
 
-    // 2. خطة بديلة للتنزيل المباشر في حال عدم دعم المشاركة
     const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(jsonStr);
     const s = document.createElement("a");
     s.setAttribute("href", dataUri);
