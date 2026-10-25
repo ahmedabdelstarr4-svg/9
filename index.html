@@ -57,9 +57,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .acc-chip-title{font-size:9px;color:#cbd5e1;margin-bottom:0;white-space:nowrap}
 .acc-chip-val{font-size:11px;font-weight:900;color:var(--green-val);font-variant-numeric:tabular-nums}
 .acc-chip-val.neg{color:var(--red-val)}
-.today-card{background:var(--bg-card);border:1px solid var(--border-neon);text-align:center;gap:3px;padding:8px!important;border-radius:14px;}
-.today-label{font-size:10px;font-weight:800;color:var(--emerald-neon)}
-.today-val{font-size:20px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--green-val);letter-spacing:-0.5px}
+.today-card{background:var(--bg-card);border:1px solid var(--border-neon);text-align:center;gap:3px;padding:8px!important;border-radius:10px;}
+.today-label{font-size:1px;font-weight:800;color:var(--emerald-neon)}
+.today-val{font-size:10px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--green-val);letter-spacing:-0.5px}
 .today-val.warning{color:var(--amber-val)}
 .today-val.bad{color:var(--red-val)}
 .today-note{font-size:9.5px;color:var(--ink-muted);font-weight:700}
@@ -210,7 +210,7 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
 
 <main class="content">
 <section id="view-dashboard" class="view">
-  <div id="dash-alert-strip" class="alert-strip hidden" onclick="switchMainView('reports');switchFinanceTab('budget')"></div>
+  <div id="dash-alert-strip" class="alert-strip hidden" onclick="switchMainView('reports')"></div>
   <div class="balance-card" id="accounts-balance-card">
     <span>💰 إجمالي ما أملك الآن</span>
     <strong id="dash-total-wealth">0.000 د.ك</strong>
@@ -239,7 +239,6 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
       <div class="panel stack" id="dash-budget-box" style="gap:6px">
         <div class="row-between">
           <strong style="font-size:12px">🎯 الميزانية والصناديق</strong>
-          <button type="button" class="btn btn-soft" style="padding:2px 8px;font-size:10px;min-height:24px" onclick="switchMainView('reports');switchFinanceTab('budget')">التفاصيل ›</button>
         </div>
         <div id="dash-budget-summary" class="bud-grid"><span class="small" style="grid-column: span 2">سجّل راتبًا أساسيًا لعرض الميزانية.</span></div>
       </div>
@@ -252,7 +251,7 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
       <div class="panel stack">
         <div class="row-between"><strong style="font-size:12px">📋 آخر المعاملات</strong><span id="dash-tx-count" class="small">0 معاملة</span></div>
         <div id="dash-recent-transactions" class="stack" style="gap:4px"><span class="small">لا توجد معاملات محفوظة بعد.</span></div>
-        <button type="button" class="btn btn-muted" style="min-height:30px;font-size:11px" onclick="switchMainView('reports');switchFinanceTab('ledger')">فتح التقارير والكشوفات الكاملة 📊</button>
+        <button type="button" class="btn btn-muted" style="min-height:30px;font-size:11px" onclick="switchMainView('reports')">فتح التقارير والكشوفات الكاملة 📊</button>
       </div>
     </div>
   </div>
@@ -341,22 +340,9 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
 
 <section id="view-reports" class="view stack hidden">
   <div class="finance-tabs no-print">
-    <button type="button" class="tab active" id="finance-tab-budget" onclick="switchFinanceTab('budget')">الميزانية 🎯</button>
-    <button type="button" class="tab" id="finance-tab-ledger" onclick="switchFinanceTab('ledger')">سجل المعاملات التفصيلي 📜</button>
+    <button type="button" class="tab active" id="finance-tab-ledger" onclick="switchFinanceTab('ledger')">سجل المعاملات التفصيلي 📜</button>
   </div>
-  <section id="finance-budget-view" class="stack">
-    <div class="panel stack no-print">
-      <div class="row-between">
-        <strong style="font-size:12px">🎯 ميزانية الدورة الحالية وصناديقها</strong>
-        <span id="budget-cycle-label" class="small">—</span>
-      </div>
-      <div class="small" id="budget-income-line">الدخل المرجعي: —</div>
-      <div class="small" id="budget-days-line">الأيام: —</div>
-    </div>
-    <div id="budget-alerts-container" class="stack no-print"></div>
-    <div id="budget-cards-container" class="stack"></div>
-  </section>
-  <section id="finance-ledger-view" class="stack hidden">
+  <section id="finance-ledger-view" class="stack">
     <div id="filter-section" class="stack no-print">
       <div class="panel" style="background:rgba(16,185,129,0.08);border-color:var(--border-neon);color:var(--emerald-neon);font-size:11.5px;font-weight:700">حدد معايير التقرير</div>
       <div><label>التصنيف الرئيسي</label><select id="report-type" onchange="onReportTypeChange()"><option value="expense">مصروفات</option><option value="income">دخل</option><option value="debt">ديون وعلاقات مالية</option><option value="transfer">تحويلات مالية خارجية</option><option value="internal_transfer">تحويلات بين الحسابات</option><option value="all">ملخص كل المعاملات</option></select></div>
@@ -480,7 +466,7 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
 
 <nav class="nav-bottom no-print">
   <button type="button" id="nav-dashboard" class="nav-btn active" onclick="switchMainView('dashboard')"><span>🏠</span><span>الرئيسية</span></button>
-  <button type="button" id="nav-reports" class="nav-btn" onclick="switchMainView('reports')"><span>🎯</span><span>الميزانية</span></button>
+  <button type="button" id="nav-reports" class="nav-btn" onclick="switchMainView('reports')"><span>📜</span><span>التقارير</span></button>
   <button type="button" id="nav-backup" class="nav-btn" onclick="switchMainView('backup')"><span>⚙️</span><span>الإعدادات</span></button>
 </nav>
 </div>
@@ -525,7 +511,7 @@ const BUDGET_ITEMS=[
 const BUDGET_BY_KEY={};
 BUDGET_ITEMS.forEach(b=>{BUDGET_BY_KEY[b.key]=b});
 const CYCLE_DAYS=30;
-let db=null,currentInputTab="expense",editingTxId=null,activePersonCallback=null,currentFinanceTab="budget",toastTimer=null,cachedReportRecords=[],visibleReportRecords=[],cachedReportRange={from:"",to:""},reportGenerated=!1;
+let db=null,currentInputTab="expense",editingTxId=null,activePersonCallback=null,currentFinanceTab="ledger",toastTimer=null,cachedReportRecords=[],visibleReportRecords=[],cachedReportRange={from:"",to:""},reportGenerated=!1;
 
 function $(e){return document.getElementById(e)}
 
@@ -742,7 +728,6 @@ function saveTargetPercentages(){
   localStorage.setItem(TARGET_PCT_KEY,JSON.stringify({fixed:e,regular:t,personal:a,transfer:n,debt:s}));
   showToast("تم حفظ النسب المستهدفة للميزانية ✅");
   renderTargetValuesPreview();
-  if(currentFinanceTab==="budget")renderBudgetPage();
   renderDashBudgetCard();
 }
 function loadTargetPercentages(){
@@ -906,7 +891,7 @@ function populatePeopleSelects(){
 function renderPeopleHints(){
   const e=getPeopleList(),t=$("debt-people-hint"),a=$("transfer-people-hint");
   t&&(e.length===0?(t.className="field-note warn",t.textContent="لسه مفيش أسماء. اضغط زر ➕ لإضافة أول اسم."):(t.className="field-note",t.textContent=""));
-  a&&(e.length===0?(a.className="field-note warn",a.textContent="لسه مفيش أسماء. اضغط زر ➕ جنب الصف لإضافة أول مستفيد."):(a.className="field-note",t.textContent="لو الاسم مش موجود، دوس زر ➕ جنبه لإضافته للقائمة."));
+  a&&(e.length===0?(a.className="field-note warn",a.textContent="لسه مفيش أسماء. اضغط زر ➕ جنب الصف لإضافة أول مستفيد."):(a.className="field-note",a.textContent="لو الاسم مش موجود، دوس زر ➕ جنبه لإضافته للقائمة."));
 }
 function renderPersonsManageList(){
   const e=$("persons-manage-list");
@@ -1115,7 +1100,6 @@ async function saveTransaction(){
       tx.oncomplete=res;
       tx.onerror=()=>rej(tx.error);
     });
-    const finalType=r.type;
     const finalBudgetId=r.budgetId;
     showToast("تم حفظ المعاملة بنجاح ✅");
     resetInputForm();
@@ -1123,9 +1107,6 @@ async function saveTransaction(){
     try{await updateReportTargetOptions()}catch(e){}
     if(reportGenerated)try{await generateReport()}catch(e){}
     switchMainView("dashboard");
-    if(finalBudgetId){
-      await showBudgetAlert(finalBudgetId,r);
-    }
   }catch(e){console.error("Save Error:",e);showToast("فشل حفظ المعاملة")}finally{e.disabled=false;}
 }
 
@@ -1416,45 +1397,6 @@ function computeAllBudgetData(txs,cycle){
   return {income,items};
 }
 
-function renderBudgetCardHTML(data){
-  const b=BUDGET_BY_KEY[data.budgetId];
-  const st=computeBudgetStatus(data.max,data.spent);
-  const pctBar=Math.min(100,st.pct);
-  const barColor=st.level==="bad"?"var(--red-val)":st.level==="warning"?"var(--amber-val)":"var(--emerald-neon)";
-  const remainingColor=st.level==="bad"?"bad":st.level==="warning"?"warning":"good";
-
-  let liveAlert="";
-  if(data.daysRemaining<=0){
-    liveAlert=`<div class="budget-alert-live bad" style="margin-top:4px;font-size:10.5px;font-weight:700">⏰ الدورة انتهت — سجّل راتبك الجديد لبدء دورة جديدة.</div>`;
-  }else if(data.spentToday>data.dailyActual){
-    liveAlert=`<div class="budget-alert-live warning" style="margin-top:4px;font-size:10.5px;font-weight:700">⚠️ تجاوزت حد اليوم بـ ${money(data.spentToday-data.dailyActual)} — متبقي في الدورة: ${money(data.remaining)}</div>`;
-  }else if(data.remaining<0){
-    liveAlert=`<div class="budget-alert-live bad" style="margin-top:4px;font-size:10.5px;font-weight:700">🚨 تعديت الحد الكلي بـ ${money(Math.abs(data.remaining))}</div>`;
-  }else{
-    liveAlert=`<div class="budget-alert-live good" style="margin-top:4px;font-size:10.5px;font-weight:700">✅ متبقي لك اليوم: ${money(data.remainingToday)}</div>`;
-  }
-
-  return `<div class="budget-card" data-bkey="${data.budgetId}">
-    <div class="budget-card-head">
-      <span class="budget-card-title">${b.label}</span>
-      <span class="budget-card-pct">${data.isDynamic?'تجميع فائض':data.pct+'% من الدخل'}</span>
-    </div>
-    <div class="budget-stats">
-      <div class="budget-stat"><div class="budget-stat-label">${data.isDynamic?'إجمالي المتاح':'الحد الأقصى'}</div><div class="budget-stat-value">${money(data.max)}</div></div>
-      <div class="budget-stat"><div class="budget-stat-label">المنصرف</div><div class="budget-stat-value bad">${money(data.spent)}</div></div>
-      <div class="budget-stat"><div class="budget-stat-label">المتبقي الفعلي</div><div class="budget-stat-value ${remainingColor}">${money(data.remaining)}</div></div>
-    </div>
-    <div class="cap-track"><div class="cap-bar" style="width:${pctBar}%;background:${barColor}"></div></div>
-    <div class="budget-daily">
-      <div class="budget-daily-item"><span class="budget-daily-label">📅 متبقي من الدورة</span><span class="budget-daily-value">${data.daysRemaining} / ${CYCLE_DAYS} يوم</span></div>
-      <div class="budget-daily-item"><span class="budget-daily-label">🎯 الحد اليومي المرجعي</span><span class="budget-daily-value">${money(data.dailyReference)}</span></div>
-      <div class="budget-daily-item"><span class="budget-daily-label">⚡ الحد اليومي الفعلي</span><span class="budget-daily-value">${data.daysRemaining>0?money(data.dailyActual):"—"}</span></div>
-      <div class="budget-daily-item"><span class="budget-daily-label">📈 صرفت اليوم</span><span class="budget-daily-value">${money(data.spentToday)}</span></div>
-    </div>
-    ${liveAlert}
-  </div>`;
-}
-
 function computeBudgetStatus(max,spent){
   const remaining=max-spent;
   const pct=max>0?(spent/max)*100:0;
@@ -1462,77 +1404,6 @@ function computeBudgetStatus(max,spent){
   if(pct>=100)level="bad";
   else if(pct>=80)level="warning";
   return {remaining,pct,level};
-}
-
-async function renderBudgetPage(){
-  try{
-    const txs=await allTransactions();
-    const cycle=getCurrentSalaryCycle(txs);
-    const labelEl=$("budget-cycle-label");
-    const incomeEl=$("budget-income-line");
-    const daysEl=$("budget-days-line");
-    const cards=$("budget-cards-container");
-    const alerts=$("budget-alerts-container");
-    if(!cards)return;
-    if(!cycle){
-      if(labelEl)labelEl.textContent="لا توجد دورة راتب";
-      if(incomeEl)incomeEl.textContent="سجّل راتبًا أساسيًا للبدء";
-      if(daysEl)daysEl.textContent="—";
-      cards.innerHTML='<div class="panel small">لا توجد دورة راتب حالية. سجّل راتبًا أساسيًا ليتم احتساب الميزانية.</div>';
-      if(alerts)alerts.innerHTML="";
-      return;
-    }
-    const {income,items}=computeAllBudgetData(txs,cycle);
-    const cycleEnd=dateAddDays(cycle.start,CYCLE_DAYS-1);
-    if(labelEl)labelEl.textContent=`${fmtDate(cycle.start)} ← ${fmtDate(cycleEnd)}`;
-    if(incomeEl)incomeEl.textContent=`الدخل المرجعي: ${money(income)}`;
-    const elapsed=Math.max(0,Math.min(CYCLE_DAYS,dateDiffDays(cycle.start,todayISO())));
-    if(daysEl)daysEl.textContent=`الأيام: ${elapsed} / ${CYCLE_DAYS} — متبقي ${Math.max(0,CYCLE_DAYS-elapsed)} يوم`;
-    let alertsHTML="";
-    items.forEach(it=>{
-      const st=computeBudgetStatus(it.max,it.spent);
-      if(st.pct>=100){
-        alertsHTML+=`<div class="hint" style="background:rgba(251,113,133,0.1);border-color:rgba(251,113,133,0.3);color:var(--red-val);font-weight:700">🚨 <strong>${BUDGET_BY_KEY[it.budgetId].label}:</strong> تجاوزت الحد الأقصى للدورة بـ ${money(it.spent-it.max)}.</div>`;
-      }else if(st.pct>=80){
-        alertsHTML+=`<div class="hint" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.3);color:var(--amber-val);font-weight:700">⚠️ <strong>${BUDGET_BY_KEY[it.budgetId].label}:</strong> وصلت لـ ${st.pct.toFixed(0)}% من الحد — متبقي ${money(it.remaining)}.</div>`;
-      }
-      if(it.daysRemaining>0&&it.spentToday>it.dailyActual){
-        alertsHTML+=`<div class="hint" style="background:rgba(251,113,133,0.1);border-color:rgba(251,113,133,0.3);color:var(--red-val);font-weight:700">🔔 <strong>${BUDGET_BY_KEY[it.budgetId].label}:</strong> تجاوزت حد اليوم (${money(it.dailyActual)}) — صرفت ${money(it.spentToday)}.</div>`;
-      }
-    });
-    if(alerts)alerts.innerHTML=alertsHTML||'<div class="hint" style="background:rgba(16,185,129,0.1);border-color:var(--border-neon);color:var(--green-val);font-weight:700">✅ <strong>ممتاز!</strong> كل بنود الميزانية ضمن الحدود.</div>';
-    cards.innerHTML=items.map(renderBudgetCardHTML).join("");
-  }catch(e){console.error("renderBudgetPage:",e)}
-}
-
-async function showBudgetAlert(budgetId,tx){
-  if(!BUDGET_BY_KEY[budgetId])return;
-  try{
-    const txs=await allTransactions();
-    const cycle=getCurrentSalaryCycle(txs);
-    if(!cycle)return;
-    const income=totalIncomeFor(txs,cycle);
-    const data=computeBudgetItemData(txs,cycle,income,budgetId);
-    const b=BUDGET_BY_KEY[budgetId];
-    const st=computeBudgetStatus(data.max,data.spent);
-    if(data.daysRemaining<=0){
-      showToast(`⏰ ${b.label}: الدورة انتهت — سجّل راتبك الجديد`);
-      return;
-    }
-    if(data.remaining<0){
-      showToast(`🚨 ${b.label}: تعديت الحد الكلي بـ ${Math.abs(data.remaining).toFixed(3)} د.ك`);
-      return;
-    }
-    if(data.spentToday>data.dailyActual){
-      showToast(`⚠️ ${b.label}: تجاوزت حد اليوم (${data.dailyActual.toFixed(3)}) — صرفت ${data.spentToday.toFixed(3)} | متبقي في الدورة: ${data.remaining.toFixed(3)} د.ك`);
-      return;
-    }
-    if(st.pct>=80){
-      showToast(`⚠️ ${b.label}: وصلت لـ ${st.pct.toFixed(0)}% من الحد — متبقي ${data.remaining.toFixed(3)} د.ك`);
-      return;
-    }
-    showToast(`✅ ${b.label}: متبقي لك اليوم ${data.remainingToday.toFixed(3)} د.ك — ومتبقي في الدورة ${data.remaining.toFixed(3)} د.ك`);
-  }catch(e){console.warn("showBudgetAlert:",e)}
 }
 
 async function onReportTypeChange(){
@@ -2480,13 +2351,12 @@ function getAllSalaryCycles(e){
 
 function switchFinanceTab(e){
   currentFinanceTab=e;
-  ["budget","ledger"].forEach(t=>{
+  ["ledger"].forEach(t=>{
     const view=$("finance-"+t+"-view");
     const tab=$("finance-tab-"+t);
     if(view)view.classList.toggle("hidden",t!==e);
     if(tab)tab.classList.toggle("active",t===e);
   });
-  if(e==="budget")renderBudgetPage();
   if(e==="ledger"){
     if(reportGenerated){$("filter-section").classList.add("hidden");$("report-section").classList.remove("hidden");}
     else{$("filter-section").classList.remove("hidden");$("report-section").classList.add("hidden");}
