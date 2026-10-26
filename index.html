@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#050806">
-<title>النظام المالي— Neon Emerald Premium</title>
+<title>النظام المالي الشخصي — Neon Emerald Premium</title>
 <style>
 :root[data-theme="dark"] {
   --bg-main: #050806; --bg-app: #090d0b; --bg-card: #0e1612; --bg-card-hover: #14201a;
@@ -58,8 +58,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .acc-chip-val{font-size:11px;font-weight:900;color:var(--green-val);font-variant-numeric:tabular-nums}
 .acc-chip-val.neg{color:var(--red-val)}
 .today-card{background:var(--bg-card);border:1px solid var(--border-neon);text-align:center;gap:3px;padding:8px!important;border-radius:10px;}
-.today-label{font-size:1px;font-weight:800;color:var(--emerald-neon)}
-.today-val{font-size:10px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--green-val);letter-spacing:-0.5px}
+.today-label{font-size:10px;font-weight:800;color:var(--emerald-neon)}
+.today-val{font-size:18px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--green-val);letter-spacing:-0.5px}
 .today-val.warning{color:var(--amber-val)}
 .today-val.bad{color:var(--red-val)}
 .today-note{font-size:9.5px;color:var(--ink-muted);font-weight:700}
@@ -128,6 +128,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .row-between{display:flex;justify-content:space-between;align-items:center;gap:4px}
 .bud-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
 .bud-mini-card{border:1px solid var(--border-subtle);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;background:var(--bg-card);min-width:0;}
+.bud-mini-card[data-bkey="emergency"]{grid-column: span 2;border-color:var(--border-neon);background:rgba(16,185,129,0.03);}
 .bud-mini-head{display:flex;justify-content:space-between;align-items:center;gap:4px}
 .bud-mini-name{font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bud-mini-pct{font-size:9.5px;font-weight:900;font-variant-numeric:tabular-nums}
@@ -135,7 +136,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .bud-mini-meta strong{font-variant-numeric:tabular-nums;font-weight:900;color:var(--ink);}
 .cap-track{height:4px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden}
 .cap-bar{height:100%;width:0;transition:width .3s ease,background .3s ease}
-@media (max-width: 600px){.balance-card strong{font-size:20px}.today-val{font-size:20px}}
+@media (max-width: 600px){.balance-card strong{font-size:20px}.today-val{font-size:18px}}
 @media (min-width: 600px){:root{--app-max: 720px}}
 @media (min-width: 900px){
   :root{--app-max: 1100px}
@@ -185,8 +186,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
       </div>
       <div class="quick-actions">
         <button type="button" class="qa-main" onclick="openInputForm('expense')">➕ تسجيل مصروف</button>
-        <button type="button" class="qa-main" style="background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); margin-top: 4px;" onclick="window.location.href='analytics.html'">📊 أرشيف وتحليل الدورات</button>
-        <div class="qa-row">
+        <div class="qa-row" style="margin-top: 4px;">
           <button type="button" class="qa-mini qa-income" onclick="openInputForm('income')"><span>📥</span><span>دخل</span></button>
           <button type="button" class="qa-mini qa-transfer" onclick="openInputForm('transfer')"><span>✈️</span><span>حوالة</span></button>
           <button type="button" class="qa-mini qa-debt" onclick="openInputForm('debt')"><span>🤝</span><span>دين</span></button>
@@ -194,7 +194,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
         </div>
       </div>
       <div class="panel stack" id="dash-budget-box" style="gap:6px">
-        <div class="row-between"><strong style="font-size:12px">🎯 الميزانية والصناديق</strong></div>
+        <div class="row-between"><strong style="font-size:12px">🎯 الميزانية وصندوق المعالجة</strong></div>
         <div id="dash-budget-summary" class="bud-grid"><span class="small" style="grid-column: span 2">سجّل راتبًا أساسيًا لعرض الميزانية.</span></div>
       </div>
     </div>
@@ -316,10 +316,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
           <div><label style="font-size:10.5px">المشتريات الشخصية (%)</label><input id="target-personal-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="personal" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
           <div><label style="font-size:10.5px">التحويلات الخارجية (%)</label><input id="target-transfer-pct" type="number" min="0" max="100" placeholder="مثال: 20" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="transfer" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
         </div>
-        <div><label style="font-size:10.5px">تسديد الديون (%) 🤝</label><input id="target-debt-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="debt" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
+        <div class="grid2">
+          <div><label style="font-size:10.5px">تسديد الديون (%) 🤝</label><input id="target-debt-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="debt" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
+          <div><label style="font-size:10.5px">المدخرات (%) 💰</label><input id="target-savings-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="savings" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
+        </div>
         <div id="target-values-summary" class="panel stack" style="background:rgba(16,185,129,0.05);border-color:var(--border-neon);font-size:10.5px;gap:3px"></div>
         <button type="button" class="btn btn-primary" onclick="saveTargetPercentages()" style="padding:6px">حفظ المستهدفات 🎯</button>
-        <div class="field-note">تحدد هذه النسب الخطة المالية للصناديق الأساسية. وأي نسبة متبقية تذهب تلقائيياً لصندوق الأمان والطوارئ.</div>
+        <div class="field-note">تحدد هذه النسب الخطة المالية للصناديق الأساسية. وأي نسبة متبقية تذهب تلقائيياً لصندوق المعالجة.</div>
       </div>
     </div>
     <div class="acc-item open" id="acc-categories">
@@ -405,7 +408,7 @@ const BUDGET_ITEMS=[
   {key:"personal",label:"🛍️ المشتريات الشخصية والنثريات",short:"شخصي",icon:"🛍️"},
   {key:"transfer",label:"✈️ التحويلات الخارجية",short:"تحويلات",icon:"✈️"},
   {key:"debt",label:"🤝 تسديد الديون",short:"ديون",icon:"🤝"},
-  {key:"emergency",label:"🛡️ صندوق الأمان والطوارئ",short:"طوارئ",icon:"🛡️",isDynamic:true}
+  {key:"emergency",label:"🛡️ صندوق المعالجة",short:"صندوق المعالجة",icon:"🛡️",isDynamic:true}
 ];
 const BUDGET_BY_KEY={};
 BUDGET_ITEMS.forEach(b=>{BUDGET_BY_KEY[b.key]=b});
@@ -614,15 +617,16 @@ function writeDateParts(e,t){
 function getTargetPercentages(){
   const e=localStorage.getItem(TARGET_PCT_KEY);
   if(e)try{return JSON.parse(e)}catch(e){}
-  return{fixed:30,regular:30,personal:10,transfer:20,debt:10};
+  return{fixed:30,regular:30,personal:10,transfer:20,debt:10,savings:0};
 }
 function saveTargetPercentages(){
   const e=Number($("target-fixed-pct").value)||0,
         t=Number($("target-regular-pct").value)||0,
         a=Number($("target-personal-pct").value)||0,
         n=Number($("target-transfer-pct").value)||0,
-        s=Number($("target-debt-pct").value)||0;
-  localStorage.setItem(TARGET_PCT_KEY,JSON.stringify({fixed:e,regular:t,personal:a,transfer:n,debt:s}));
+        s=Number($("target-debt-pct").value)||0,
+        sv=Number($("target-savings-pct").value)||0;
+  localStorage.setItem(TARGET_PCT_KEY,JSON.stringify({fixed:e,regular:t,personal:a,transfer:n,debt:s,savings:sv}));
   showToast("تم حفظ النسب المستهدفة للميزانية ✅");
   renderTargetValuesPreview();
   renderDashBudgetCard();
@@ -634,6 +638,7 @@ function loadTargetPercentages(){
   $("target-personal-pct")&&($("target-personal-pct").value=e.personal);
   $("target-transfer-pct")&&($("target-transfer-pct").value=e.transfer);
   $("target-debt-pct")&&($("target-debt-pct").value=e.debt);
+  $("target-savings-pct")&&($("target-savings-pct").value=e.savings||0);
 }
 async function renderTargetValuesPreview(){
   try{
@@ -645,7 +650,8 @@ async function renderTargetValuesPreview(){
       regular:Number($("target-regular-pct")?.value)||0,
       personal:Number($("target-personal-pct")?.value)||0,
       transfer:Number($("target-transfer-pct")?.value)||0,
-      debt:Number($("target-debt-pct")?.value)||0
+      debt:Number($("target-debt-pct")?.value)||0,
+      savings:Number($("target-savings-pct")?.value)||0
     };
     Object.entries(s).forEach(([k,v])=>{
       const el=document.querySelector(`[data-target-hint="${k}"]`);
@@ -662,7 +668,7 @@ async function renderTargetValuesPreview(){
           l=n*(o/100),
           remPct=Math.max(0,100-o),
           i=n-l,
-          c=o>100?`<div class="small bad">⚠️ مجموع النسب (${o}%) تجاوز 100% — المستهدفات أكبر من دخل الدورة!</div>`:o===100?'<div class="small warning">⚠️ مجموع النسب 100% — لا ينزل متبقي لصندوق الطوارئ.</div>':`<div class="small good">🛡️ المتبقي التلقائي لصندوق الطوارئ: ${remPct}% (${money(i)})</div>`;
+          c=o>100?`<div class="small bad">⚠️ مجموع النسب (${o}%) تجاوز 100% — المستهدفات أكبر من دخل الدورة!</div>`:o===100?'<div class="small warning">⚠️ مجموع النسب 100% — لا ينزل متبقي لصندوق المعالجة.</div>':`<div class="small good">🛡️ المتبقي التلقائي لصندوق المعالجة: ${remPct}% (${money(i)})</div>`;
     r.innerHTML=`
       <div class="small" style="color:var(--emerald-neon);font-weight:700;border-bottom:1px dashed var(--border-neon);padding-bottom:4px">📊 القيم محسوبة على دخل الدورة الحالية</div>
       <div class="row-between"><span>📅 الدخل المرجعي:</span><strong>${money(n)}</strong></div>
@@ -675,10 +681,7 @@ async function renderTargetValuesPreview(){
 
 function getExpenseCategories(){
   const raw=localStorage.getItem(EXPENSE_CATS_KEY);
-  if(raw)try{
-    const arr=JSON.parse(raw);
-    if(Array.isArray(arr))return arr.map(normalizeCategory);
-  }catch(e){}
+  if(raw)try{const arr=JSON.parse(raw);if(Array.isArray(arr))return arr.map(normalizeCategory);}catch(e){}
   return [];
 }
 function normalizeCategory(c){
@@ -739,8 +742,8 @@ function renderBudgetCategorySelectOptions(){
   const sel=$("new-expense-cat-budget");
   if(!sel)return;
   const cur=sel.value;
-  sel.innerHTML=BUDGET_ITEMS.map(b=>`<option value="${b.key}">${b.label}</option>`).join("");
-  if(BUDGET_ITEMS.some(b=>b.key===cur))sel.value=cur;
+  sel.innerHTML=BUDGET_ITEMS.filter(b=>!b.isDynamic).map(b=>`<option value="${b.key}">${b.label}</option>`).join("");
+  if(BUDGET_ITEMS.some(b=>b.key===cur&&!b.isDynamic))sel.value=cur;
 }
 
 function getIncomeCategories(){return["راتب أساسي","عمل إضافي","أرباح / عوائد","أخرى"]}
@@ -921,7 +924,7 @@ async function allTransactions(){
         }
         return e;
       });
-      res(t.sort((x,y)=>y.date.localeCompare(x.date)||(y.time||"").localeCompare(y.time||"")||y.id.localeCompare(x.id)));
+      res(t.sort((x,y)=>y.date.localeCompare(x.date)||(y.time||"").localeCompare(x.time||"")||y.id.localeCompare(x.id)));
     };
     a.onerror=()=>rej(a.error);
   });
@@ -1147,6 +1150,22 @@ function renderBudgetRowHTML(data){
   const pctTxt=noLimit?(data.spent>0?"—":"0%"):st.pct.toFixed(0)+"%";
   const barColor=level==="bad"?"var(--red-val)":level==="warning"?"var(--amber-val)":"var(--emerald-neon)";
   const cls=level==="bad"?"bad":level==="warning"?"warning":"good";
+  
+  if(data.isDynamic){
+    const dailyTxt=(data.daysRemaining>0&&data.remaining>0)?money(data.dailyActual):"—";
+    const netTxt=data.remaining>=0?money(data.remaining):`عجز: ${money(Math.abs(data.remaining))}`;
+    return `<div class="bud-mini-card" data-bkey="${data.budgetId}">
+      <div class="bud-mini-head">
+        <span class="bud-mini-name">${b.icon} ${b.short}</span>
+        <span class="bud-mini-pct ${cls}">صندوق معالج</span>
+      </div>
+      <div class="bud-mini-meta" style="margin-top:2px">
+        <div>المتبقي الصافي: <strong class="${data.remaining>=0?"good":"bad"}">${netTxt}</strong></div>
+        <div>⚡ يتصرف على ${data.daysRemaining} يوم (يوميًا: <strong>${dailyTxt}</strong>)</div>
+      </div>
+    </div>`;
+  }
+
   const dailyTxt=(data.daysRemaining>0&&data.remaining>0)?money(data.dailyActual):"—";
   return `<div class="bud-mini-card" data-bkey="${data.budgetId}">
     <div class="bud-mini-head">
@@ -1231,7 +1250,7 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
   const cycleEndDate=dateAddDays(cycle.start,CYCLE_DAYS-1);
 
   if(budgetId==="emergency"){
-    const baseKeys=["fixed","regular","personal","transfer","debt"];
+    const baseKeys=["fixed","regular","personal","transfer","debt","savings"];
     let accumulatedSurplus=0;
     let totalMaxBase=0;
     baseKeys.forEach(k=>{
@@ -1454,6 +1473,57 @@ window.addEventListener("beforeunload",e=>{
   if(editingTxId){e.preventDefault();e.returnValue="لديك تعديلات غير محفوظة.";return e.returnValue;}
 });
 
+async function handleEditFromQuery(){
+  const urlParams = new URLSearchParams(window.location.search);
+  const editId = urlParams.get("edit");
+  if(!editId)return;
+  try{
+    db||await openDB();
+    const txs=await allTransactions();
+    const t=txs.find(x=>x.id===editId);
+    if(!t)return;
+    openInputForm(t.type);
+    editingTxId=t.id;
+    writeDateParts("tx",t.date);
+    $("tx-time").value=t.time||"00:00";
+    $("tx-notes").value=t.notes||"";
+    if(t.account){const sel=$("tx-account");if(sel&&[...sel.options].some(o=>o.value===t.account))sel.value=t.account;}
+    if(t.type==="expense"){
+      $("expense-amount").value=t.amount;
+      const sel=$("expense-category");
+      if([...sel.options].some(o=>o.value===t.category))sel.value=t.category;
+      updateExpenseBudgetHint();
+    }else if(t.type==="income"){
+      $("income-amount").value=t.amount;$("income-category").value=t.category;$("is-salary-base").checked=!!t.isSalaryBase;
+    }else if(t.type==="transfer"){
+      $("total-kwd").value=t.totalKwd??t.amount??"";
+      const e=$("beneficiaries-list");e.innerHTML="";
+      (t.beneficiaries||[]).forEach(b=>{
+        addBeneficiary();
+        const all=e.querySelectorAll(".beneficiary");
+        const last=all[all.length-1];
+        const n=last.querySelector(".beneficiary-name-select");
+        if([...n.options].some(o=>o.value===b.name))n.value=b.name;
+        else{const opt=document.createElement("option");opt.value=b.name;opt.textContent=b.name;n.appendChild(opt);n.value=b.name;}
+        last.querySelector(".beneficiary-amount").value=b.egp;
+      });
+      calculateExchange();
+    }else if(t.type==="debt"){
+      $("debt-amount").value=t.amount;
+      const sel=$("debt-person-select");
+      if([...sel.options].some(o=>o.value===t.person))sel.value=t.person;
+      $("debt-type").value=t.debtType;
+    }else if(t.type==="internal_transfer"){
+      $("int-amount").value=t.amount;
+      const f=$("int-from-account"),to=$("int-to-account");
+      if(f&&t.account&&[...f.options].some(o=>o.value===t.account))f.value=t.account;
+      if(to&&t.toAccount&&[...to.options].some(o=>o.value===t.toAccount))to.value=t.toAccount;
+    }
+    $("edit-banner").classList.remove("hidden");
+    $("save-transaction").textContent="تحديث المعاملة ✏️";
+  }catch(err){console.warn(err)}
+}
+
 window.addEventListener("DOMContentLoaded",async()=>{
   try{
     initTheme();
@@ -1469,6 +1539,7 @@ window.addEventListener("DOMContentLoaded",async()=>{
     addBeneficiary();
     await openDB();
     await refreshAllViews();
+    await handleEditFromQuery();
     if(shouldShowSetup())openOpeningSetupModal();
   }catch(e){console.warn("Init warning:",e)}
 });
