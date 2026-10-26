@@ -15,11 +15,11 @@
   --app-max: 480px; --shadow-neon: 0 0 20px rgba(16, 185, 129, 0.15);
 }
 :root[data-theme="light"] {
-  --bg-main: #f1f5f9; --bg-app: #ffffff; --bg-card: #f8fafc; --bg-card-hover: #f1f5f9;
-  --bg-input: #ffffff; --border-neon: rgba(5, 150, 105, 0.25); --border-subtle: #e2e8f0;
-  --ink: #0f172a; --ink-muted: #64748b; --emerald-neon: #059669; --emerald-glow: rgba(5, 150, 105, 0.2);
-  --green-val: #059669; --red-val: #e11d48; --amber-val: #d97706; --sky-val: #0284c7; --purple-val: #7c3aed;
-  --header-bg: #0f172a; --nav-bg: rgba(255, 255, 255, 0.9); --modal-overlay: rgba(15, 23, 42, 0.6);
+  --bg-main: #e2e8f0; --bg-app: #f8fafc; --bg-card: #ffffff; --bg-card-hover: #f1f5f9;
+  --bg-input: #ffffff; --border-neon: rgba(5, 150, 105, 0.3); --border-subtle: #cbd5e1;
+  --ink: #0f172a; --ink-muted: #475569; --emerald-neon: #047857; --emerald-glow: rgba(5, 150, 105, 0.15);
+  --green-val: #047857; --red-val: #be123c; --amber-val: #b45309; --sky-val: #0369a1; --purple-val: #6d28d9;
+  --header-bg: #1e293b; --nav-bg: rgba(255, 255, 255, 0.92); --modal-overlay: rgba(15, 23, 42, 0.5);
   --app-max: 480px; --shadow-neon: 0 10px 25px rgba(5, 150, 105, 0.1);
 }
 *{box-sizing:border-box;transition:background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;}
@@ -28,10 +28,12 @@ body{padding:4px;padding-bottom:calc(65px + env(safe-area-inset-bottom,8px));dis
 button,input,select,textarea{font:inherit}
 button{cursor:pointer;touch-action:manipulation;min-height:36px}
 .app{width:100%;max-width:var(--app-max);background:var(--bg-app);border:1px solid var(--border-neon);border-radius:24px;box-shadow:var(--shadow-neon);display:flex;flex-direction:column;overflow:hidden;position:relative;}
-.header{background:var(--header-bg);color:var(--ink);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:800;gap:8px;border-bottom:1px solid var(--border-subtle);}
-.header-actions{display:flex;align-items:center;gap:8px;}
-.theme-toggle-btn{background:rgba(255,255,255,0.06);border:1px solid var(--border-subtle);color:var(--ink);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;min-height:26px;display:inline-flex;align-items:center;gap:4px;}
-.pill{font-size:10px;background:rgba(16, 185, 129, 0.1);color:var(--emerald-neon);padding:2px 8px;border-radius:10px;white-space:nowrap;font-weight:700;border:1px solid var(--border-neon);}
+.header{background:var(--header-bg);color:#f8fafc;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:800;gap:8px;border-bottom:1px solid var(--border-subtle);}
+.header-brand{display:flex;align-items:center;gap:6px;}
+.header-brand svg{width:16px;height:16px;fill:#d4af37;}
+.header-actions{display:flex;align-items:center;gap:6px;}
+.theme-toggle-btn{background:rgba(255,255,255,0.1);border:1px solid var(--border-subtle);color:#f8fafc;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;min-height:26px;display:inline-flex;align-items:center;gap:4px;}
+.pill{font-size:10px;background:rgba(16, 185, 129, 0.15);color:var(--emerald-neon);padding:2px 8px;border-radius:10px;white-space:nowrap;font-weight:700;border:1px solid var(--border-neon);}
 .pill.warn{color:var(--amber-val);border-color:rgba(251, 191, 36, 0.3);background:rgba(251, 191, 36, 0.1);}
 .content{padding:6px;flex:1;display:flex;flex-direction:column;gap:6px}
 .view{display:flex;flex-direction:column;gap:6px}
@@ -47,38 +49,59 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .alert-strip{border-radius:12px;padding:6px 10px;font-size:10.5px;font-weight:800;line-height:1.4;cursor:pointer;border:1px solid;display:flex;flex-direction:column;gap:2px;}
 .alert-strip.bad{background:rgba(251, 113, 133, 0.1);border-color:var(--red-val);color:var(--red-val);}
 .alert-strip.warning{background:rgba(251, 191, 36, 0.1);border-color:var(--amber-val);color:var(--amber-val);}
-.balance-card{background:linear-gradient(145deg, #0f241a 0%, #08140e 100%);color:white;border-radius:16px;padding:8px 12px;text-align:center;display:flex;flex-direction:column;gap:2px;border:1px solid var(--border-neon);box-shadow:0 6px 20px rgba(0,0,0,0.4), inset 0 0 10px rgba(16, 185, 129, 0.15);position:relative;overflow:hidden;}
+
+/* Top Dashboard Layout matching image */
+.top-dash-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:6px;align-items:stretch;}
+.balance-card{background:linear-gradient(145deg, #0f241a 0%, #08140e 100%);color:white;border-radius:16px;padding:10px;text-align:center;display:flex;flex-direction:column;justify-content:space-between;border:1px solid var(--border-neon);box-shadow:0 6px 20px rgba(0,0,0,0.4), inset 0 0 10px rgba(16, 185, 129, 0.15);position:relative;overflow:hidden;}
 .balance-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center, rgba(16,185,129,0.08) 0%, transparent 60%);pointer-events:none;}
-.balance-card span{font-size:10px;color:#a7f3d0;font-weight:700;letter-spacing:0.2px}
-.balance-card strong{font-size:20px;font-weight:900;color:#ffffff;font-variant-numeric:tabular-nums;letter-spacing:-0.5px;text-shadow:0 0 10px rgba(255,255,255,0.2);}
-.acc-scroll{display:flex;gap:4px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:1px;margin-top:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.acc-scroll::-webkit-scrollbar{display:none}
-.acc-chip{background:rgba(255,255,255,0.05);backdrop-filter:blur(6px);border-radius:8px;padding:3px 8px;text-align:center;border:1px solid rgba(255,255,255,0.1);flex:0 0 auto;min-width:85px;scroll-snap-align:start;}
-.acc-chip-title{font-size:9px;color:#cbd5e1;margin-bottom:0;white-space:nowrap}
-.acc-chip-val{font-size:11px;font-weight:900;color:var(--green-val);font-variant-numeric:tabular-nums}
-.acc-chip-val.neg{color:var(--red-val)}
-.today-card{background:var(--bg-card);border:1px solid var(--border-neon);text-align:center;gap:3px;padding:8px!important;border-radius:10px;}
-.today-label{font-size:10px;font-weight:800;color:var(--emerald-neon)}
-.today-val{font-size:18px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--green-val);letter-spacing:-0.5px}
+.balance-top-row{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#a7f3d0;font-weight:700}
+.privacy-btn{background:transparent;border:0;color:#a7f3d0;cursor:pointer;padding:2px;font-size:13px;display:flex;align-items:center;}
+.balance-main-val{font-size:22px;font-weight:900;color:#ffffff;font-variant-numeric:tabular-nums;letter-spacing:-0.5px;text-shadow:0 0 10px rgba(255,255,255,0.2);margin:4px 0;}
+.monthly-trend{display:inline-flex;align-items:center;gap:3px;font-size:9px;color:#34d399;background:rgba(52,211,153,0.15);padding:2px 6px;border-radius:6px;font-weight:700;}
+
+.accounts-stack-side{display:flex;flex-direction:column;gap:6px;}
+.acc-mini-box{background:var(--bg-card);border:1px solid var(--border-neon);border-radius:14px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:var(--ink);transition:transform .15s ease, background .15s ease;}
+.acc-mini-box:active{transform:scale(0.98)}
+.acc-mini-left{display:flex;align-items:center;gap:8px;}
+.acc-mini-icon{width:28px;height:28px;border-radius:8px;background:rgba(16,185,129,0.1);border:1px solid var(--border-neon);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--emerald-neon);}
+.acc-mini-info{display:flex;flex-direction:column;}
+.acc-mini-title{font-size:9.5px;color:var(--ink-muted);font-weight:800}
+.acc-mini-val{font-size:11.5px;font-weight:900;color:var(--green-val);font-variant-numeric:tabular-nums}
+.acc-mini-arrow{font-size:12px;color:var(--ink-muted);font-weight:900}
+
+/* Second Row: Today Card & Donut Chart */
+.second-dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.today-card{background:var(--bg-card);border:1px solid var(--border-neon);text-align:right;gap:4px;padding:10px!important;border-radius:14px;display:flex;flex-direction:column;justify-content:space-between;}
+.today-label-row{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:800;color:var(--emerald-neon)}
+.today-val{font-size:19px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--green-val);letter-spacing:-0.5px}
 .today-val.warning{color:var(--amber-val)}
 .today-val.bad{color:var(--red-val)}
-.today-note{font-size:9.5px;color:var(--ink-muted);font-weight:700}
+.today-note{font-size:9px;color:var(--ink-muted);font-weight:700}
+
+.donut-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:8px 10px;display:flex;align-items:center;gap:6px;}
+.donut-graphic{position:relative;width:72px;height:72px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.donut-svg{width:100%;height:100%;transform:rotate(-90deg);}
+.donut-center-text{position:absolute;text-align:center;font-size:8px;font-weight:800;color:var(--ink);line-height:1.2;}
+.donut-center-text strong{display:block;font-size:10.5px;color:var(--emerald-neon);}
+.donut-legend{display:flex;flex-direction:column;gap:2px;flex:1;font-size:8.5px;}
+.donut-legend-item{display:flex;align-items:center;justify-content:space-between;color:var(--ink-muted);font-weight:700;}
+.donut-legend-item span:first-child{display:flex;align-items:center;gap:3px;}
+.dot{width:5px;height:5px;border-radius:50%;display:inline-block;}
+
+/* Quick Actions */
 .quick-actions{display:flex;flex-direction:column;gap:4px}
-.qa-main{border:0;width:100%;min-height:36px;padding:6px;border-radius:12px;font-size:12px;font-weight:900;color:#fff;background:linear-gradient(135deg, #10b981 0%, #047857 100%);box-shadow:0 4px 14px rgba(16, 185, 129, 0.3);display:flex;justify-content:center;align-items:center;gap:4px;transition:transform .15s ease, box-shadow .15s ease;}
+.qa-main{border:0;width:100%;min-height:38px;padding:6px;border-radius:14px;font-size:12px;font-weight:900;color:#fff;background:linear-gradient(135deg, #10b981 0%, #047857 100%);box-shadow:0 4px 14px rgba(16, 185, 129, 0.3);display:flex;justify-content:center;align-items:center;gap:4px;transition:transform .15s ease, box-shadow .15s ease;}
 .qa-main:active{transform:scale(0.98)}
 .qa-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
-.qa-mini{border:1px solid var(--border-subtle);padding:4px 2px;border-radius:10px;font-size:9.5px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;background:var(--bg-card);color:var(--ink);transition:transform .15s ease;}
-.qa-mini span:first-child{font-size:13px;line-height:1}
+.qa-mini{border:1px solid var(--border-subtle);padding:6px 2px;border-radius:12px;font-size:10px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--bg-card);color:var(--ink);transition:transform .15s ease;}
+.qa-mini span:first-child{font-size:14px;line-height:1}
 .qa-mini:active{transform:scale(0.96)}
-.qa-income{border-color:rgba(52, 211, 153, 0.3);color:var(--green-val);}
-.qa-transfer{border-color:rgba(251, 191, 36, 0.3);color:var(--amber-val);}
-.qa-debt{border-color:rgba(56, 189, 248, 0.3);color:var(--sky-val);}
-.qa-internal{border-color:rgba(192, 132, 252, 0.3);color:var(--purple-val);}
+.qa-debt{border-color:rgba(244, 63, 94, 0.3);color:var(--red-val);background:rgba(244, 63, 94, 0.05);}
+.qa-transfer{border-color:rgba(245, 158, 11, 0.3);color:var(--amber-val);background:rgba(245, 158, 11, 0.05);}
+.qa-income{border-color:rgba(16, 185, 129, 0.3);color:var(--green-val);background:rgba(16, 185, 129, 0.05);}
+.qa-internal{border-color:rgba(59, 130, 246, 0.3);color:var(--sky-val);background:rgba(59, 130, 246, 0.05);}
+
 .panel{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;min-width:0;}
-.flow-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
-.flow-item{border:1px solid var(--border-subtle);background:var(--bg-card);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
-.flow-item span{font-size:9.5px;color:var(--ink-muted);font-weight:700}
-.flow-item strong{font-size:12px;font-weight:900;font-variant-numeric:tabular-nums}
 .tx-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 10px;background:var(--bg-card);border-radius:12px;border:1px solid var(--border-subtle);font-size:11px;}
 .tx-item:hover{background:var(--bg-card-hover)}
 .tx-item .amount{font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -100,7 +123,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .nav-bottom .nav-btn{background:transparent;border:0;color:var(--ink-muted);padding:4px 2px;font-size:9.5px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:1px;border-radius:12px;}
 .nav-bottom .nav-btn span:first-child{font-size:14px}
 .nav-bottom .nav-btn.active{background:rgba(16,185,129,0.15);color:var(--emerald-neon);box-shadow:0 0 8px var(--emerald-glow)}
-.small{font-size:10.5px;color:var(--ink-muted)}
+.small{font-size:10px;color:var(--ink-muted)}
 .hint{font-size:11px;line-height:1.4;color:var(--amber-val);background:rgba(251, 191, 36, 0.1);border:1px solid rgba(251, 191, 36, 0.3);border-radius:10px;padding:8px}
 #toast{position:fixed;bottom:65px;left:50%;transform:translateX(-50%);z-index:200;background:#090d0b;color:var(--ink);padding:8px 14px;border-radius:12px;font-size:11px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,0.6);max-width:90vw;text-align:center;display:none;border:1px solid var(--border-neon)}
 .person-picker{display:grid;grid-template-columns:1fr auto;gap:4px}
@@ -136,6 +159,20 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .bud-mini-meta strong{font-variant-numeric:tabular-nums;font-weight:900;color:var(--ink);}
 .cap-track{height:4px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden}
 .cap-bar{height:100%;width:0;transition:width .3s ease,background .3s ease}
+
+/* Processing Fund Banner matching image */
+.processing-fund-card{background:linear-gradient(135deg, rgba(6,78,59,0.4) 0%, rgba(4,47,46,0.6) 100%);border:1px solid var(--border-neon);border-radius:14px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;text-decoration:none;color:inherit;transition:transform .15s ease;}
+.processing-fund-card:active{transform:scale(0.98)}
+.processing-fund-card::after{content:'';position:absolute;right:-10px;bottom:-10px;width:70px;height:70px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2310b981" opacity="0.1"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>') no-repeat;pointer-events:none;}
+.pf-left{display:flex;align-items:center;gap:10px;}
+.pf-icon{width:32px;height:32px;border-radius:10px;background:rgba(16,185,129,0.15);border:1px solid var(--border-neon);display:flex;align-items:center;justify-content:center;color:var(--emerald-neon);}
+.pf-info{display:flex;flex-direction:column;gap:1px;}
+.pf-title{font-size:11px;font-weight:900;color:var(--ink);}
+.pf-sub{font-size:9.5px;color:var(--ink-muted);font-weight:700;}
+.pf-val-wrap{display:flex;align-items:center;gap:6px;}
+.pf-val{font-size:15px;font-weight:900;color:var(--green-val);font-variant-numeric:tabular-nums;}
+.pf-arrow{font-size:12px;color:var(--emerald-neon);font-weight:900;}
+
 @media (max-width: 600px){.balance-card strong{font-size:20px}.today-val{font-size:18px}}
 @media (min-width: 600px){:root{--app-max: 720px}}
 @media (min-width: 900px){
@@ -146,7 +183,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
   #view-dashboard{gap:16px}
   .balance-card{padding:20px}
   .balance-card strong{font-size:32px}
-  .acc-scroll{flex-wrap:wrap;overflow:visible;justify-content:center}
   .dash-cols{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
   .dash-col{gap:16px}
   .nav-bottom{max-width: 750px;bottom: 16px}
@@ -159,52 +195,136 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 <body>
 <div class="app">
 <header class="header">
-  <span>النظام المالي الشخصي 💼</span>
+  <div class="header-brand">
+    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    <span>النظام المالي الشخصي — خطوتك نحو الاستقرار المالي</span>
+  </div>
   <div class="header-actions">
     <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" title="تبديل المظهر">
       <span id="theme-toggle-icon">🌙</span> <span id="theme-toggle-text">داكن</span>
     </button>
-    <span class="pill" id="hdr-pill">الكويت · د.ك / مصر · ج.م</span>
+    <span class="pill" id="hdr-pill">الكويت · د.ك</span>
   </div>
 </header>
 
 <main class="content">
 <section id="view-dashboard" class="view">
   <div id="dash-alert-strip" class="alert-strip hidden" onclick="window.location.href='reports.html'"></div>
-  <div class="balance-card" id="accounts-balance-card">
-    <span>💰 إجمالي ما أملك الآن</span>
-    <strong id="dash-total-wealth">0.000 د.ك</strong>
-    <div id="accounts-breakdown" class="acc-scroll"></div>
-  </div>
-  <div class="dash-cols">
-    <div class="dash-col">
-      <div class="panel today-card">
-        <span class="today-label">⚡ تقدر تصرف النهاردة</span>
-        <strong class="today-val" id="dash-today-val">0.000 د.ك</strong>
-        <div class="cap-track"><div class="cap-bar" id="dash-today-bar"></div></div>
-        <small class="today-note" id="dash-today-note">—</small>
+  
+  <!-- Top Section: Total Wealth & Separate Account Cards -->
+  <div class="top-dash-grid">
+    <div class="balance-card" id="accounts-balance-card">
+      <div class="balance-top-row">
+        <span>إجمالي ما تملكه الآن</span>
+        <button type="button" class="privacy-btn" onclick="togglePrivacy()" id="privacy-toggle-btn" title="إظهار/إخفاء الأرقام">👁️</button>
       </div>
-      <div class="quick-actions">
-        <button type="button" class="qa-main" onclick="openInputForm('expense')">➕ تسجيل مصروف</button>
-        <div class="qa-row" style="margin-top: 4px;">
-          <button type="button" class="qa-mini qa-income" onclick="openInputForm('income')"><span>📥</span><span>دخل</span></button>
-          <button type="button" class="qa-mini qa-transfer" onclick="openInputForm('transfer')"><span>✈️</span><span>حوالة</span></button>
-          <button type="button" class="qa-mini qa-debt" onclick="openInputForm('debt')"><span>🤝</span><span>دين</span></button>
-          <button type="button" class="qa-mini qa-internal" onclick="openInputForm('internal_transfer')"><span>🔄</span><span>تحويل</span></button>
-        </div>
-      </div>
-      <div class="panel stack" id="dash-budget-box" style="gap:6px">
-        <div class="row-between"><strong style="font-size:12px">🎯 الميزانية وصندوق المعالجة</strong></div>
-        <div id="dash-budget-summary" class="bud-grid"><span class="small" style="grid-column: span 2">سجّل راتبًا أساسيًا لعرض الميزانية.</span></div>
+      <strong class="balance-main-val" id="dash-total-wealth">0.000 د.ك</strong>
+      <div>
+        <span class="monthly-trend">📈 +0.0% من الشهر الماضي</span>
       </div>
     </div>
-    <div class="dash-col">
-      <div class="flow-strip">
-        <div class="flow-item"><span>📥 دخل هذه الدورة</span><strong id="dash-cycle-in" class="good">0.000 د.ك</strong></div>
-        <div class="flow-item"><span>📤 صرف هذه الدورة</span><strong id="dash-cycle-out" class="bad">0.000 د.ك</strong></div>
+    <div class="accounts-stack-side">
+      <a href="#" class="acc-mini-box" onclick="return false;">
+        <div class="acc-mini-left">
+          <div class="acc-mini-icon">🏛️</div>
+          <div class="acc-mini-info">
+            <span class="acc-mini-title">الحساب البنكي</span>
+            <span class="acc-mini-val" id="acc-bank-val">76.926 د.ك</span>
+          </div>
+        </div>
+        <span class="acc-mini-arrow">‹</span>
+      </a>
+      <a href="#" class="acc-mini-box" onclick="return false;">
+        <div class="acc-mini-left">
+          <div class="acc-mini-icon">💼</div>
+          <div class="acc-mini-info">
+            <span class="acc-mini-title">الكاش</span>
+            <span class="acc-mini-val" id="acc-cash-val">11.424 د.ك</span>
+          </div>
+        </div>
+        <span class="acc-mini-arrow">‹</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Second Row: Daily Spending Limit & Donut Chart -->
+  <div class="second-dash-grid">
+    <div class="panel today-card">
+      <div class="today-label-row">
+        <span>⚡</span>
+        <span>المتاح للصرف اليوم</span>
       </div>
+      <div>
+        <strong class="today-val" id="dash-today-val">0.844 د.ك</strong>
+        <div class="cap-track" style="margin:4px 0;"><div class="cap-bar" id="dash-today-bar" style="width: 65%;"></div></div>
+        <small class="today-note" id="dash-today-note">من الحد اليومي المحدد 1.118 د.ك</small>
+      </div>
+    </div>
+
+    <div class="donut-card">
+      <div class="donut-graphic">
+        <svg class="donut-svg" viewBox="0 0 36 36">
+          <path class="donut-bg" stroke="rgba(255,255,255,0.08)" stroke-width="3.5" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+          <path class="donut-segment" stroke="#10b981" stroke-width="3.5" stroke-dasharray="22.1, 77.9" stroke-dashoffset="25" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+        </svg>
+        <div class="donut-center-text">
+          شهر أكتوبر
+          <strong style="color:var(--emerald-neon)">22.1%</strong>
+          من الدخل
+        </div>
+      </div>
+      <div class="donut-legend">
+        <div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>42%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>24%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون</span><strong>18%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>الادخار</span><strong>10%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#94a3b8"></i>أخرى</span><strong>6%</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-cols">
+    <div class="dash-col">
+      <div class="quick-actions">
+        <div class="qa-row" style="margin-bottom: 4px;">
+          <button type="button" class="qa-mini qa-debt" onclick="openInputForm('debt')"><span>🤝</span><span>دين</span></button>
+          <button type="button" class="qa-mini qa-transfer" onclick="openInputForm('transfer')"><span>✈️</span><span>حوالة</span></button>
+          <button type="button" class="qa-mini qa-income" onclick="openInputForm('income')"><span>💲</span><span>دخل</span></button>
+          <button type="button" class="qa-mini qa-internal" onclick="openInputForm('internal_transfer')"><span>🔄</span><span>تحويل</span></button>
+        </div>
+        <button type="button" class="qa-main" onclick="openInputForm('expense')">➕ تسجيل مصروف</button>
+      </div>
+
+      <div class="panel stack" id="dash-budget-box" style="gap:6px">
+        <div class="row-between">
+          <strong style="font-size:12px">🎯 الميزانية وصندوق المعالجة</strong>
+          <span class="small" style="color:var(--emerald-neon);cursor:pointer;" onclick="switchMainView('backup')">تفاصيل أكثر ›</span>
+        </div>
+        <div id="dash-budget-summary" class="bud-grid"><span class="small" style="grid-column: span 2">سجّل راتبًا أساسيًا لعرض الميزانية.</span></div>
+      </div>
+
+      <!-- Processing Fund Wide Banner matching image -->
+      <a href="#" class="processing-fund-card" onclick="switchMainView('backup');return false;">
+        <div class="pf-left">
+          <div class="pf-icon">🛡️</div>
+          <div class="pf-info">
+            <span class="pf-title">صندوق المعالجة</span>
+            <span class="pf-sub">المتبقي الصافي · يكفي 25 يوماً</span>
+          </div>
+        </div>
+        <div class="pf-val-wrap">
+          <span class="pf-val" id="dash-pf-val">27.952 د.ك</span>
+          <span class="pf-arrow">‹</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="dash-col">
       <div class="panel stack">
-        <div class="row-between"><strong style="font-size:12px">📋 آخر المعاملات</strong><span id="dash-tx-count" class="small">0 معاملة</span></div>
+        <div class="row-between">
+          <strong style="font-size:12px">📋 آخر المعاملات</strong>
+          <span class="small" style="color:var(--emerald-neon);cursor:pointer;" onclick="window.location.href='reports.html'">عرض الكل ›</span>
+        </div>
         <div id="dash-recent-transactions" class="stack" style="gap:4px"><span class="small">لا توجد معاملات محفوظة بعد.</span></div>
         <button type="button" class="btn btn-muted" style="min-height:30px;font-size:11px" onclick="window.location.href='reports.html'">فتح التقارير والكشوفات الكاملة 📊</button>
       </div>
@@ -296,6 +416,16 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 <section id="view-backup" class="view stack hidden">
   <div class="row-between"><strong style="font-size:14px;color:var(--ink)">الإعدادات ⚙️</strong><span class="small">تصميم مدمج</span></div>
   <div class="stack" style="gap:6px">
+    
+    <!-- كارت بوابة التحليل المالي المربوط بملف تاني -->
+    <div class="acc-item open" id="acc-financial-analysis">
+      <div class="acc-header" onclick="toggleAccordion('acc-financial-analysis')"><span>📊 التحليل المالي (بوابة الملف الخارجي)</span><span class="acc-icon">▼</span></div>
+      <div class="acc-body stack">
+        <div class="field-note" style="color:var(--emerald-neon);font-weight:700;">بوابة دخول مباشرة للوصول إلى ملف التحليل المالي الإضافي والتقارير المتقدمة.</div>
+        <a href="financial_analysis.html" target="_blank" class="btn btn-primary" style="text-decoration:none;text-align:center;justify-content:center;margin-top:4px;">فتح ملف التحليل المالي 🚀</a>
+      </div>
+    </div>
+
     <div class="acc-item" id="acc-accounts">
       <div class="acc-header" onclick="toggleAccordion('acc-accounts')"><span>🏦 إدارة الحسابات والمحافظ</span><span class="acc-icon">▼</span></div>
       <div class="acc-body stack">
@@ -305,7 +435,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
         <button type="button" class="btn btn-soft" onclick="openOpeningSetupModal()" style="padding:6px">🎬 إعادة بدء الاستخدام (تسجيل رصيد بداية جديد)</button>
       </div>
     </div>
-    <div class="acc-item open" id="acc-targets">
+    <div class="acc-item" id="acc-targets">
       <div class="acc-header" onclick="toggleAccordion('acc-targets')"><span>🎯 النسب المستهدفة للميزانية (%)</span><span class="acc-icon">▼</span></div>
       <div class="acc-body stack">
         <div class="grid2">
@@ -325,7 +455,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
         <div class="field-note">تحدد هذه النسب الخطة المالية للصناديق الأساسية. وأي نسبة متبقية تذهب تلقائيياً لصندوق المعالجة.</div>
       </div>
     </div>
-    <div class="acc-item open" id="acc-categories">
+    <div class="acc-item" id="acc-categories">
       <div class="acc-header" onclick="toggleAccordion('acc-categories')"><span>🏷️ إدارة تصنيفات المصروفات</span><span class="acc-icon">▼</span></div>
       <div class="acc-body stack">
         <div class="person-picker">
@@ -400,8 +530,9 @@ const TARGET_PCT_KEY="pf_target_percentages";
 const ACCOUNTS_KEY="pf_accounts_list";
 const SETUP_DONE_KEY="pf_setup_done";
 const THEME_KEY="pf_theme_pref";
+const PRIVACY_KEY="pf_privacy_hidden";
 const OUTSIDE_ACCOUNT_ID="outside";
-const DEFAULT_PILL_TEXT="الكويت · د.ك / مصر · ج.م";
+const DEFAULT_PILL_TEXT="الكويت · د.ك";
 const BUDGET_ITEMS=[
   {key:"fixed",label:"📌 المصروفات الثابتة",short:"ثابت",icon:"📌"},
   {key:"regular",label:"📊 المصروفات العادية",short:"عادي",icon:"📊"},
@@ -413,7 +544,7 @@ const BUDGET_ITEMS=[
 const BUDGET_BY_KEY={};
 BUDGET_ITEMS.forEach(b=>{BUDGET_BY_KEY[b.key]=b});
 const CYCLE_DAYS=30;
-let db=null,currentInputTab="expense",editingTxId=null,activePersonCallback=null,toastTimer=null;
+let db=null,currentInputTab="expense",editingTxId=null,activePersonCallback=null,toastTimer=null,isPrivacyHidden=false;
 
 function $(e){return document.getElementById(e)}
 
@@ -437,9 +568,26 @@ function updateThemeUI(theme){
     else{icon.textContent="☀️";text.textContent="فاتح";}
   }
 }
+
+function togglePrivacy(){
+  isPrivacyHidden=!isPrivacyHidden;
+  localStorage.setItem(PRIVACY_KEY,isPrivacyHidden?"1":"0");
+  const btn=$("privacy-toggle-btn");
+  if(btn) btn.textContent=isPrivacyHidden?"🙈":"👁️";
+  refreshDashboard();
+}
+
+function formatMoneyPrivacy(valStr){
+  if(isPrivacyHidden) return "•••••• د.ك";
+  return valStr;
+}
+
 function showToast(e){const t=$("toast");t.textContent=e;t.style.display="block";toastTimer&&clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.style.display="none",5000)}
 function escapeHTML(e){return String(e||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
-function money(e,t){return Number(e||0).toFixed(3)+" "+(t||"د.ك")}
+function money(e,t){
+  const raw=Number(e||0).toFixed(3)+" "+(t||"د.ك");
+  return formatMoneyPrivacy(raw);
+}
 function moneyEGP(e){return Number(e||0).toLocaleString("en-US",{maximumFractionDigits:0})+" ج.م"}
 function toggleAccordion(e){const t=$(e);t&&t.classList.toggle("open")}
 function formatStrictISO(e,t,a){return`${String(e).padStart(4,"0")}-${String(t).padStart(2,"0")}-${String(a).padStart(2,"0")}`}
@@ -1029,16 +1177,19 @@ async function refreshAllViews(e){
 }
 
 function renderAccountsBalance(transactions){
-  const accs=getVisibleAccounts();
-  const breakdown=$("accounts-breakdown");
   const totalEl=$("dash-total-wealth");
-  if(!breakdown||!totalEl)return;
+  const bankEl=$("acc-bank-val");
+  const cashEl=$("acc-cash-val");
+  if(!totalEl)return;
+  
   let total=0;
-  breakdown.innerHTML=accs.map(acc=>{
+  const accs=getVisibleAccounts();
+  accs.forEach(acc=>{
     const bal=getAccountBalance(transactions,acc.id);
     total+=bal;
-    return `<div class="acc-chip"><div class="acc-chip-title">${acc.icon||"💳"} ${escapeHTML(acc.name)}</div><div class="acc-chip-val${bal<0?" neg":""}">${money(bal)}</div></div>`;
-  }).join("");
+    if(acc.type==="bank"&&bankEl) bankEl.textContent=money(bal);
+    if(acc.type==="cash"&&cashEl) cashEl.textContent=money(bal);
+  });
   totalEl.textContent=money(total);
 }
 
@@ -1047,7 +1198,7 @@ function renderRecentTransactions(t){
   if(!box)return;
   if(!t.length){box.innerHTML='<span class="small">لا توجد معاملات محفوظة بعد.</span>';return;}
   const today=todayISO();
-  box.innerHTML=t.slice(0,5).map(e=>{
+  box.innerHTML=t.slice(0,3).map(e=>{
     let label;
     if(e.type==="expense"||e.type==="income")label=e.category;
     else if(e.type==="transfer")label="حوالة";
@@ -1069,7 +1220,7 @@ function renderRecentTransactions(t){
 
 async function refreshDashboard(e){
   const t=e||await allTransactions();
-  $("dash-tx-count").textContent=t.length+" معاملة";
+  $("dash-tx-count")&&($("dash-tx-count").textContent=t.length+" معاملة");
   renderAccountsBalance(t);
   renderRecentTransactions(t);
   await renderDashBudgetCard(t);
@@ -1088,7 +1239,7 @@ function renderCyclePill(item){
   p.classList.remove("warn");
   if(!item){p.textContent=DEFAULT_PILL_TEXT;return;}
   if(item.daysRemaining<=0){p.textContent="⏰ الدورة انتهت";p.classList.add("warn");return;}
-  p.textContent=`📅 يوم ${Math.min(CYCLE_DAYS,item.elapsed+1)} / ${CYCLE_DAYS}`;
+  p.textContent=`الكويت · د.ك`;
 }
 
 function renderTodayCard(items){
@@ -1116,7 +1267,7 @@ function renderTodayCard(items){
   val.textContent=money(left);
   bar.style.width=pct+"%";
   bar.style.background=level==="bad"?"var(--red-val)":level==="warning"?"var(--amber-val)":"var(--emerald-neon)";
-  note.textContent=over?`تجاوزت حد اليوم بـ ${money(spent-allowed)}`:`من حد يومي ${money(allowed)} (عادية + شخصية)`;
+  note.textContent=over?`تجاوزت حد اليوم بـ ${money(spent-allowed)}`:`من حد يومي ${money(allowed)}`;
 }
 
 function renderAlertStrip(items){
@@ -1152,18 +1303,9 @@ function renderBudgetRowHTML(data){
   const cls=level==="bad"?"bad":level==="warning"?"warning":"good";
   
   if(data.isDynamic){
-    const dailyTxt=(data.daysRemaining>0&&data.remaining>0)?money(data.dailyActual):"—";
-    const netTxt=data.remaining>=0?money(data.remaining):`عجز: ${money(Math.abs(data.remaining))}`;
-    return `<div class="bud-mini-card" data-bkey="${data.budgetId}">
-      <div class="bud-mini-head">
-        <span class="bud-mini-name">${b.icon} ${b.short}</span>
-        <span class="bud-mini-pct ${cls}">صندوق معالج</span>
-      </div>
-      <div class="bud-mini-meta" style="margin-top:2px">
-        <div>المتبقي الصافي: <strong class="${data.remaining>=0?"good":"bad"}">${netTxt}</strong></div>
-        <div>⚡ يتصرف على ${data.daysRemaining} يوم (يوميًا: <strong>${dailyTxt}</strong>)</div>
-      </div>
-    </div>`;
+    const pfValEl=$("dash-pf-val");
+    if(pfValEl) pfValEl.textContent=money(data.remaining);
+    return "";
   }
 
   const dailyTxt=(data.daysRemaining>0&&data.remaining>0)?money(data.dailyActual):"—";
@@ -1197,7 +1339,12 @@ async function renderDashBudgetCard(transactions){
       return;
     }
     const {items}=computeAllBudgetData(txs,cycle);
-    el.innerHTML=items.map(renderBudgetRowHTML).join("");
+    el.innerHTML=items.filter(i=>!i.isDynamic).map(renderBudgetRowHTML).join("");
+    const dyn=items.find(i=>i.isDynamic);
+    if(dyn){
+      const pfValEl=$("dash-pf-val");
+      if(pfValEl) pfValEl.textContent=money(dyn.remaining);
+    }
     renderTodayCard(items);
     renderAlertStrip(items);
     renderCyclePill(hasSalary?items[0]:null);
@@ -1527,6 +1674,10 @@ async function handleEditFromQuery(){
 window.addEventListener("DOMContentLoaded",async()=>{
   try{
     initTheme();
+    isPrivacyHidden=localStorage.getItem(PRIVACY_KEY)==="1";
+    const privacyBtn=$("privacy-toggle-btn");
+    if(privacyBtn) privacyBtn.textContent=isPrivacyHidden?"🙈":"👁️";
+
     initDates();
     loadTargetPercentages();
     renderBudgetCategorySelectOptions();
