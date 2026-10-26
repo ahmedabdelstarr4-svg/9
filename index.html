@@ -75,33 +75,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .qa-debt{border-color:rgba(56, 189, 248, 0.3);color:var(--sky-val);}
 .qa-internal{border-color:rgba(192, 132, 252, 0.3);color:var(--purple-val);}
 .panel{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;min-width:0;}
-.budget-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px;min-width:0;}
-.budget-card[data-bkey="fixed"]{border-color:rgba(56, 189, 248, 0.3);}
-.budget-card[data-bkey="regular"]{border-color:rgba(16, 185, 129, 0.3);}
-.budget-card[data-bkey="personal"]{border-color:rgba(192, 132, 252, 0.3);}
-.budget-card[data-bkey="transfer"]{border-color:rgba(251, 191, 36, 0.3);}
-.budget-card[data-bkey="debt"]{border-color:rgba(56, 189, 248, 0.3);}
-.budget-card[data-bkey="emergency"]{border-color:rgba(251, 191, 36, 0.3);}
-.budget-card-head{display:flex;justify-content:space-between;align-items:center;gap:4px}
-.budget-card-title{font-size:12px;font-weight:900;color:var(--ink)}
-.budget-card-pct{font-size:9.5px;background:rgba(255,255,255,0.05);color:var(--ink-muted);padding:2px 6px;border-radius:6px;font-weight:800;border:1px solid var(--border-subtle)}
-.budget-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
-.budget-stat{background:rgba(0,0,0,0.15);border-radius:8px;padding:4px;text-align:center;border:1px solid var(--border-subtle)}
-.budget-stat-label{font-size:9px;color:var(--ink-muted);font-weight:700;margin-bottom:1px}
-.budget-stat-value{font-size:11px;font-weight:900;font-variant-numeric:tabular-nums}
-.budget-daily{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;font-size:10px}
-.budget-daily-item{background:rgba(0,0,0,0.15);border-radius:6px;padding:4px;border:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;gap:4px}
-.budget-daily-label{color:var(--ink-muted);font-weight:700}
-.budget-daily-value{font-weight:900;font-variant-numeric:tabular-nums}
-.cap-track{height:4px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden}
-.cap-bar{height:100%;width:0;transition:width .3s ease,background .3s ease}
-.bud-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
-.bud-mini-card{border:1px solid var(--border-subtle);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;background:var(--bg-card);min-width:0;}
-.bud-mini-head{display:flex;justify-content:space-between;align-items:center;gap:4px}
-.bud-mini-name{font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bud-mini-pct{font-size:9.5px;font-weight:900;font-variant-numeric:tabular-nums}
-.bud-mini-meta{display:flex;flex-direction:column;gap:1px;font-size:9.5px;color:var(--ink-muted);font-weight:700}
-.bud-mini-meta strong{font-variant-numeric:tabular-nums;font-weight:900;color:var(--ink);}
 .flow-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
 .flow-item{border:1px solid var(--border-subtle);background:var(--bg-card);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .flow-item span{font-size:9.5px;color:var(--ink-muted);font-weight:700}
@@ -119,7 +92,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .btn-green{background:#10b981;color:white}
 .btn-muted{background:rgba(255,255,255,0.05);color:var(--ink);border:1px solid var(--border-subtle)}
 .btn-danger{background:rgba(251, 113, 133, 0.1);color:var(--red-val);border:1px solid rgba(251, 113, 133, 0.3)}
-.action-btn-mini{padding:2px 6px;font-size:11px;min-height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;}
 #view-input .grid4{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;background:rgba(0,0,0,0.3);padding:4px;border-radius:12px;border:1px solid var(--border-subtle)}
 #view-input .tab{border:0;background:transparent;color:var(--ink-muted);border-radius:8px;padding:6px 2px;font-size:10px;font-weight:800;}
 #view-input .tab.active{background:linear-gradient(135deg,#10b981,#047857);color:#ffffff;box-shadow:0 3px 10px rgba(16,185,129,0.3)}
@@ -130,15 +102,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .nav-bottom .nav-btn.active{background:rgba(16,185,129,0.15);color:var(--emerald-neon);box-shadow:0 0 8px var(--emerald-glow)}
 .small{font-size:10.5px;color:var(--ink-muted)}
 .hint{font-size:11px;line-height:1.4;color:var(--amber-val);background:rgba(251, 191, 36, 0.1);border:1px solid rgba(251, 191, 36, 0.3);border-radius:10px;padding:8px}
-.table-wrap{overflow-x:auto;border:1px solid var(--border-subtle);border-radius:10px;width:100%;background:var(--bg-card)}
-table{border-collapse:separate;border-spacing:0;width:100%;min-width:100%;font-size:11px;text-align:right;table-layout:fixed}
-th,td{padding:8px 6px;border-bottom:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle);vertical-align:middle;word-wrap:break-word}
-th:last-child,td:last-child{border-left:0}
-th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
-.report{background:var(--bg-app);border:1px solid var(--border-subtle);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;width:100%}
-.report-head{background:linear-gradient(135deg,#0e1612,#070c09);color:white;border-radius:12px;text-align:center;padding:14px 10px;border:1px solid var(--border-neon)}
-.report-meta{background:var(--bg-card);border:1px solid var(--border-subtle);padding:12px;border-radius:12px;font-size:12px;display:flex;flex-direction:column;gap:6px}
-.report-summary{background:rgba(16,185,129,0.05);border:1px solid var(--border-neon);padding:12px;border-radius:12px;display:flex;flex-direction:column;gap:6px;font-size:12px}
 #toast{position:fixed;bottom:65px;left:50%;transform:translateX(-50%);z-index:200;background:#090d0b;color:var(--ink);padding:8px 14px;border-radius:12px;font-size:11px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,0.6);max-width:90vw;text-align:center;display:none;border:1px solid var(--border-neon)}
 .person-picker{display:grid;grid-template-columns:1fr auto;gap:4px}
 .btn-plus{padding:0 10px;font-size:14px;font-weight:800;min-width:36px}
@@ -147,9 +110,6 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
 .modal-overlay{position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(4px);z-index:150;display:flex;align-items:center;justify-content:center;padding:10px}
 .modal-box{background:var(--bg-app);border-radius:16px;border:1px solid var(--border-neon);padding:14px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,0.5);}
 .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.finance-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;background:rgba(0,0,0,0.2);padding:3px;border-radius:12px;border:1px solid var(--border-subtle)}
-.finance-tabs .tab{padding:8px 2px;font-weight:800;border:0;background:transparent;color:var(--ink-muted);border-radius:8px;}
-.finance-tabs .tab.active{background:var(--emerald-neon);color:#fff;}
 .good{color:var(--green-val)!important}
 .bad{color:var(--red-val)!important}
 .warning{color:var(--amber-val)!important}
@@ -166,6 +126,15 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
 .field-note{font-size:10px;color:var(--ink-muted);line-height:1.3;margin-top:2px}
 .field-note.warn{color:var(--amber-val);background:rgba(251,191,36,0.1);padding:4px 6px;border-radius:6px;border:1px solid rgba(251,191,36,0.3);font-weight:700}
 .row-between{display:flex;justify-content:space-between;align-items:center;gap:4px}
+.bud-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.bud-mini-card{border:1px solid var(--border-subtle);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;background:var(--bg-card);min-width:0;}
+.bud-mini-head{display:flex;justify-content:space-between;align-items:center;gap:4px}
+.bud-mini-name{font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bud-mini-pct{font-size:9.5px;font-weight:900;font-variant-numeric:tabular-nums}
+.bud-mini-meta{display:flex;flex-direction:column;gap:1px;font-size:9.5px;color:var(--ink-muted);font-weight:700}
+.bud-mini-meta strong{font-variant-numeric:tabular-nums;font-weight:900;color:var(--ink);}
+.cap-track{height:4px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden}
+.cap-bar{height:100%;width:0;transition:width .3s ease,background .3s ease}
 @media (max-width: 600px){.balance-card strong{font-size:20px}.today-val{font-size:20px}}
 @media (min-width: 600px){:root{--app-max: 720px}}
 @media (min-width: 900px){
@@ -183,19 +152,8 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
   .nav-bottom .nav-btn{padding: 10px 6px;font-size: 12px}
   body{padding-bottom: calc(90px + env(safe-area-inset-bottom,16px))}
   #toast{bottom: 90px;font-size: 13px;padding: 12px 20px}
-  .modal-sheet-overlay{align-items: center;padding: 16px}
-  .modal-sheet{max-width: 600px;border-radius: 24px;max-height: 85vh}
-}
-@media print{
-  .no-print{display:none!important}
-  .report tr,.report .report-head,.report .report-meta,.report .report-summary,.report .metric,.report .balance-card,.report .panel,.person-item,.table-wrap{break-inside:avoid;page-break-inside:avoid}
-  .table-wrap{overflow:visible!important}
-  .report{box-shadow:none;border:0;width:100%!important;padding:0!important}
 }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </head>
 <body>
 <div class="app">
@@ -211,7 +169,7 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
 
 <main class="content">
 <section id="view-dashboard" class="view">
-  <div id="dash-alert-strip" class="alert-strip hidden" onclick="switchMainView('reports')"></div>
+  <div id="dash-alert-strip" class="alert-strip hidden" onclick="window.location.href='reports.html'"></div>
   <div class="balance-card" id="accounts-balance-card">
     <span>💰 إجمالي ما أملك الآن</span>
     <strong id="dash-total-wealth">0.000 د.ك</strong>
@@ -226,11 +184,9 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
         <small class="today-note" id="dash-today-note">—</small>
       </div>
       <div class="quick-actions">
-<button type="button" class="qa-main" onclick="openInputForm('expense')">➕ تسجيل مصروف</button>
-<button type="button" class="qa-main" style="background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); margin-top: 4px;" onclick="window.location.href='analytics.html'">📊 أرشيف وتحليل الدورات</button>
-
-                <div class="qa-row">
-
+        <button type="button" class="qa-main" onclick="openInputForm('expense')">➕ تسجيل مصروف</button>
+        <button type="button" class="qa-main" style="background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); margin-top: 4px;" onclick="window.location.href='analytics.html'">📊 أرشيف وتحليل الدورات</button>
+        <div class="qa-row">
           <button type="button" class="qa-mini qa-income" onclick="openInputForm('income')"><span>📥</span><span>دخل</span></button>
           <button type="button" class="qa-mini qa-transfer" onclick="openInputForm('transfer')"><span>✈️</span><span>حوالة</span></button>
           <button type="button" class="qa-mini qa-debt" onclick="openInputForm('debt')"><span>🤝</span><span>دين</span></button>
@@ -238,9 +194,7 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
         </div>
       </div>
       <div class="panel stack" id="dash-budget-box" style="gap:6px">
-        <div class="row-between">
-          <strong style="font-size:12px">🎯 الميزانية والصناديق</strong>
-        </div>
+        <div class="row-between"><strong style="font-size:12px">🎯 الميزانية والصناديق</strong></div>
         <div id="dash-budget-summary" class="bud-grid"><span class="small" style="grid-column: span 2">سجّل راتبًا أساسيًا لعرض الميزانية.</span></div>
       </div>
     </div>
@@ -252,7 +206,7 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
       <div class="panel stack">
         <div class="row-between"><strong style="font-size:12px">📋 آخر المعاملات</strong><span id="dash-tx-count" class="small">0 معاملة</span></div>
         <div id="dash-recent-transactions" class="stack" style="gap:4px"><span class="small">لا توجد معاملات محفوظة بعد.</span></div>
-        <button type="button" class="btn btn-muted" style="min-height:30px;font-size:11px" onclick="switchMainView('reports')">فتح التقارير والكشوفات الكاملة 📊</button>
+        <button type="button" class="btn btn-muted" style="min-height:30px;font-size:11px" onclick="window.location.href='reports.html'">فتح التقارير والكشوفات الكاملة 📊</button>
       </div>
     </div>
   </div>
@@ -339,60 +293,6 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
   </div>
 </div>
 
-<section id="view-reports" class="view stack hidden">
-  <div class="finance-tabs no-print">
-    <button type="button" class="tab active" id="finance-tab-ledger" onclick="switchFinanceTab('ledger')">سجل المعاملات التفصيلي 📜</button>
-  </div>
-  <section id="finance-ledger-view" class="stack">
-    <div id="filter-section" class="stack no-print">
-      <div class="panel" style="background:rgba(16,185,129,0.08);border-color:var(--border-neon);color:var(--emerald-neon);font-size:11.5px;font-weight:700">حدد معايير التقرير</div>
-      <div><label>التصنيف الرئيسي</label><select id="report-type" onchange="onReportTypeChange()"><option value="expense">مصروفات</option><option value="income">دخل</option><option value="debt">ديون وعلاقات مالية</option><option value="transfer">تحويلات مالية خارجية</option><option value="internal_transfer">تحويلات بين الحسابات</option><option value="all">ملخص كل المعاملات</option></select></div>
-      <div id="report-subtype-wrap"><label>النوع الفرعي</label><select id="report-subtype" onchange="updateReportTargetOptions()"></select></div>
-      <div id="report-target-wrap"><label>الطرف / المستفيد</label><div class="person-picker"><select id="beneficiary-select"><option value="all">الكل</option></select><button type="button" class="btn btn-soft btn-plus" onclick="openPersonModal(this)" title="إضافة اسم جديد">+</button></div></div>
-      <div class="grid2">
-        <div><label>من تاريخ</label><div class="date-parts"><input id="date-from-day" type="number" min="1" max="31" inputmode="numeric" placeholder="يوم"><input id="date-from-month" type="number" min="1" max="12" inputmode="numeric" placeholder="شهر"><input id="date-from-year" type="number" min="2000" max="2100" inputmode="numeric" placeholder="سنة"></div></div>
-        <div><label>إلى تاريخ</label><div class="date-parts"><input id="date-to-day" type="number" min="1" max="31" inputmode="numeric" placeholder="يوم"><input id="date-to-month" type="number" min="1" max="12" inputmode="numeric" placeholder="شهر"><input id="date-to-year" type="number" min="2000" max="2100" inputmode="numeric" placeholder="سنة"></div></div>
-      </div>
-      <button type="button" onclick="setSalaryCycleDates()" class="btn btn-soft">📅 تعبئة تاريخ آخر دورة راتب</button>
-      <button type="button" onclick="generateReport()" class="btn btn-dark">إنشاء التقرير 📄</button>
-    </div>
-    <div id="report-section" class="stack hidden">
-      <button type="button" onclick="backToFilters()" class="btn btn-soft no-print">⬅️ تعديل معايير التقرير</button>
-      <div id="report-search-wrap" class="no-print"><label>🔍 بحث داخل التقرير (اسم / بيان / ملاحظات)</label><input id="report-search" placeholder="اكتب للبحث..." oninput="filterReportTable()"></div>
-      
-      <div id="capture-area" class="report">
-        <div class="report-head">
-          <h2 id="report-title" style="margin:0;font-size:16px">كشف حساب مالي</h2>
-          <div style="font-size:11px;color:#cbd5e1;margin-top:4px">النظام المالي الشخصي — تقرير رسمي معتمد</div>
-          <div id="report-number" style="font-size:10px;color:#cbd5e1;margin-top:2px"></div>
-        </div>
-        <div class="report-meta">
-          <div class="row-between"><span>الفترة:</span><strong id="display-date-range">—</strong></div>
-          <div class="row-between"><span>الطرف / التصنيف:</span><strong id="display-target">الكل</strong></div>
-          <div class="row-between"><span>عدد الحركات:</span><strong id="display-count">0</strong></div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead id="report-table-head"></thead>
-            <tbody id="report-table-body"></tbody>
-          </table>
-        </div>
-        <div class="report-summary" id="report-summary"></div>
-        <div id="ledger-breakdowns" class="stack"></div>
-        <div id="tafqit-box" class="panel" style="font-size:11.5px;text-align:center;font-weight:700">ملاحظات التقرير ستظهر هنا.</div>
-        <div style="font-size:10px;color:var(--ink-muted);text-align:center;border-top:1px solid var(--border-subtle);padding-top:8px">تم إصدار هذا المستند إلكترونياً من النظام المالي الشخصي ولا يحتاج إلى ختم.</div>
-      </div>
-
-      <div id="report-actions" class="grid2 no-print" style="margin-top:8px">
-        <button type="button" onclick="exportReportExcel()" class="btn btn-green">تصدير Excel 📗</button>
-        <button type="button" onclick="shareReport()" class="btn btn-green">مشاركة / واتساب 💬</button>
-        <button type="button" onclick="exportPDF('capture-area','Report','p')" class="btn btn-dark">تصدير PDF 📄</button>
-        <button type="button" onclick="shareAsImageSafe('capture-area','Report')" class="btn btn-soft">حفظ كصورة 🖼️</button>
-      </div>
-    </div>
-  </section>
-</section>
-
 <section id="view-backup" class="view stack hidden">
   <div class="row-between"><strong style="font-size:14px;color:var(--ink)">الإعدادات ⚙️</strong><span class="small">تصميم مدمج</span></div>
   <div class="stack" style="gap:6px">
@@ -465,17 +365,15 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
 </section>
 </main>
 
-<nav class="nav-bottom no-print">
+<nav class="nav-bottom">
   <button type="button" id="nav-dashboard" class="nav-btn active" onclick="switchMainView('dashboard')"><span>🏠</span><span>الرئيسية</span></button>
-  <button type="button" id="nav-reports" class="nav-btn" onclick="switchMainView('reports')"><span>📜</span><span>التقارير</span></button>
+  <button type="button" id="nav-reports" class="nav-btn" onclick="window.location.href='reports.html'"><span>📜</span><span>التقارير</span></button>
   <button type="button" id="nav-backup" class="nav-btn" onclick="switchMainView('backup')"><span>⚙️</span><span>الإعدادات</span></button>
 </nav>
 </div>
 
 <div id="toast" role="status" aria-live="polite"></div>
-
 <div id="person-modal" class="modal-overlay hidden"><div class="modal-box"><h3 id="person-modal-title" style="margin:0;font-size:14px">إضافة اسم جديد</h3><input id="person-modal-input" placeholder="اسم الشخص / الجهة" maxlength="80"><div class="modal-actions"><button type="button" class="btn btn-primary" onclick="confirmAddPerson()">حفظ</button><button type="button" class="btn btn-muted" onclick="closePersonModal()">إلغاء</button></div></div></div>
-
 <div id="opening-setup-modal" class="modal-overlay hidden">
   <div class="modal-box">
     <h3 style="margin:0;font-size:15px;text-align:center">👋 أهلاً بيك!</h3>
@@ -512,7 +410,7 @@ const BUDGET_ITEMS=[
 const BUDGET_BY_KEY={};
 BUDGET_ITEMS.forEach(b=>{BUDGET_BY_KEY[b.key]=b});
 const CYCLE_DAYS=30;
-let db=null,currentInputTab="expense",editingTxId=null,activePersonCallback=null,currentFinanceTab="ledger",toastTimer=null,cachedReportRecords=[],visibleReportRecords=[],cachedReportRange={from:"",to:""},reportGenerated=!1;
+let db=null,currentInputTab="expense",editingTxId=null,activePersonCallback=null,toastTimer=null;
 
 function $(e){return document.getElementById(e)}
 
@@ -693,8 +591,6 @@ function initDates(){
   $("tx-year")&&!$("tx-year").value&&($("tx-year").value=Number(e));
   const n=$("tx-time");
   if(n&&!n.value){const d=new Date;n.value=`${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;}
-  $("date-from-year")&&!$("date-from-year").value&&writeDateParts("date-from",firstOfMonthISO());
-  $("date-to-year")&&!$("date-to-year").value&&writeDateParts("date-to",todayISO());
   loadTargetPercentages();
 }
 function readDateParts(e){
@@ -987,10 +883,8 @@ function calculateExchange(){
 }
 
 function switchMainView(e){
-  ["dashboard","reports","backup"].forEach(t=>{$("view-"+t).classList.toggle("hidden",t!==e);});
-  ["dashboard","reports","backup"].forEach(x=>{const a=$("nav-"+x);a&&a.classList.toggle("active",x===e);});
+  ["dashboard","backup"].forEach(t=>{$("view-"+t).classList.toggle("hidden",t!==e);});
   if(e==="dashboard")refreshDashboard();
-  if(e==="reports")switchFinanceTab(currentFinanceTab);
   if(e==="backup"){
     renderExpenseCatsManageList();
     renderPersonsManageList();
@@ -1027,7 +921,7 @@ async function allTransactions(){
         }
         return e;
       });
-      res(t.sort((x,y)=>y.date.localeCompare(x.date)||(y.time||"").localeCompare(x.time||"")||y.id.localeCompare(x.id)));
+      res(t.sort((x,y)=>y.date.localeCompare(x.date)||(y.time||"").localeCompare(y.time||"")||y.id.localeCompare(x.id)));
     };
     a.onerror=()=>rej(a.error);
   });
@@ -1101,12 +995,9 @@ async function saveTransaction(){
       tx.oncomplete=res;
       tx.onerror=()=>rej(tx.error);
     });
-    const finalBudgetId=r.budgetId;
     showToast("تم حفظ المعاملة بنجاح ✅");
     resetInputForm();
     await refreshAllViews();
-    try{await updateReportTargetOptions()}catch(e){}
-    if(reportGenerated)try{await generateReport()}catch(e){}
     switchMainView("dashboard");
   }catch(e){console.error("Save Error:",e);showToast("فشل حفظ المعاملة")}finally{e.disabled=false;}
 }
@@ -1343,7 +1234,6 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
     const baseKeys=["fixed","regular","personal","transfer","debt"];
     let accumulatedSurplus=0;
     let totalMaxBase=0;
-    
     baseKeys.forEach(k=>{
       const pct=targets[k]||0;
       const bMax=income*(pct/100);
@@ -1351,33 +1241,16 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
       accumulatedSurplus+=(bMax-bSpent);
       totalMaxBase+=bMax;
     });
-
     const unallocatedMax=Math.max(0,income-totalMaxBase);
     const max=unallocatedMax+Math.max(0,accumulatedSurplus);
     const spent=totalBudgetSpentInCycle(txs,cycle,"emergency");
     const remaining=accumulatedSurplus-spent;
     const fixedPct=income>0?Math.max(0,Number(((remaining/income)*100).toFixed(1))):0;
-
     const dailyReference=max/CYCLE_DAYS;
     const dailyActual=daysRemaining>0?remaining/daysRemaining:0;
     const spentToday=dailyBudgetSpent(txs,cycle,"emergency",today);
     const remainingToday=Math.max(0,dailyActual-spentToday);
-
-    return {
-      budgetId,
-      max,
-      spent,
-      remaining,
-      pct:fixedPct,
-      elapsed,
-      daysRemaining,
-      dailyReference,
-      dailyActual,
-      spentToday,
-      remainingToday,
-      cycleEndDate,
-      isDynamic:true
-    };
+    return {budgetId,max,spent,remaining,pct:fixedPct,elapsed,daysRemaining,dailyReference,dailyActual,spentToday,remainingToday,cycleEndDate,isDynamic:true};
   }
 
   const pct=(targets[budgetId]||0);
@@ -1407,350 +1280,35 @@ function computeBudgetStatus(max,spent){
   return {remaining,pct,level};
 }
 
-async function onReportTypeChange(){
-  const e=$("report-type").value,t=$("report-subtype-wrap"),a=$("report-subtype");
-  t.classList.remove("hidden");
-  if(e==="expense")a.innerHTML='<option value="all">كل التصنيفات (شامل)</option>'+getExpenseCategories().map(c=>`<option value="${escapeHTML(c.name)}">${escapeHTML(c.name)}</option>`).join("");
-  else if(e==="income")a.innerHTML='<option value="all">كل المصادر (شامل)</option>'+getIncomeCategories().map(c=>`<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
-  else if(e==="debt")a.innerHTML='<option value="all">كل الحركات (شامل)</option><option value="creditor">أخدنا منه</option><option value="debtor">أدّينا له (سداد)</option><option value="opening_balance">رصيد أول المدة</option>';
-  else t.classList.add("hidden");
-  a.value="all";
-  $("report-target-wrap").classList.toggle("hidden",!(e==="debt"||e==="transfer"||e==="all"||e==="internal_transfer"));
-  await updateReportTargetOptions();
-}
-
-async function updateReportTargetOptions(){
-  try{
-    const e=await allTransactions(),t=new Set;
-    e.forEach(x=>{
-      if(x.type==="debt"&&x.person)t.add(x.person);
-      if(x.type==="transfer")(x.beneficiaries||[]).forEach(b=>{if(b.name)t.add(b.name);});
-    });
-    const a=[...t].sort((x,y)=>x.localeCompare(y,"ar")),n=$("beneficiary-select");
-    if(!n)return;
-    const s=n.value;
-    n.innerHTML='<option value="all">الكل</option>'+a.map(x=>`<option value="${escapeHTML(x)}">${escapeHTML(x)}</option>`).join("");
-    if(a.includes(s))n.value=s;
-  }catch(e){console.warn("updateReportTargetOptions:",e)}
-}
-
-async function setSalaryCycleDates(){
-  try{
-    const cycles=getAllSalaryCycles(await allTransactions());
-    if(cycles.length>0){
-      const t=cycles[cycles.length-1];
-      writeDateParts("date-from",t.start);
-      writeDateParts("date-to",t.end);
-      showToast("تم تحديد فترة آخر دورة راتب 📅");
-    }else showToast("لم يتم تسجيل أي راتب أساسي بعد");
-  }catch(e){console.warn(e);showToast("تعذر تحديد فترة الراتب")}
-}
-
-async function generateReport(){
-  const e=await allTransactions(),
-        t=$("report-type").value,
-        a=$("report-subtype").value,
-        n=$("beneficiary-select").value,
-        s=readDateParts("date-from"),
-        r=readDateParts("date-to");
-  if($("report-search"))$("report-search").value="";
-  const o=e.filter(x=>{
-    const iso=formatStrictISO(...x.date.split("-"));
-    if(t!=="all"&&x.type!==t)return false;
-    if(t==="expense"&&a!=="all"&&x.category!==a)return false;
-    if(t==="income"&&a!=="all"&&x.category!==a)return false;
-    if(t==="debt"&&a!=="all"&&x.debtType!==a)return false;
-    if(n!=="all"&&((x.type==="debt"&&x.person!==n)||(x.type==="transfer"&&!(x.beneficiaries||[]).some(b=>b.name!==n))))return false;
-    if(s&&iso<s)return false;
-    if(r&&iso>r)return false;
-    return true;
-  });
-  cachedReportRecords=o;
-  visibleReportRecords=o.slice();
-  cachedReportRange={from:s,to:r};
-  $("filter-section").classList.add("hidden");
-  $("report-section").classList.remove("hidden");
-  reportGenerated=true;
-  $("display-date-range").textContent=(s?fmtDate(s):"البداية")+" إلى "+(r?fmtDate(r):"النهاية");
-  $("display-target").textContent=n==="all"?"الكل":n;
-  $("display-count").textContent=o.length+" حركة";
-  if(t==="transfer")$("report-title").textContent="كشف حساب المعاملات الخارجية (الحوالات)";
-  else if(t==="debt")$("report-title").textContent="كشف حساب الديون والعلاقات المالية الرسمية";
-  else if(t==="internal_transfer")$("report-title").textContent="كشف التحويلات بين الحسابات";
-  else if(t==="expense")$("report-title").textContent="تقرير المصروفات المصنف";
-  else if(t==="income")$("report-title").textContent="تقرير الدخل والإيرادات";
-  else $("report-title").textContent="كشف حساب مالي — سجل المعاملات";
-  $("capture-area").querySelector(".table-wrap").innerHTML='<table><thead id="report-table-head"></thead><tbody id="report-table-body"></tbody></table>';
-  renderReportTableRows(o);
-  updateReportSummaries(o);
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-function renderReportTableRows(e){
-  const t=$("report-table-body"),a=$("report-table-head");
-  if(!t||!a)return;
-  const typeVal=$("report-type").value;
-  const isTransfer=typeVal==="transfer";
-  const isDebt=typeVal==="debt";
-  const isExpense=typeVal==="expense";
-  const s=$("beneficiary-select")?$("beneficiary-select").value:"all";
-  
-  if(isTransfer){
-    a.innerHTML='<tr><th style="width:12%">التاريخ</th><th style="width:18%">التفاصيل</th><th style="width:14%">المستفيد</th><th style="width:10%">السعر</th><th class="amount" style="width:11%">المصري</th><th class="amount" style="width:11%">الكويتي</th><th class="amount" style="width:14%">الرصيد</th><th class="no-print" style="width:10%">إجراء</th></tr>';
-  }else if(isDebt){
-    a.innerHTML='<tr><th style="width:14%">التاريخ</th><th style="width:20%">نوع الحركة</th><th style="width:20%">الطرف / الجهة</th><th class="amount" style="width:14%">المبلغ</th><th class="amount" style="width:14%">رصيد الدين</th><th class="no-print" style="width:18%">إجراء</th></tr>';
-  }else if(isExpense){
-    a.innerHTML='<tr><th style="width:15%">التاريخ</th><th style="width:22%">التصنيف</th><th style="width:18%">البند</th><th style="width:15%">الحساب</th><th class="amount" style="width:15%">المبلغ</th><th class="no-print" style="width:15%">إجراء</th></tr>';
-  }else{
-    a.innerHTML='<tr><th style="width:12%">التاريخ</th><th style="width:22%">النوع / البيان</th><th style="width:14%">الطرف</th><th style="width:12%">الحساب</th><th class="amount" style="width:13%">المبلغ</th><th class="amount" style="width:13%">الرصيد</th><th class="no-print" style="width:14%">إجراء</th></tr>';
-  }
-
-  if(!e.length)return void(t.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:15px">لا توجد حركات مطابقة.</td></tr>`);
-  let r=0;
-  const sorted=[...e].sort((a,b)=>a.date.localeCompare(b.date)||(a.time||"").localeCompare(b.time||"")||a.id.localeCompare(b.id));
-  const running={};
-  
-  if(isDebt){
-    let debtRunning={};
-    sorted.forEach(x=>{
-      const p=x.person||"غير محدد";
-      if(!debtRunning[p])debtRunning[p]=0;
-      if(isCreditorEntry(x)||isOpeningEntry(x))debtRunning[p]+=realAmount(x);
-      else if(isDebtorEntry(x))debtRunning[p]-=realAmount(x);
-      running[x.id]=debtRunning[p];
-    });
-  }else{
-    sorted.forEach(x=>{
-      if(x.type==="internal_transfer"){running[x.id]=r;return;}
-      if(x.type==="income"||isCreditorEntry(x))r+=realAmount(x);
-      else if(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))r-=realAmount(x);
-      running[x.id]=r;
-    });
-  }
-
-  let html="";
-  e.forEach(x=>{
-    const balance=running[x.id]!==undefined?running[x.id]:0;
-    const accFromName=getAccountById(x.account||"cash_default").name||"—";
-    const accToName=x.toAccount?getAccountById(x.toAccount).name:"";
-    
-    const actionBtns = `<td class="no-print" style="white-space:nowrap;text-align:center;"><button class="btn btn-muted action-btn-mini" title="تعديل" data-action="edit-report" data-id="${x.id}">✏️</button> <button class="btn btn-danger action-btn-mini" title="حذف" data-action="delete-report" data-id="${x.id}">🗑️</button></td>`;
-
-    if(x.type==="transfer"&&isTransfer){
-      const benefs=x.beneficiaries||[];
-      const totalEGP=benefs.reduce((s,b)=>s+(Number(b.egp)||0),0);
-      const kwd=Number(x.totalKwd??x.amount)||0;
-      const rate=x.exchangeRate||(totalEGP>0?kwd/totalEGP*1000:0);
-      benefs.forEach(b=>{
-        if(s!=="all"&&b.name!==s)return;
-        const share=b.shareKwd!==undefined?b.shareKwd:(totalEGP>0?b.egp/totalEGP*kwd:0);
-        html+=`<tr data-id="${x.id}"><td>${fmtDate(x.date)}</td><td>${escapeHTML(x.notes||"حوالة خارجية")}</td><td><strong>${escapeHTML(b.name)}</strong></td><td><span style="color:var(--emerald-neon);font-weight:bold">${rate.toFixed(3)}</span></td><td class="amount">${moneyEGP(b.egp)}</td><td class="amount">${money(share)}</td><td class="amount"><strong>${money(balance)}</strong></td>${actionBtns}</tr>`;
-      });
-    }else if(isDebt){
-      const debtLbl=debtTypeLabel(x.debtType);
-      const amt=realAmount(x);
-      html+=`<tr data-id="${x.id}"><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(debtLbl)}</strong><br><small>${escapeHTML(x.notes||"")}</small></td><td>${escapeHTML(x.person||"—")}</td><td class="amount">${money(amt)}</td><td class="amount"><strong>${money(balance)}</strong></td>${actionBtns}</tr>`;
-    }else if(isExpense){
-      const amt=realAmount(x);
-      const budName=BUDGET_BY_KEY[x.budgetId]?.label||"عادي";
-      html+=`<tr data-id="${x.id}"><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(x.category)}</strong><br><small>${escapeHTML(x.notes||"")}</small></td><td>${escapeHTML(budName)}</td><td><small>${escapeHTML(accFromName)}</small></td><td class="amount">${money(amt)}</td>${actionBtns}</tr>`;
-    }else{
-      const amt=realAmount(x);
-      let label;
-      if(x.type==="expense"||x.type==="income")label=x.category;
-      else if(x.type==="transfer")label="حوالة ("+(x.beneficiaries||[]).map(b=>b.name+" "+moneyEGP(b.egp)).join("، ")+")";
-      else if(x.type==="debt")label=debtTypeLabel(x.debtType);
-      else if(x.type==="internal_transfer")label=`تحويل: ${accFromName} → ${accToName}`;
-      else label=x.type;
-      const party=x.person||(x.beneficiaries||[]).map(b=>b.name).join(" ")||"—";
-      const accDisplay=x.type==="internal_transfer"?"—":accFromName;
-      html+=`<tr data-id="${x.id}"><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(label)}</strong><br><small>${escapeHTML(x.notes||"")}</small></td><td>${escapeHTML(party)}</td><td><small>${escapeHTML(accDisplay)}</small></td><td class="amount">${x.type==="internal_transfer"?"—":money(amt)}</td><td class="amount"><strong>${money(balance)}</strong></td>${actionBtns}</tr>`;
-    }
-  });
-  t.innerHTML=html;
-}
-
-function updateReportSummaries(e){
-  const n=$("report-type").value,
-        s=$("beneficiary-select")?$("beneficiary-select").value:"all",
-        r=e.reduce((a,x)=>(x.type==="income"||isCreditorEntry(x))?a+realAmount(x):a,0),
-        o=e.reduce((a,x)=>(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))?a+realAmount(x):a,0),
-        l=e.reduce((a,x)=>isDebtorEntry(x)?a+realAmount(x):a,0),
-        i=e.reduce((a,x)=>(isCreditorEntry(x)||isOpeningEntry(x))?a+realAmount(x):a,0),
-        c=l-i,
-        d=r-o,
-        m=n==="debt"?c:d;
-  let p="";
-  const u=Math.abs(c),
-        g=numberToArabicWords(u);
-  let h=0,y=0;
-  if(n==="transfer")e.forEach(x=>{
-    const kwd=Number(x.totalKwd??x.amount)||0;
-    const benefs=x.beneficiaries||[];
-    const totalEGP=benefs.reduce((s,b)=>s+(Number(b.egp)||0),0);
-    benefs.forEach(b=>{
-      if(s!=="all"&&b.name!==s)return;
-      h+=b.shareKwd!==undefined?b.shareKwd:(totalEGP>0?b.egp/totalEGP*kwd:0);
-      y+=Number(b.egp)||0;
-    });
-  });
-  if(n==="debt"){
-    if(c>0)p=`<div class="hint" style="background:rgba(16,185,129,0.1);border-color:var(--border-neon);color:var(--green-val);font-weight:700">⚖️ <strong>النتيجة النهائية:</strong> أنت الدائن بمبلغ <strong>${money(u)}</strong> (${g}).</div>`;
-    else if(c<0)p=`<div class="hint" style="background:rgba(251,113,133,0.1);border-color:rgba(251,113,133,0.3);color:var(--red-val);font-weight:700">⚠️ <strong>النتيجة النهائية (المتبقي عليك):</strong> ${money(u)} (${g}).</div>`;
-    else p='<div class="hint" style="background:var(--bg-card);border-color:var(--border-subtle);color:var(--ink);font-weight:700">✅ <strong>الحساب خالص:</strong> الرصيد صفر.</div>';
-  }else if(n==="transfer"){
-    p=`<div class="hint" style="background:rgba(16,185,129,0.1);border-color:var(--border-neon);color:var(--green-val);font-weight:700">✈️ <strong>إجمالي التحويلات:</strong> ${money(h)} | ${moneyEGP(y)}.</div>`;
-  }
-  $("report-summary").innerHTML=`
-    <div style="display:flex;flex-direction:column;gap:6px">
-      <div class="row-between"><span>${n==="debt"?"📥 إجمالي المسدد (أدّينا له):":n==="transfer"?"✈️ إجمالي التحويلات (د.ك):":"📥 إجمالي الواردات:"}</span><strong class="amount good" style="font-size:13px">${money(n==="debt"?l:n==="transfer"?h:r)}</strong></div>
-      ${n!=="transfer"?`<div class="row-between"><span>${n==="debt"?"💸 إجمالي الالتزامات (أخدنا منه + أول المدة):":"💸 إجمالي المصروفات:"}</span><strong class="amount bad" style="font-size:13px">${money(n==="debt"?i:o)}</strong></div>`:""}
-      ${n!=="transfer"?`<div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px"><span>⚖️ صافي الحساب الختامي:</span><strong class="amount ${m>=0?"good":"bad"}" style="font-size:14px">${m>=0?"+":""}${money(m)}</strong></div>`:""}
-    </div>${p}`;
-  $("tafqit-box").textContent="التفقيط المالي الرسمي: "+numberToArabicWords(Math.abs(m));
-}
-
-function backToFilters(){$("report-section").classList.add("hidden");$("filter-section").classList.remove("hidden");reportGenerated=false;}
-function filterReportTable(){
-  const e=$("report-search").value.toLowerCase().trim();
-  if(!cachedReportRecords.length)return;
-  const t=e?cachedReportRecords.filter(x=>{
-    const accName=getAccountById(x.account||"cash_default").name||"";
-    const str=`${x.category||""} ${x.person||""} ${(x.beneficiaries||[]).map(b=>b.name).join(" ")} ${x.notes||""} ${fmtDate(x.date)} ${accName}`;
-    return str.toLowerCase().includes(e);
-  }):cachedReportRecords.slice();
-  visibleReportRecords=t;
-  renderReportTableRows(t);
-  updateReportSummaries(t);
-  $("display-count").textContent=t.length+(e?" حركة (مفلترة)":" حركة");
-}
-
-async function editFromReport(id){
-  const t=(await allTransactions()).find(x=>x.id===id);
-  if(!t)return;
-  editingTxId&&resetInputForm();
-  $("view-input").classList.remove("hidden");
-  switchInputTab(t.type,{force:!0});
-  editingTxId=t.id;
-  writeDateParts("tx",t.date);
-  $("tx-time").value=t.time||"00:00";
-  $("tx-notes").value=t.notes||"";
-  if(t.account){const sel=$("tx-account");if(sel&&[...sel.options].some(o=>o.value===t.account))sel.value=t.account;}
-  if(t.type==="expense"){
-    $("expense-amount").value=t.amount;
-    const sel=$("expense-category");
-    if([...sel.options].some(o=>o.value===t.category))sel.value=t.category;
-    updateExpenseBudgetHint();
-  }else if(t.type==="income"){
-    $("income-amount").value=t.amount;$("income-category").value=t.category;$("is-salary-base").checked=!!t.isSalaryBase;
-  }else if(t.type==="transfer"){
-    $("total-kwd").value=t.totalKwd??t.amount??"";
-    const e=$("beneficiaries-list");e.innerHTML="";
-    (t.beneficiaries||[]).forEach(b=>{
-      addBeneficiary();
-      const all=e.querySelectorAll(".beneficiary");
-      const last=all[all.length-1];
-      const n=last.querySelector(".beneficiary-name-select");
-      if([...n.options].some(o=>o.value===b.name))n.value=b.name;
-      else{const opt=document.createElement("option");opt.value=b.name;opt.textContent=b.name;n.appendChild(opt);n.value=b.name;}
-      last.querySelector(".beneficiary-amount").value=b.egp;
-    });
-    calculateExchange();
-  }else if(t.type==="debt"){
-    $("debt-amount").value=t.amount;
-    const sel=$("debt-person-select");
-    if([...sel.options].some(o=>o.value===t.person))sel.value=t.person;
-    else if(t.person){const opt=document.createElement("option");opt.value=t.person;opt.textContent=t.person;sel.appendChild(opt);sel.value=t.person;}
-    $("debt-type").value=t.debtType;
-  }else if(t.type==="internal_transfer"){
-    $("int-amount").value=t.amount;
-    const f=$("int-from-account"),to=$("int-to-account");
-    if(f&&t.account&&[...f.options].some(o=>o.value===t.account))f.value=t.account;
-    if(to&&t.toAccount&&[...to.options].some(o=>o.value===t.toAccount))to.value=t.toAccount;
-  }
-  $("edit-banner").classList.remove("hidden");
-  $("save-transaction").textContent="تحديث المعاملة ✏️";
-}
-
-async function deleteTransactionFromReport(id){
-  if(!confirm("هل أنت متأكد من حذف هذه المعاملة؟"))return;
-  if(!db)await openDB();
-  const t=db.transaction(STORE_NAME,"readwrite");
-  t.objectStore(STORE_NAME).delete(id);
-  t.oncomplete=async()=>{
-    showToast("تم الحذف بنجاح");
-    await refreshAllViews();
-    updateReportTargetOptions().catch(()=>{});
-    if(reportGenerated)await generateReport();
-  };
-  t.onerror=()=>{console.error("delete error:",t.error);showToast("فشل حذف المعاملة")};
-}
-
 function buildBackupPayload(e){
   return{version:16,savedAt:(new Date).toISOString(),transactions:e,people:getPeopleList(),expenseCategories:getExpenseCategories(),accounts:getAccounts(),targetPercentages:getTargetPercentages()};
 }
-function getSmartFilename(e,t="json"){
-  const a=$("beneficiary-select")?$("beneficiary-select").value:"all",
-        n=$("report-type")?$("report-type").value:"general",
-        s=todayISO();
-  if(e==="backup")return`نسخة_احتياطية_${s}.${t}`;
-  let r="";
-  if(a&&a!=="all")r=`_${a}`;
-  else if(n==="expense")r="_مصروفات";
-  else if(n==="income")r="_دخل";
-  else if(n==="debt")r="_ديون_وعلاقات";
-  else if(n==="transfer")r="_حوالات_خارجية";
-  else if(n==="internal_transfer")r="_تحويلات_داخلية";
-  return `${e}${r}_${s}.${t}`;
-}
 
-async function downloadBackup() {
-  try {
-    const e = await allTransactions();
-    const t = buildBackupPayload(e);
-    const jsonStr = JSON.stringify(t, null, 2);
-    const filename = getSmartFilename("backup", "json");
-
-    const file = new File([jsonStr], filename, { type: "application/json" });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        title: "النسخة الاحتياطية",
-        text: "ملف النسخة الاحتياطية للنظام المالي الشخصي",
-        files: [file]
-      });
+async function downloadBackup(){
+  try{
+    const e=await allTransactions();
+    const t=buildBackupPayload(e);
+    const jsonStr=JSON.stringify(t,null,2);
+    const filename=`نسخة_احتياطية_${todayISO()}.json`;
+    const file=new File([jsonStr],filename,{type:"application/json"});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({title:"النسخة الاحتياطية",text:"ملف النسخة الاحتياطية للنظام المالي الشخصي",files:[file]});
       showToast("تمت المشاركة بنجاح ✅");
-      $("backup-status").textContent = "آخر مشاركة: " + (new Date).toLocaleTimeString("en-US");
+      $("backup-status").textContent="آخر مشاركة: "+(new Date).toLocaleTimeString("en-US");
       return;
     }
-
-    const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(jsonStr);
-    const s = document.createElement("a");
-    s.setAttribute("href", dataUri);
-    s.setAttribute("download", filename);
+    const dataUri="data:application/json;charset=utf-8,"+encodeURIComponent(jsonStr);
+    const s=document.createElement("a");
+    s.setAttribute("href",dataUri);
+    s.setAttribute("download",filename);
     document.body.appendChild(s);
     s.click();
     s.remove();
-
-    $("backup-status").textContent = "آخر تنزيل: " + (new Date).toLocaleTimeString("en-US");
+    $("backup-status").textContent="آخر تنزيل: "+(new Date).toLocaleTimeString("en-US");
     showToast("تم تنزيل النسخة الاحتياطية ✅");
-  } catch (err) {
-    if (err && err.name === "AbortError") {
-      showToast("تم إلغاء المشاركة");
-      return;
-    }
-    console.warn("فشلت المشاركة والتنزيل المباشر:", err);
-    try {
-      const e = await allTransactions();
-      const t = JSON.stringify(buildBackupPayload(e), null, 2);
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(t);
-        showToast("تم نسخ بيانات النسخة الاحتياطية للحافظة 📋");
-      } else {
-        showToast("تعذر التنزيل أو المشاركة ❌");
-      }
-    } catch (e2) {
-      showToast("تعذر مشاركة النسخة ❌");
-    }
+  }catch(err){
+    if(err&&err.name==="AbortError")return showToast("تم إلغاء المشاركة");
+    showToast("تعذر التنزيل أو المشاركة ❌");
   }
 }
 
@@ -1758,16 +1316,13 @@ async function shareBackup(){
   try{
     const e=await allTransactions();
     const t=JSON.stringify(buildBackupPayload(e),null,2);
-    const a=getSmartFilename("backup","json");
+    const a=`نسخة_احتياطية_${todayISO()}.json`;
     if(navigator.share)try{const file=new File([t],a,{type:"application/json"});return void await navigator.share({title:"نسخة احتياطية",files:[file]});}catch(e){}
     if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("تم النسخ للحافظة");}
-    else{
-      const ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
-      try{document.execCommand("copy");showToast("تم النسخ");}catch(e){showToast("تعذر النسخ");}
-      ta.remove();
-    }
-  }catch(e){console.error("shareBackup:",e);showToast("تعذر المشاركة")}
+    else{showToast("تعذر النسخ");}
+  }catch(e){showToast("تعذر المشاركة")}
 }
+
 function restoreBackup(){
   const e=$("restore-file");
   if(!e.files.length)return void showToast("اختر ملف النسخة أولاً");
@@ -1793,13 +1348,13 @@ function restoreBackup(){
         localStorage.setItem(SETUP_DONE_KEY,"1");
         showToast("تمت الاستعادة ✅");
         await refreshAllViews();
-        updateReportTargetOptions().catch(()=>{});
       };
-      tx.onerror=()=>{console.error("restore error:",tx.error);showToast("فشلت الاستعادة")};
+      tx.onerror=()=>{showToast("فشلت الاستعادة")};
     }catch(e){showToast("ملف غير صالح")}
   };
   t.readAsText(e.files[0]);
 }
+
 async function clearAllTransactions(){
   if(!confirm("تحذير: سيتم حذف كل المعاملات نهائيًا. متابعة؟"))return;
   if(!db)await openDB();
@@ -1809,542 +1364,8 @@ async function clearAllTransactions(){
     showToast("تم تفريغ البيانات");
     localStorage.removeItem(SETUP_DONE_KEY);
     await refreshAllViews();
-    updateReportTargetOptions().catch(()=>{});
   };
-  t.onerror=()=>{console.error("clear error:",t.error);showToast("فشل التفريغ")};
-}
-
-/* ============ EXPORT REPORT TO EXCEL ============ */
-function exportReportExcel(){
-  try{
-    if(!window.XLSX)return void showToast("مكتبة Excel غير متوفرة");
-    if(!visibleReportRecords.length&&!cachedReportRecords.length)return void showToast("لا يوجد تقرير للتصدير");
-    const e=visibleReportRecords;
-    if(!e.length)return void showToast("لا توجد نتائج مطابقة للتصدير");
-    const t=$("report-title")?.textContent.trim()||"تقرير";
-    const a=$("display-date-range")?.textContent.trim()||"—";
-    const n=$("display-target")?.textContent.trim()||"—";
-    const s=$("display-count")?.textContent.trim()||"0";
-    const typeVal=$("report-type").value;
-    const r=typeVal==="transfer";
-    const isDebt=typeVal==="debt";
-    const o=$("beneficiary-select")?$("beneficiary-select").value:"all";
-    let rows=[[t],["الفترة",a],["الطرف / التصنيف",n],["عدد الحركات",s],[]];
-    if(r){
-      rows.push(["التاريخ","التفاصيل","المستفيد","السعر","المصري","الكويتي","الرصيد"]);
-      let run=0;
-      const rr={};
-      [...e].sort((x,y)=>x.date.localeCompare(y.date)||(x.time||"").localeCompare(y.time||"")).forEach(x=>{
-        if(x.type==="internal_transfer")return;
-        if(x.type==="income"||isCreditorEntry(x))run+=realAmount(x);
-        else if(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))run-=realAmount(x);
-        rr[x.id]=run;
-      });
-      e.forEach(x=>{
-        const kwd=Number(x.totalKwd??x.amount)||0;
-        const benefs=x.beneficiaries||[];
-        const totalEGP=benefs.reduce((s,b)=>s+(Number(b.egp)||0),0);
-        const rate=x.exchangeRate||(totalEGP>0?kwd/totalEGP*1000:0);
-        benefs.forEach(b=>{
-          if(o!=="all"&&b.name!==o)return;
-          const share=b.shareKwd!==undefined?b.shareKwd:(totalEGP>0?b.egp/totalEGP*kwd:0);
-          rows.push([fmtDate(x.date),x.notes||"حوالة",b.name,Number(rate.toFixed(3)),Number(b.egp),Number(share.toFixed(3)),Number((rr[x.id]||0).toFixed(3))]);
-        });
-      });
-    }else if(isDebt){
-      rows.push(["التاريخ","نوع الحركة","الطرف","ملاحظات","المبلغ","رصيد الدين"]);
-      let debtRunning={};
-      [...e].sort((x,y)=>x.date.localeCompare(y.date)||(x.time||"").localeCompare(y.time||"")).forEach(x=>{
-        const p=x.person||"غير محدد";
-        if(!debtRunning[p])debtRunning[p]=0;
-        if(isCreditorEntry(x)||isOpeningEntry(x))debtRunning[p]+=realAmount(x);
-        else if(isDebtorEntry(x))debtRunning[p]-=realAmount(x);
-        rows.push([fmtDate(x.date),debtTypeLabel(x.debtType),x.person||"—",x.notes||"—",Number(realAmount(x).toFixed(3)),Number(debtRunning[p].toFixed(3))]);
-      });
-    }else{
-      rows.push(["التاريخ","النوع","الطرف","الحساب","المبلغ","الرصيد"]);
-      let run=0;
-      const rr={};
-      [...e].sort((x,y)=>x.date.localeCompare(y.date)||(x.time||"").localeCompare(y.time||"")).forEach(x=>{
-        if(x.type==="internal_transfer"){rr[x.id]=run;return;}
-        if(x.type==="income"||isCreditorEntry(x))run+=realAmount(x);
-        else if(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))run-=realAmount(x);
-        rr[x.id]=run;
-      });
-      e.forEach(x=>{
-        let lbl;
-        if(x.type==="expense"||x.type==="income")lbl=x.category;
-        else if(x.type==="debt")lbl=debtTypeLabel(x.debtType);
-        else if(x.type==="internal_transfer")lbl="تحويل بين الحسابات";
-        else lbl=x.type;
-        const acc=getAccountById(x.account||"cash_default").name||"—";
-        const party=x.person||(x.beneficiaries||[]).map(b=>b.name).join("، ")||"—";
-        rows.push([fmtDate(x.date),lbl+(x.notes?" — "+x.notes:""),party,acc,x.type==="internal_transfer"?"—":Number(realAmount(x).toFixed(3)),Number((rr[x.id]||0).toFixed(3))]);
-      });
-    }
-    rows.push([]);
-    const summary=$("report-summary");
-    if(summary){
-      rows.push(["ملخص التقرير"]);
-      summary.querySelectorAll(".row-between").forEach(el=>{
-        const parts=el.querySelectorAll("span, strong");
-        if(parts.length>=2)rows.push([parts[0].textContent.trim(),parts[1].textContent.trim()]);
-      });
-    }
-    const wb=XLSX.utils.book_new();
-    const ws=XLSX.utils.aoa_to_sheet(rows);
-    ws["!cols"]=[{wch:15},{wch:25},{wch:20},{wch:20},{wch:20},{wch:18},{wch:18}];
-    XLSX.utils.book_append_sheet(wb,ws,"Report");
-    wb.Workbook={Views:[{RTL:true}]};
-    XLSX.writeFile(wb,getSmartFilename("كشف_حساب","xlsx"));
-    showToast("تم التصدير ✅");
-  }catch(e){console.error("exportReportExcel:",e);showToast("فشل التصدير")}
-}
-
-/* ============ NEW EXPORT HELPERS ============ */
-function applyPrintStyles() {
-  const old = document.getElementById("pf-print-styles");
-  if (old) old.remove();
-  const style = document.createElement("style");
-  style.id = "pf-print-styles";
-  style.textContent = `
-    #capture-area .report-head {
-      background: #ffffff !important; background-image: none !important;
-      color: #0f172a !important; border: 1px solid #cbd5e1 !important;
-    }
-    #capture-area .report-head h2,
-    #capture-area .report-head div,
-    #capture-area .report-head span { color: #0f172a !important; text-shadow: none !important; }
-    #capture-area .report-meta,
-    #capture-area .report-summary,
-    #capture-area .panel {
-      background: #ffffff !important; border-color: #cbd5e1 !important;
-      color: #0f172a !important;
-    }
-    #capture-area .report-summary strong { color: inherit !important; }
-    #capture-area th { background: #f1f5f9 !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
-    #capture-area td { background: #ffffff !important; color: #0f172a !important; border-color: #e2e8f0 !important; }
-    #capture-area .table-wrap { background: #ffffff !important; border-color: #cbd5e1 !important; }
-    #capture-area .hint { background: #fef3c7 !important; border-color: #fbbf24 !important; color: #78350f !important; }
-    #capture-area .good { color: #047857 !important; }
-    #capture-area .bad { color: #b91c1c !important; }
-    #capture-area .warning { color: #b45309 !important; }
-    #capture-area { background: #ffffff !important; }
-  `;
-  document.head.appendChild(style);
-  return style;
-}
-function removePrintStyles() {
-  const el = document.getElementById("pf-print-styles");
-  if (el) el.remove();
-}
-
-function getSafeCutPoints(container, canvas) {
-  const rect = container.getBoundingClientRect();
-  if (rect.height <= 0) return [0, canvas.height];
-  const scaleY = canvas.height / rect.height;
-  const points = new Set([0, canvas.height]);
-  const selectors =
-    "tr,.report-head,.report-meta,.report-summary,.table-wrap," +
-    ".panel,.flow-item,.budget-card,.bud-mini-card,.tx-item,.person-item";
-  container.querySelectorAll(selectors).forEach(el => {
-    const r = el.getBoundingClientRect();
-    if (r.height <= 0) return;
-    const top = Math.round((r.top - rect.top) * scaleY);
-    const bottom = Math.round((r.bottom - rect.top) * scaleY);
-    if (top > 0 && top < canvas.height) points.add(top);
-    if (bottom > 0 && bottom < canvas.height) points.add(bottom);
-  });
-  return [...points].sort((a, b) => a - b);
-}
-
-function cutCanvasRegion(source, y1, y2) {
-  const h = y2 - y1;
-  if (h <= 0) return null;
-  const c = document.createElement("canvas");
-  c.width = source.width;
-  c.height = h;
-  const ctx = c.getContext("2d");
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, c.width, c.height);
-  ctx.drawImage(source, 0, y1, source.width, h, 0, 0, source.width, h);
-  return { canvas: c, height: h, y: y1 };
-}
-
-function computeSlicesWithHeader(canvas, pageCapacityPx, headerReservedPx, safeCuts) {
-  const slices = [];
-  const H = canvas.height;
-  if (pageCapacityPx <= 0 || H <= 0)
-    return [{ canvas, height: H, y: 0, needsHeader: false }];
-
-  let cursor = 0;
-  let isFirstPage = true;
-  let guard = 0;
-
-  while (cursor < H && guard++ < 500) {
-    const capacity = isFirstPage
-      ? pageCapacityPx
-      : Math.max(Math.floor(pageCapacityPx * 0.4), pageCapacityPx - headerReservedPx);
-
-    const remaining = H - cursor;
-
-    if (remaining <= capacity) {
-      const slice = cutCanvasRegion(canvas, cursor, H);
-      if (slice) slices.push({ ...slice, needsHeader: !isFirstPage });
-      break;
-    }
-
-    const idealEnd = cursor + capacity;
-    let cut = -1;
-    for (const p of safeCuts) {
-      if (p > cursor && p <= idealEnd) cut = p;
-      else if (p > idealEnd) break;
-    }
-    if (cut <= cursor) cut = idealEnd;
-
-    const minHeight = Math.max(100, Math.floor(capacity * 0.3));
-    if (cut - cursor < minHeight && cursor + capacity <= H) cut = cursor + capacity;
-    if (cut <= cursor) cut = Math.min(H, cursor + capacity);
-    if (cut <= cursor) cut = H;
-
-    const slice = cutCanvasRegion(canvas, cursor, cut);
-    if (slice && slice.height > 0) slices.push({ ...slice, needsHeader: !isFirstPage });
-
-    cursor = cut;
-    isFirstPage = false;
-  }
-  return slices;
-}
-
-async function captureReportHeader(container) {
-  const head = container.querySelector(".report-head");
-  if (!head) return null;
-  const meta = container.querySelector(".report-meta");
-
-  const headRect = head.getBoundingClientRect();
-  const wrapper = document.createElement("div");
-  wrapper.style.cssText = `
-    position:absolute; left:-99999px; top:0;
-    width:${headRect.width || container.offsetWidth}px;
-    background:#ffffff; padding:0;
-    display:flex; flex-direction:column; gap:8px;
-  `;
-
-  const stripIds = (node) => {
-    node.removeAttribute("id");
-    node.querySelectorAll("[id]").forEach(el => el.removeAttribute("id"));
-    return node;
-  };
-
-  wrapper.appendChild(stripIds(head.cloneNode(true)));
-  if (meta) wrapper.appendChild(stripIds(meta.cloneNode(true)));
-  document.body.appendChild(wrapper);
-
-  try {
-    return await html2canvas(wrapper, {
-      scale: 2, backgroundColor: "#ffffff",
-      useCORS: true, logging: false
-    });
-  } catch (e) {
-    console.warn("Header capture failed:", e);
-    return null;
-  } finally {
-    wrapper.remove();
-  }
-}
-
-function createArabicFooterCanvas() {
-  const c = document.createElement("canvas");
-  c.width = 1600;
-  c.height = 120;
-  const ctx = c.getContext("2d");
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, c.width, c.height);
-  ctx.fillStyle = "#475569";
-  ctx.font = "bold 56px system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.direction = "rtl";
-  ctx.fillText("النظام المالي الشخصي — تقرير رسمي معتمد", c.width / 2, c.height / 2);
-  return c.toDataURL("image/png");
-}
-
-async function exportPDF(captureId, reportName, orientation) {
-  if (!window.jspdf || !window.html2canvas) return showToast("مكتبات PDF غير متوفرة");
-  const container = document.getElementById(captureId);
-  if (!container) return showToast("لا يوجد محتوى");
-
-  showToast("جاري تجهيز PDF...");
-
-  const originalTheme = document.documentElement.getAttribute("data-theme") || "dark";
-  document.documentElement.setAttribute("data-theme", "light");
-  applyPrintStyles();
-  const cleanup = prepareForCapture(container);
-
-  try {
-    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-
-    const headerCanvas = await captureReportHeader(container);
-    const headerHeightPx = headerCanvas ? headerCanvas.height : 0;
-
-    const canvas = await html2canvas(container, {
-      scale: 2, backgroundColor: "#ffffff",
-      useCORS: true, logging: false, scrollX: 0, scrollY: 0
-    });
-    if (canvas.width < 10 || canvas.height < 10) throw new Error("Canvas too small");
-
-    const isLandscape = orientation === "l" || orientation === "landscape";
-    const pageW = isLandscape ? 297 : 210;
-    const pageH = isLandscape ? 210 : 297;
-    const margin = 10;
-    const usableW = pageW - margin * 2;
-    const usableH = pageH - margin * 2;
-    const footerSpaceMm = 12;
-    const usableHEffective = usableH - footerSpaceMm;
-
-    const pxPerMm = canvas.width / usableW;
-    const pageCapacityPx = Math.floor(usableHEffective * pxPerMm);
-
-    const headerGapMm = 3;
-    const headerGapPx = Math.ceil(headerGapMm * pxPerMm);
-    const headerReservedPx = headerHeightPx > 0 ? headerHeightPx + headerGapPx : 0;
-
-    const safeCuts = getSafeCutPoints(container, canvas);
-    const slices = computeSlicesWithHeader(canvas, pageCapacityPx, headerReservedPx, safeCuts);
-    if (slices.length === 0) throw new Error("No slices generated");
-
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF(isLandscape ? "l" : "p", "mm", "a4");
-    pdf.setProperties({ title: reportName || "تقرير مالي", creator: "Personal Finance System" });
-
-    const footerDataURL = createArabicFooterCanvas();
-    const headerMmHeight = headerHeightPx / pxPerMm;
-    const totalPages = slices.length;
-    let pageNum = 0;
-
-    for (const s of slices) {
-      if (!s || s.height <= 0) continue;
-      if (pageNum > 0) pdf.addPage();
-
-      let yOffset = margin;
-
-      if (s.needsHeader && headerCanvas) {
-        const headerImg = headerCanvas.toDataURL("image/jpeg", 0.92);
-        if (headerImg && headerImg.length > 500) {
-          pdf.addImage(headerImg, "JPEG", margin, yOffset, usableW, headerMmHeight, undefined, "FAST");
-          yOffset += headerMmHeight + headerGapMm;
-        }
-      }
-
-      const imgData = s.canvas.toDataURL("image/jpeg", 0.92);
-      if (!imgData || imgData.length < 500) continue;
-
-      const availableHeightMm = usableHEffective - (yOffset - margin);
-      const imgHeightMm = Math.min(s.height / pxPerMm, availableHeightMm);
-      pdf.addImage(imgData, "JPEG", margin, yOffset, usableW, imgHeightMm, undefined, "FAST");
-
-      pdf.addImage(footerDataURL, "PNG", margin, pageH - footerSpaceMm + 1, usableW, 6);
-      pdf.setFont("helvetica", "normal");
-      pdf.setFontSize(8);
-      pdf.setTextColor(100, 116, 139);
-      pdf.text(`${pageNum + 1} / ${totalPages}`, pageW - margin, pageH - 3, { align: "right" });
-
-      pageNum++;
-    }
-
-    if (pageNum === 0) throw new Error("No pages rendered");
-    pdf.save(getSmartFilename("تقرير_مالي", "pdf"));
-    showToast(`تم إنشاء PDF بنجاح (${pageNum} صفحة) ✅`);
-  } catch (err) {
-    console.error("PDF Export error:", err);
-    showToast("حدث خطأ أثناء تصدير PDF");
-  } finally {
-    restoreAfterCapture(cleanup);
-    removePrintStyles();
-    document.documentElement.setAttribute("data-theme", originalTheme);
-  }
-}
-
-function prepareForCapture(e) {
-  const r = [];
-  e.querySelectorAll(".no-print").forEach(el => {
-    r.push({ el, prop: "display", val: el.style.display });
-    el.style.display = "none";
-  });
-  const app = document.querySelector(".app");
-  if (app) {
-    r.push({ el: app, prop: "maxWidth", val: app.style.maxWidth });
-    r.push({ el: app, prop: "width", val: app.style.width });
-    app.style.maxWidth = "none";
-    app.style.width = "1000px";
-  }
-  r.push({ el: e, prop: "maxWidth", val: e.style.maxWidth });
-  r.push({ el: e, prop: "width", val: e.style.width });
-  r.push({ el: e, prop: "minWidth", val: e.style.minWidth });
-  r.push({ el: e, prop: "padding", val: e.style.padding });
-  r.push({ el: e, prop: "background", val: e.style.background });
-  e.style.maxWidth = "none";
-  e.style.width = "100%";
-  e.style.minWidth = "950px";
-  e.style.padding = "20px";
-  e.style.background = "#ffffff";
-
-  e.querySelectorAll(".table-wrap").forEach(el => {
-    r.push({ el, prop: "overflow", val: el.style.overflow });
-    r.push({ el, prop: "overflowX", val: el.style.overflowX });
-    r.push({ el, prop: "maxWidth", val: el.style.maxWidth });
-    el.style.overflow = "visible";
-    el.style.overflowX = "visible";
-    el.style.maxWidth = "none";
-  });
-  e.querySelectorAll("table").forEach(el => {
-    r.push({ el, prop: "width", val: el.style.width });
-    r.push({ el, prop: "minWidth", val: el.style.minWidth });
-    el.style.width = "100%";
-    el.style.minWidth = "100%";
-  });
-  return { restores: r };
-}
-
-function restoreAfterCapture(e) {
-  if (!e || !e.restores) return;
-  e.restores.forEach(item => {
-    item.el.style[item.prop] = item.val;
-  });
-}
-
-async function shareAsImageSafe(captureId, reportName) {
-  if (!window.html2canvas) return showToast("مكتبة الصور غير متوفرة");
-  const container = document.getElementById(captureId);
-  if (!container) return showToast("لا يوجد محتوى");
-
-  showToast("جاري تجهيز الصور...");
-
-  const originalTheme = document.documentElement.getAttribute("data-theme") || "dark";
-  document.documentElement.setAttribute("data-theme", "light");
-  applyPrintStyles();
-  const cleanup = prepareForCapture(container);
-
-  try {
-    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-
-    const headerCanvas = await captureReportHeader(container);
-    const headerHeightPx = headerCanvas ? headerCanvas.height : 0;
-
-    const canvas = await html2canvas(container, {
-      scale: 2, backgroundColor: "#ffffff",
-      useCORS: true, logging: false
-    });
-
-    const pageCapacityPx = Math.floor(canvas.width * 1.414);
-    const headerGapPx = 40;
-    const headerReservedPx = headerHeightPx > 0 ? headerHeightPx + headerGapPx : 0;
-
-    const safeCuts = getSafeCutPoints(container, canvas);
-    const slices = computeSlicesWithHeader(canvas, pageCapacityPx, headerReservedPx, safeCuts);
-
-    if (headerCanvas) {
-      slices.forEach(s => {
-        if (!s.needsHeader || s.height <= 0) return;
-        const combined = document.createElement("canvas");
-        combined.width = s.canvas.width;
-        combined.height = s.canvas.height + headerHeightPx + headerGapPx;
-        const ctx = combined.getContext("2d");
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, combined.width, combined.height);
-        ctx.drawImage(headerCanvas, 0, 0, combined.width, headerHeightPx);
-        ctx.drawImage(s.canvas, 0, headerHeightPx + headerGapPx, s.canvas.width, s.canvas.height);
-        s.canvas = combined;
-        s.height = combined.height;
-      });
-    }
-
-    const files = [];
-    const baseName = getSmartFilename("صورة_تقرير", "jpg").replace(".jpg", "");
-    const total = slices.length;
-
-    for (let i = 0; i < slices.length; i++) {
-      const s = slices[i];
-      if (!s || s.height <= 0) continue;
-      const blob = await new Promise(res => s.canvas.toBlob(res, "image/jpeg", 0.92));
-      if (!blob) continue;
-      const fname = total === 1 ? `${baseName}.jpg` : `${baseName}_${i + 1}_من_${total}.jpg`;
-      files.push(new File([blob], fname, { type: "image/jpeg" }));
-    }
-    if (files.length === 0) throw new Error("No images generated");
-
-    const canShare = typeof navigator.share === "function" &&
-                     typeof navigator.canShare === "function" &&
-                     navigator.canShare({ files });
-    let shared = false;
-
-    if (canShare) {
-      try {
-        await navigator.share({ title: reportName || "تقرير مالي", files });
-        shared = true;
-        showToast("تمت المشاركة ✅");
-      } catch (err) {
-        if (err && err.name === "AbortError") return showToast("تم إلغاء المشاركة");
-        console.warn("share failed:", err);
-      }
-    }
-
-    if (!shared) {
-      for (let i = 0; i < files.length; i++) {
-        const url = URL.createObjectURL(files[i]);
-        const a = document.createElement("a");
-        a.href = url; a.download = files[i].name;
-        document.body.appendChild(a); a.click(); a.remove();
-        URL.revokeObjectURL(url);
-        if (files.length > 1) await new Promise(r => setTimeout(r, 400));
-      }
-      showToast(`تم تنزيل ${files.length} صورة ✅`);
-    }
-  } catch (err) {
-    console.error("shareAsImageSafe error:", err);
-    showToast("تعذر إنشاء الصور");
-  } finally {
-    restoreAfterCapture(cleanup);
-    removePrintStyles();
-    document.documentElement.setAttribute("data-theme", originalTheme);
-  }
-}
-
-function shareReport(){
-  const e=$("report-title")?$("report-title").textContent.trim():"كشف حساب",
-        t=$("display-date-range")?$("display-date-range").textContent.trim():"—",
-        a=$("display-target")?$("display-target").textContent.trim():"الكل",
-        n=$("display-count")?$("display-count").textContent.trim():"0",
-        s=$("report-type").value==="transfer",
-        r=$("beneficiary-select")?$("beneficiary-select").value:"all";
-  let o=`📄 *${e}*\n━━━━━━━━━━━━━━━━━━━━━\n📅 *الفترة:* ${t}\n👤 *الطرف:* ${a}\n🔢 *عدد الحركات:* ${n}\n━━━━━━━━━━━━━━━━━━━━━\n\n`;
-  const l=visibleReportRecords;
-  if(l&&l.length>0){
-    let idx=1;
-    l.forEach(x=>{
-      if(x.type==="transfer"&&s){
-        const kwd=Number(x.totalKwd??x.amount)||0;
-        const benefs=x.beneficiaries||[];
-        const totalEGP=benefs.reduce((s,b)=>s+(Number(b.egp)||0),0);
-        const rate=x.exchangeRate||(totalEGP>0?kwd/totalEGP*1000:0);
-        benefs.forEach(b=>{
-          if(r!=="all"&&b.name!==r)return;
-          const share=b.shareKwd!==undefined?b.shareKwd:(totalEGP>0?b.egp/totalEGP*kwd:0);
-          o+=`${idx++}. *${fmtDate(x.date)}* | المستفيد: *${b.name}*\n • السعر: *${rate.toFixed(3)} د.ك/1000ج*\n • ${moneyEGP(b.egp)} | ${money(share)}\n\n`;
-        });
-      }else{
-        const amt=realAmount(x);
-        let lbl;
-        if(x.type==="expense"||x.type==="income")lbl=x.category;
-        else if(x.type==="debt")lbl=debtTypeLabel(x.debtType);
-        else if(x.type==="internal_transfer")lbl=`تحويل: ${getAccountById(x.account||"cash_default").name} → ${getAccountById(x.toAccount).name}`;
-        else lbl=x.type;
-        const party=x.person||(x.beneficiaries||[]).map(b=>b.name).join(" ")||"—";
-        o+=`${idx++}. *${fmtDate(x.date)}* | ${lbl}${x.notes?" ("+x.notes+")":""}\n الطرف: ${party} | المبلغ: *${x.type==="internal_transfer"?"—":money(amt)}*\n\n`;
-      }
-    });
-  }
-  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(o)}`,"_blank");
+  t.onerror=()=>{showToast("فشل التفريغ")};
 }
 
 function dayBefore(e){
@@ -2378,7 +1399,7 @@ function getAllSalaryCycles(e){
     earlier.sort((a,b)=>a.date.localeCompare(b.date));
     const start=earlier[0].date;
     const end=dayBefore(first);
-    cycles.push({id:`cycle_prior_${start}_${end}`,label:`الأرصدة القديمة (${fmtDate(start)} ← ${fmtDate(end)})`,start,end,isCurrent:false,isPriorPeriod:true});
+    cycles.push({id:`cycle_prior_${start}_${end}`,label:`الأرصدة القديمة`,start,end,isCurrent:false,isPriorPeriod:true});
   }
   for(let k=0;k<salaryDates.length;k++){
     const start=salaryDates[k];
@@ -2388,22 +1409,6 @@ function getAllSalaryCycles(e){
   }
   return cycles;
 }
-
-function switchFinanceTab(e){
-  currentFinanceTab=e;
-  ["ledger"].forEach(t=>{
-    const view=$("finance-"+t+"-view");
-    const tab=$("finance-tab-"+t);
-    if(view)view.classList.toggle("hidden",t!==e);
-    if(tab)tab.classList.toggle("active",t===e);
-  });
-  if(e==="ledger"){
-    if(reportGenerated){$("filter-section").classList.add("hidden");$("report-section").classList.remove("hidden");}
-    else{$("filter-section").classList.remove("hidden");$("report-section").classList.add("hidden");}
-    updateReportTargetOptions().catch(()=>{});
-  }
-}
-
 function totalIncomeFor(e,t){return e.filter(x=>inPeriod(x,t)).reduce((s,x)=>(x.type==="income"||isCreditorEntry(x))?s+realAmount(x):s,0)}
 function totalExpenseFor(e,t,a){
   const n=a||"all";
@@ -2416,47 +1421,11 @@ function totalExpenseFor(e,t,a){
   },0);
 }
 
-function numberToArabicWords(e){
-  if(e===0)return"صفر دينار كويتي لا غير";
-  const ones=["","واحد","اثنان","ثلاثة","أربعة","خمسة","ستة","سبعة","ثمانية","تسعة","عشرة","أحد عشر","اثنا عشر","ثلاثة عشر","أربعة عشر","خمسة عشر","ستة عشر","سبعة عشر","ثمانية عشر","تسعة عشر"];
-  const tens=["","","عشرون","ثلاثون","أربعون","خمسون","ستون","سبعون","ثمانون","تسعون"];
-  const hundreds=["","مائة","مائتان","ثلاثمائة","أربعمائة","خمسمائة","ستمائة","سبعمائة","ثمانمائة","تسعمائة"];
-  function c3(n){
-    if(n===0)return"";
-    const h=Math.floor(n/100),r=n%100;
-    let s=hundreds[h]||"";
-    if(r>0){
-      if(s)s+=" و";
-      if(r<20)s+=ones[r];
-      else{s+=ones[r%10]?(ones[r%10]+" و"):"";s+=tens[Math.floor(r/10)];}
-    }
-    return s;
-  }
-  const intPart=Math.floor(e);
-  let frac=Math.round(1000*(e-intPart)),int2=intPart;
-  if(frac>=1000){int2+=1;frac-=1000;}
-  const m=Math.floor(int2/1e6),k=Math.floor(int2%1e6/1e3),r=int2%1000;
-  const parts=[];
-  if(m===1)parts.push("مليون");
-  else if(m===2)parts.push("مليونان");
-  else if(m>0)parts.push(c3(m)+(m<=10?" ملايين":" مليون"));
-  if(k===1)parts.push("ألف");
-  else if(k===2)parts.push("ألفان");
-  else if(k>0)parts.push(c3(k)+(k<=10?" آلاف":" ألف"));
-  if(r>0&&c3(r))parts.push(c3(r));
-  let out=parts.length>0?parts.join(" و")+" دينار كويتي":"";
-  if(frac>0)out+=(out?" و":"")+c3(frac)+" فلس";
-  if(!out)out="صفر دينار كويتي";
-  return out.trim()+" لا غير";
-}
-
 document.addEventListener("click",e=>{
   const t=e.target.closest("[data-action]");
   if(!t)return;
   const action=t.dataset.action;
-  if(action==="edit-report")editFromReport(t.dataset.id);
-  else if(action==="delete-report")deleteTransactionFromReport(t.dataset.id);
-  else if(action==="del-person")deletePerson(t.dataset.person);
+  if(action==="del-person")deletePerson(t.dataset.person);
   else if(action==="del-exp-cat")deleteExpenseCategory(t.dataset.cat);
   else if(action==="del-account")deleteAccount(t.dataset.id);
 });
@@ -2500,7 +1469,6 @@ window.addEventListener("DOMContentLoaded",async()=>{
     addBeneficiary();
     await openDB();
     await refreshAllViews();
-    await onReportTypeChange();
     if(shouldShowSetup())openOpeningSetupModal();
   }catch(e){console.warn("Init warning:",e)}
 });
