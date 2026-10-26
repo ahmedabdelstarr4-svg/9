@@ -51,7 +51,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .alert-strip.warning{background:rgba(251, 191, 36, 0.1);border-color:var(--amber-val);color:var(--amber-val);}
 
 /* Top Dashboard Layout */
-.top-dash-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:6px;align-items:stretch;}
+.top-dash-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:6px;align-items:stretch;direction:rtl;}
 .balance-card{background:linear-gradient(145deg, #0f241a 0%, #08140e 100%);color:white;border-radius:16px;padding:10px;text-align:center;display:flex;flex-direction:column;justify-content:space-between;border:1px solid var(--border-neon);box-shadow:0 6px 20px rgba(0,0,0,0.4), inset 0 0 10px rgba(16, 185, 129, 0.15);position:relative;overflow:hidden;}
 .balance-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center, rgba(16,185,129,0.08) 0%, transparent 60%);pointer-events:none;}
 .balance-top-row{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#a7f3d0;font-weight:700}
@@ -60,14 +60,14 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .monthly-trend{display:inline-flex;align-items:center;gap:3px;font-size:9px;color:#34d399;background:rgba(52,211,153,0.15);padding:2px 6px;border-radius:6px;font-weight:700;}
 
 .accounts-stack-side{display:flex;flex-direction:column;gap:6px;}
-.acc-mini-box{background:var(--bg-card);border:1px solid var(--border-neon);border-radius:14px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:var(--ink);transition:transform .15s ease, background .15s ease;}
+.acc-mini-box{background:var(--bg-card);border:1px solid var(--border-neon);border-radius:14px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:var(--ink);transition:transform .15s ease, background .15s ease;direction:rtl;}
 .acc-mini-box:active{transform:scale(0.98)}
-.acc-mini-left{display:flex;align-items:center;gap:8px;}
+.acc-mini-left{display:flex;align-items:center;gap:8px;flex-direction:row;}
 .acc-mini-icon{width:28px;height:28px;border-radius:8px;background:rgba(16,185,129,0.1);border:1px solid var(--border-neon);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--emerald-neon);}
-.acc-mini-info{display:flex;flex-direction:column;}
+.acc-mini-info{display:flex;flex-direction:column;text-align:right;}
 .acc-mini-title{font-size:9.5px;color:var(--ink-muted);font-weight:800}
 .acc-mini-val{font-size:11.5px;font-weight:900;color:var(--green-val);font-variant-numeric:tabular-nums}
-.acc-mini-arrow{font-size:12px;color:var(--ink-muted);font-weight:900}
+.acc-mini-arrow{font-size:14px;color:var(--ink-muted);font-weight:900;transform:rotate(180deg);}
 
 /* Second Row: Today Card & Donut Chart */
 .second-dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
@@ -1323,7 +1323,6 @@ async function renderDashBudgetCard(transactions){
     const {items}=computeAllBudgetData(txs,cycle);
     el.innerHTML=items.map(renderBudgetRowHTML).join("");
     
-    // --- تحديث ودقة النسب الفعلية للـ Donut Chart والـ Legend بناءً على إجمالي المصروف الفعلي من الدخل ---
     const totalSpentAll = items.reduce((sum, item) => sum + Math.max(0, item.spent), 0);
     const donutCenterPctEl = document.querySelector(".donut-center-text strong");
     if(donutCenterPctEl && income > 0) {
@@ -1331,7 +1330,6 @@ async function renderDashBudgetCard(transactions){
       donutCenterPctEl.textContent = overallSpentPct.toFixed(1) + "%";
     }
 
-    // حساب وتحديث نسب الليجند (Legend) الجانبية للدونات بناءً على الفعل
     const legendContainer = document.querySelector(".donut-legend");
     if(legendContainer && income > 0) {
       const getCatSpent = (bKey) => {
@@ -1346,7 +1344,6 @@ async function renderDashBudgetCard(transactions){
       const spentDebt = getCatSpent("debt");
       const spentEmergency = getCatSpent("emergency");
 
-      // إجمالي مصاريف المعيشة (ثابت + عادي + شخصي)
       const livingSpent = spentFixed + spentRegular + spentPersonal;
       const transferSpent = spentTransfer;
       const debtSpent = spentDebt;
