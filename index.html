@@ -46,6 +46,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 #view-dashboard > *{min-width:0}
 .dash-cols{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
 .dash-col{display:flex;flex-direction:column;gap:6px;min-width:0}
+.alert-strip{border-radius:12px;padding:6px 10px;font-size:10.5px;font-weight:800;line-height:1.4;cursor:pointer;border:1px solid;display:flex;flex-direction:column;gap:2px;}
+.alert-strip.bad{background:rgba(251, 113, 133, 0.1);border-color:var(--red-val);color:var(--red-val);}
+.alert-strip.warning{background:rgba(251, 191, 36, 0.1);border-color:var(--amber-val);color:var(--amber-val);}
 
 /* Top Dashboard Layout */
 .top-dash-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:6px;align-items:stretch;}
@@ -203,6 +206,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 
 <main class="content">
 <section id="view-dashboard" class="view">
+  <div id="dash-alert-strip" class="alert-strip hidden" onclick="window.location.href='reports.html'"></div>
   
   <!-- Top Section: Total Wealth & Separate Account Cards -->
   <div class="top-dash-grid">
@@ -213,7 +217,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
       </div>
       <strong class="balance-main-val" id="dash-total-wealth">0.000 د.ك</strong>
       <div>
-        <span class="monthly-trend">📈 حركات الحسابات المباشرة</span>
+        <span class="monthly-trend">📈 +0.0% من الشهر الماضي</span>
       </div>
     </div>
     <div class="accounts-stack-side">
@@ -385,7 +389,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
       <div><label>من حساب</label><select id="int-from-account"></select></div>
       <div><label>إلى حساب</label><select id="int-to-account"></select></div>
       <div><label>المبلغ (د.ك)</label><input id="int-amount" type="number" min="0.001" step="0.001" inputmode="decimal" placeholder="0.000"></div>
-      <div class="field-note">تحويل داخلي مباشر بين حساباتك.</div>
+      <div class="field-note">مثال: سحبت من البنك وحطيت في جيبك، أو أودعت كاش في البنك. لا تؤثر على إجمالي ثروتك.</div>
     </div>
     <div><label for="tx-notes">ملاحظات</label><textarea id="tx-notes" rows="2" placeholder="ملاحظات سريعة..." maxlength="500"></textarea></div>
     <button type="button" id="save-transaction" class="btn btn-primary" onclick="saveTransaction()">حفظ المعاملة 💾</button>
@@ -396,6 +400,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
   <div class="row-between"><strong style="font-size:14px;color:var(--ink)">الإعدادات ⚙️</strong><span class="small">تصميم مدمج</span></div>
   <div class="stack" style="gap:6px">
     
+    <!-- كارت بوابة التحليل المالي والتقارير المربوط بملف analytics.html و reports.html -->
     <div class="acc-item open" id="acc-financial-analysis">
       <div class="acc-header" onclick="toggleAccordion('acc-financial-analysis')"><span>📊 التحليل المالي والتقارير المتقدمة</span><span class="acc-icon">▼</span></div>
       <div class="acc-body stack">
@@ -480,6 +485,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 </section>
 </main>
 
+<!-- Bottom Navigation Bar - Fully Unified (4 Tabs) -->
 <nav class="nav-bottom">
   <button type="button" id="nav-dashboard" class="nav-btn active" onclick="switchMainView('dashboard')"><span>🏠</span><span>الرئيسية</span></button>
   <a href="reports.html" id="nav-reports" class="nav-btn"><span>📜</span><span>التقارير</span></a>
@@ -772,6 +778,7 @@ function loadTargetPercentages(){
   $("target-savings-pct")&&($("target-savings-pct").value=e.savings||0);
 }
 
+/* عرض النسب المستهدفة لكل دورة راتب: من راتب أساسي إلى اليوم السابق للراتب الأساسي التالي */
 function renderTargetCyclesList(txs,s){
   const box=$("target-cycles-list");
   if(!box)return;
@@ -1224,6 +1231,7 @@ async function refreshAllViews(e){
   renderTargetValuesPreview();
 }
 
+// 🟢 التعديل السليم والدقيق هنا لحل مشكلة الحسابات والكاش
 function renderAccountsBalance(transactions){
   const totalEl=$("dash-total-wealth");
   const bankEl=$("acc-bank-val");
@@ -1326,6 +1334,27 @@ function renderTodayCard(items){
   note.textContent=over?`تجاوزت حد اليوم بـ ${money(spent-allowed)}`:`من حد يومي ${money(allowed)}`;
 }
 
+function renderAlertStrip(items){
+  const el=$("dash-alert-strip");
+  if(!el)return;
+  if(!items){el.classList.add("hidden");el.innerHTML="";return;}
+  const bad=[],warn=[];
+  items.forEach(it=>{
+    if(it.max<=0&&it.spent<=0)return;
+    const b=BUDGET_BY_KEY[it.budgetId];
+    const nm=`${b.icon} ${b.short}`;
+    const st=computeBudgetStatus(it.max,it.spent);
+    if(it.max<=0||st.pct>=100)bad.push(nm);
+    else if(st.pct>=80)warn.push(`${nm} ${st.pct.toFixed(0)}%`);
+  });
+  if(!bad.length&&!warn.length){el.classList.add("hidden");el.innerHTML="";return;}
+  let html="";
+  if(bad.length)html+=`<div>🚨 تعدّى حده: ${bad.join("، ")}</div>`;
+  if(warn.length)html+=`<div>⚠️ قارب على حده: ${warn.join("، ")}</div>`;
+  el.className="alert-strip "+(bad.length?"bad":"warning");
+  el.innerHTML=html;
+}
+
 function renderBudgetRowHTML(data){
   const b=BUDGET_BY_KEY[data.budgetId];
   const noLimit=data.max<=0;
@@ -1364,6 +1393,7 @@ async function renderDashBudgetCard(transactions){
     if(!cycle||(!hasSalary&&income<=0)){
       el.innerHTML='<span class="small" style="grid-column: span 2">سجّل راتبًا أساسيًا أو رصيد بداية لعرض الميزانية.</span>';
       renderTodayCard(null);
+      renderAlertStrip(null);
       renderCyclePill(null);
       const segResetEl = document.querySelector(".donut-segment");
       if(segResetEl){
@@ -1419,6 +1449,7 @@ async function renderDashBudgetCard(transactions){
     }
 
     renderTodayCard(items);
+    renderAlertStrip(items);
     renderCyclePill(hasSalary?items[0]:null);
   }catch(e){console.warn("renderDashBudgetCard:",e)}
 }
@@ -1522,32 +1553,31 @@ function buildBackupPayload(e){
   return{version:16,savedAt:(new Date).toISOString(),transactions:e,people:getPeopleList(),expenseCategories:getExpenseCategories(),accounts:getAccounts(),targetPercentages:getTargetPercentages()};
 }
 
-// 🟢 إصلاح النسخ الاحتياطي (تنزيل آمن متوافق مع الموبايل والكمبيوتر)
 async function downloadBackup(){
   try{
     const e=await allTransactions();
     const t=buildBackupPayload(e);
     const jsonStr=JSON.stringify(t,null,2);
     const filename=`نسخة_احتياطية_${todayISO()}.json`;
-    
-    const blob = new Blob([jsonStr], {type: "application/json;charset=utf-8;"});
-    const url = URL.createObjectURL(blob);
-    
+    const file=new File([jsonStr],filename,{type:"application/json"});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({title:"النسخة الاحتياطية",text:"ملف النسخة الاحتياطية للنظام المالي الشخصي",files:[file]});
+      showToast("تمت المشاركة بنجاح ✅");
+      $("backup-status").textContent="آخر مشاركة: "+(new Date).toLocaleTimeString("en-US");
+      return;
+    }
+    const dataUri="data:application/json;charset=utf-8,"+encodeURIComponent(jsonStr);
     const s=document.createElement("a");
-    s.href = url;
-    s.download = filename;
+    s.setAttribute("href",dataUri);
+    s.setAttribute("download",filename);
     document.body.appendChild(s);
     s.click();
-    setTimeout(()=>{
-      document.body.removeChild(s);
-      window.URL.revokeObjectURL(url);
-    }, 200);
-
+    s.remove();
     $("backup-status").textContent="آخر تنزيل: "+(new Date).toLocaleTimeString("en-US");
     showToast("تم تنزيل النسخة الاحتياطية ✅");
   }catch(err){
-    console.error("Download Error:", err);
-    showToast("تعذر التنزيل ❌");
+    if(err&&err.name==="AbortError")return showToast("تم إلغاء المشاركة");
+    showToast("تعذر التنزيل أو المشاركة ❌");
   }
 }
 
@@ -1556,20 +1586,10 @@ async function shareBackup(){
     const e=await allTransactions();
     const t=JSON.stringify(buildBackupPayload(e),null,2);
     const a=`نسخة_احتياطية_${todayISO()}.json`;
-    const file=new File([t],a,{type:"application/json"});
-    if(navigator.canShare&&navigator.canShare({files:[file]})){
-      await navigator.share({title:"نسخة احتياطية",files:[file]});
-      showToast("تمت المشاركة بنجاح ✅");
-    } else if(navigator.clipboard&&window.isSecureContext){
-      await navigator.clipboard.writeText(t);
-      showToast("تم نسخ البيانات للحافظة للحفظ");
-    } else {
-      showToast("تعذر المشاركة المباشرة");
-    }
-  }catch(e){
-    if(e&&e.name==="AbortError")return showToast("تم إلغاء المشاركة");
-    showToast("تعذر المشاركة");
-  }
+    if(navigator.share)try{const file=new File([t],a,{type:"application/json"});return void await navigator.share({title:"نسخة احتياطية",files:[file]});}catch(e){}
+    if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("تم النسخ للحافظة");}
+    else{showToast("تعذر النسخ");}
+  }catch(e){showToast("تعذر المشاركة")}
 }
 
 function restoreBackup(){
