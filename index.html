@@ -51,7 +51,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .alert-strip.warning{background:rgba(251, 191, 36, 0.1);border-color:var(--amber-val);color:var(--amber-val);}
 
 /* Top Dashboard Layout */
-.top-dash-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:6px;align-items:stretch;direction:rtl;}
+.top-dash-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:6px;align-items:stretch;}
 .balance-card{background:linear-gradient(145deg, #0f241a 0%, #08140e 100%);color:white;border-radius:16px;padding:10px;text-align:center;display:flex;flex-direction:column;justify-content:space-between;border:1px solid var(--border-neon);box-shadow:0 6px 20px rgba(0,0,0,0.4), inset 0 0 10px rgba(16, 185, 129, 0.15);position:relative;overflow:hidden;}
 .balance-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center, rgba(16,185,129,0.08) 0%, transparent 60%);pointer-events:none;}
 .balance-top-row{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#a7f3d0;font-weight:700}
@@ -60,14 +60,14 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .monthly-trend{display:inline-flex;align-items:center;gap:3px;font-size:9px;color:#34d399;background:rgba(52,211,153,0.15);padding:2px 6px;border-radius:6px;font-weight:700;}
 
 .accounts-stack-side{display:flex;flex-direction:column;gap:6px;}
-.acc-mini-box{background:var(--bg-card);border:1px solid var(--border-neon);border-radius:14px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:var(--ink);transition:transform .15s ease, background .15s ease;direction:rtl;}
+.acc-mini-box{background:var(--bg-card);border:1px solid var(--border-neon);border-radius:14px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:var(--ink);transition:transform .15s ease, background .15s ease;}
 .acc-mini-box:active{transform:scale(0.98)}
-.acc-mini-left{display:flex;align-items:center;gap:8px;flex-direction:row;}
+.acc-mini-left{display:flex;align-items:center;gap:8px;}
 .acc-mini-icon{width:28px;height:28px;border-radius:8px;background:rgba(16,185,129,0.1);border:1px solid var(--border-neon);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--emerald-neon);}
-.acc-mini-info{display:flex;flex-direction:column;text-align:right;}
+.acc-mini-info{display:flex;flex-direction:column;}
 .acc-mini-title{font-size:9.5px;color:var(--ink-muted);font-weight:800}
 .acc-mini-val{font-size:11.5px;font-weight:900;color:var(--green-val);font-variant-numeric:tabular-nums}
-.acc-mini-arrow{font-size:14px;color:var(--ink-muted);font-weight:900;transform:rotate(180deg);}
+.acc-mini-arrow{font-size:12px;color:var(--ink-muted);font-weight:900}
 
 /* Second Row: Today Card & Donut Chart */
 .second-dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
@@ -498,7 +498,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
       <button type="button" class="btn btn-primary" onclick="confirmOpeningSetup()">ابدأ 🚀</button>
       <button type="button" class="btn btn-muted" onclick="skipOpeningSetup()">تخطي</button>
     </div>
-    <div class="field-note" style="text-align:center">هيتم تسجيل المعاملة في السجل كتحويل من "خارج النظام".</div>
+    <div class="field-note" style="text-align:center">هيتم تسجيل المعاملة في السجل كدخل افتتاحي.</div>
   </div>
 </div>
 
@@ -700,8 +700,8 @@ async function confirmOpeningSetup(){
     const time=`${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
     const today=todayISO();
     const txs=[];
-    if(cash>0)txs.push({id:`tx_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,date:today,time,notes:"رصيد بداية — كاش",type:"internal_transfer",account:OUTSIDE_ACCOUNT_ID,toAccount:cashAcc.id,amount:cash});
-    if(bank>0)txs.push({id:`tx_${Date.now()+1}_${Math.random().toString(36).slice(2,6)}`,date:today,time,notes:"رصيد بداية — بنك",type:"internal_transfer",account:OUTSIDE_ACCOUNT_ID,toAccount:bankAcc.id,amount:bank});
+    if(cash>0)txs.push({id:`tx_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,date:today,time,notes:"رصيد بداية — كاش",type:"income",category:"رصيد افتتاحي",isSalaryBase:false,account:cashAcc.id,amount:cash});
+    if(bank>0)txs.push({id:`tx_${Date.now()+1}_${Math.random().toString(36).slice(2,6)}`,date:today,time,notes:"رصيد بداية — بنك",type:"income",category:"رصيد افتتاحي",isSalaryBase:false,account:bankAcc.id,amount:bank});
     await new Promise((resolve,reject)=>{
       const tx=db.transaction(STORE_NAME,"readwrite");
       const store=tx.objectStore(STORE_NAME);
@@ -920,7 +920,7 @@ function populatePeopleSelects(){
 function renderPeopleHints(){
   const e=getPeopleList(),t=$("debt-people-hint"),a=$("transfer-people-hint");
   t&&(e.length===0?(t.className="field-note warn",t.textContent="لسه مفيش أسماء. اضغط زر ➕ لإضافة أول اسم."):(t.className="field-note",t.textContent=""));
-  a&&(e.length===0?(a.className="field-note warn",a.textContent="لسه مفيش أسماء. اضغط زر ➕ جنب الصف لإضافة أول مستفيد."):(a.className="field-note",t.textContent="لو الاسم مش موجود، دوس زر ➕ جنبه لإضافته للقائمة."));
+  a&&(e.length===0?(a.className="field-note warn",a.textContent="لسه مفيش أسماء. اضغط زر ➕ جنب الصف لإضافة أول مستفيد."):(a.className="field-note",a.textContent="لو الاسم مش موجود، دوس زر ➕ جنبه لإضافته للقائمة."));
 }
 function renderPersonsManageList(){
   const e=$("persons-manage-list");
@@ -965,19 +965,25 @@ function confirmAddPerson(){
   closePersonModal();
 }
 
-function openInputForm(e){
-  if(editingTxId&&!confirm("سيتم إلغاء تعديل المعاملة الحالية والانتقال لتسجيل جديد. متابعة؟"))return void resetInputForm();
-  $("view-input").classList.remove("hidden");
-  switchInputTab(e,{force:!0});
-}
-function switchInputTab(e,t={}){
-  if(!t.force&&editingTxId&&e!==currentInputTab){
-    if(!confirm("سيتم إلغاء تعديل المعاملة الحالية والانتقال لتبويب آخر. متابعة؟"))return false;
+function openInputForm(type){
+  if(editingTxId){
+    if(!confirm("سيتم إلغاء تعديل المعاملة الحالية والانتقال لتسجيل جديد. متابعة؟")) return;
+    resetInputForm();
   }
-  currentInputTab=e;
+  $("view-input").classList.remove("hidden");
+  switchInputTab(type,{force:true});
+}
+function switchInputTab(type,opts={}){
+  if(!opts.force && editingTxId && type!==currentInputTab){
+    if(!confirm("سيتم إلغاء تعديل المعاملة الحالية والانتقال لتبويب آخر. متابعة؟")) return false;
+    editingTxId=null;
+    $("edit-banner").classList.add("hidden");
+    $("save-transaction").textContent="حفظ المعاملة 💾";
+  }
+  currentInputTab=type;
   ["expense","income","transfer","debt","internal_transfer"].forEach(t=>{
-    $("subtab-"+t).classList.toggle("active",t===e);
-    $("section-"+t).classList.toggle("hidden",t!==e);
+    $("subtab-"+t).classList.toggle("active",t===type);
+    $("section-"+t).classList.toggle("hidden",t!==type);
   });
   return true;
 }
@@ -1314,22 +1320,35 @@ async function renderDashBudgetCard(transactions){
     const income=cycle?totalIncomeFor(txs,cycle):0;
     renderCycleFlow(txs,cycle);
     if(!cycle||(!hasSalary&&income<=0)){
-      el.innerHTML='<span class="small" style="grid-column: span 2">سجّل راتبًا أساسيًا لعرض الميزانية.</span>';
+      el.innerHTML='<span class="small" style="grid-column: span 2">سجّل راتبًا أساسيًا أو رصيد بداية لعرض الميزانية.</span>';
       renderTodayCard(null);
       renderAlertStrip(null);
       renderCyclePill(null);
+      // Reset donut if no income
+      const segResetEl = document.querySelector(".donut-segment");
+      if(segResetEl){
+        segResetEl.setAttribute("stroke-dasharray", "0, 100");
+        segResetEl.setAttribute("stroke", "#10b981");
+      }
+      const centerResetEl = document.querySelector(".donut-center-text strong");
+      if(centerResetEl) centerResetEl.textContent = "0.0%";
       return;
     }
     const {items}=computeAllBudgetData(txs,cycle);
     el.innerHTML=items.map(renderBudgetRowHTML).join("");
     
+    // --- تحديث الدونات (القوس + النص) بناءً على الفعلي ---
     const totalSpentAll = items.reduce((sum, item) => sum + Math.max(0, item.spent), 0);
-    const donutCenterPctEl = document.querySelector(".donut-center-text strong");
-    if(donutCenterPctEl && income > 0) {
-      const overallSpentPct = (totalSpentAll / income) * 100;
-      donutCenterPctEl.textContent = overallSpentPct.toFixed(1) + "%";
+    const overallPct = income > 0 ? Math.min(100, (totalSpentAll / income) * 100) : 0;
+    const segEl = document.querySelector(".donut-segment");
+    if(segEl){
+      segEl.setAttribute("stroke-dasharray", `${overallPct.toFixed(2)}, 100`);
+      segEl.setAttribute("stroke", overallPct >= 100 ? "var(--red-val)" : overallPct >= 80 ? "var(--amber-val)" : "#10b981");
     }
+    const donutCenterPctEl = document.querySelector(".donut-center-text strong");
+    if(donutCenterPctEl) donutCenterPctEl.textContent = overallPct.toFixed(1) + "%";
 
+    // تحديث الليجند (Legend) الجانبي للدونات بناءً على الفعلي
     const legendContainer = document.querySelector(".donut-legend");
     if(legendContainer && income > 0) {
       const getCatSpent = (bKey) => {
@@ -1344,6 +1363,7 @@ async function renderDashBudgetCard(transactions){
       const spentDebt = getCatSpent("debt");
       const spentEmergency = getCatSpent("emergency");
 
+      // إجمالي مصاريف المعيشة (ثابت + عادي + شخصي)
       const livingSpent = spentFixed + spentRegular + spentPersonal;
       const transferSpent = spentTransfer;
       const debtSpent = spentDebt;
@@ -1591,7 +1611,14 @@ function getAllSalaryCycles(e){
   }
   return cycles;
 }
-function totalIncomeFor(e,t){return e.filter(x=>inPeriod(x,t)).reduce((s,x)=>(x.type==="income"||isCreditorEntry(x))?s+realAmount(x):s,0)}
+function totalIncomeFor(e,t){
+  return e.filter(x=>inPeriod(x,t)).reduce((s,x)=>{
+    if(x.type==="income") return s + realAmount(x);
+    if(isCreditorEntry(x)) return s + realAmount(x);
+    if(x.type==="internal_transfer" && x.account===OUTSIDE_ACCOUNT_ID) return s + realAmount(x);
+    return s;
+  },0);
+}
 function totalExpenseFor(e,t,a){
   const n=a||"all";
   return e.filter(x=>inPeriod(x,t)).reduce((s,x)=>{
