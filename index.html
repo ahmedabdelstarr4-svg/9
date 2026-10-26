@@ -151,7 +151,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .row-between{display:flex;justify-content:space-between;align-items:center;gap:4px}
 .bud-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
 .bud-mini-card{border:1px solid var(--border-subtle);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;background:var(--bg-card);min-width:0;}
-.bud-mini-card[data-bkey="emergency"]{grid-column: span 2;border-color:var(--border-neon);background:rgba(16,185,129,0.03);}
+.bud-mini-card[data-bkey="emergency"]{border-color:var(--border-neon);background:rgba(16,185,129,0.03);}
 .bud-mini-head{display:flex;justify-content:space-between;align-items:center;gap:4px}
 .bud-mini-name{font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bud-mini-pct{font-size:9.5px;font-weight:900;font-variant-numeric:tabular-nums}
@@ -303,20 +303,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
         <div id="dash-budget-summary" class="bud-grid"><span class="small" style="grid-column: span 2">سجّل راتبًا أساسيًا لعرض الميزانية.</span></div>
       </div>
 
-      <!-- Processing Fund Wide Banner matching image -->
-      <a href="#" class="processing-fund-card" onclick="switchMainView('backup');return false;">
-        <div class="pf-left">
-          <div class="pf-icon">🛡️</div>
-          <div class="pf-info">
-            <span class="pf-title">صندوق المعالجة</span>
-            <span class="pf-sub" id="dash-pf-days-sub">المتبقي الصافي · يكفي 25 يوماً</span>
-          </div>
-        </div>
-        <div class="pf-val-wrap">
-          <span class="pf-val" id="dash-pf-val">27.952 د.ك</span>
-          <span class="pf-arrow">‹</span>
-        </div>
-      </a>
     </div>
 
     <div class="dash-col">
@@ -422,7 +408,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
       <div class="acc-header" onclick="toggleAccordion('acc-financial-analysis')"><span>📊 التحليل المالي والتقارير المتقدمة</span><span class="acc-icon">▼</span></div>
       <div class="acc-body stack">
         <div class="field-note" style="color:var(--emerald-neon);font-weight:700;">بوابة دخول مباشرة للتقارير الشاملة وتحليل المصروفات.</div>
-        <a href="reports.html" class="btn btn-primary" style="text-decoration:none;text-align:center;justify-content:center;margin-top:4px;">فتح صفحة التقارير والتحليل المالي 🚀</a>
+        <a href="analytics.html" class="btn btn-primary" style="text-decoration:none;text-align:center;justify-content:center;margin-top:4px;">فتح صفحة التقارير والتحليل المالي 🚀</a>
       </div>
     </div>
 
@@ -539,7 +525,7 @@ const BUDGET_ITEMS=[
   {key:"personal",label:"🛍️ المشتريات الشخصية والنثريات",short:"شخصي",icon:"🛍️"},
   {key:"transfer",label:"✈️ التحويلات الخارجية",short:"تحويلات",icon:"✈️"},
   {key:"debt",label:"🤝 تسديد الديون",short:"ديون",icon:"🤝"},
-  {key:"emergency",label:"🛡️ صندوق المعالجة",short:"صندوق المعالجة",icon:"🛡️",isDynamic:true}
+  {key:"emergency",label:"🛡️ صندوق المعالجة",short:"معالجة",icon:"🛡️",isDynamic:true}
 ];
 const BUDGET_BY_KEY={};
 BUDGET_ITEMS.forEach(b=>{BUDGET_BY_KEY[b.key]=b});
@@ -1311,6 +1297,7 @@ function renderBudgetRowHTML(data){
     <div class="cap-track"><div class="cap-bar" style="width:${pctW}%;background:${barColor}"></div></div>
     <div class="bud-mini-meta">
       <div>متبقي: <strong class="${cls}">${money(data.remaining)}</strong></div>
+      ${data.isDynamic ? `<div>يكفي: <strong>${data.daysRemaining} يوماً</strong></div>` : ''}
       <div>⚡ يوميًا: <strong>${dailyTxt}</strong></div>
     </div>
   </div>`;
@@ -1333,16 +1320,7 @@ async function renderDashBudgetCard(transactions){
       return;
     }
     const {items}=computeAllBudgetData(txs,cycle);
-    el.innerHTML=items.filter(i=>!i.isDynamic).map(renderBudgetRowHTML).join("");
-    
-    // صندوق المعالجة وتحديث الأيام المتبقية بدقة
-    const dyn=items.find(i=>i.isDynamic);
-    if(dyn){
-      const pfValEl=$("dash-pf-val");
-      const pfSubEl=$("dash-pf-days-sub");
-      if(pfValEl) pfValEl.textContent=money(dyn.remaining);
-      if(pfSubEl) pfSubEl.textContent=`المتبقي الصافي · يكفي ${dyn.daysRemaining} يوماً`;
-    }
+    el.innerHTML=items.map(renderBudgetRowHTML).join("");
     
     // --- تحديث ودقة النسب الفعلية للـ Donut Chart والـ Legend بناءً على إجمالي المصروف الفعلي من الدخل ---
     const totalSpentAll = items.reduce((sum, item) => sum + Math.max(0, item.spent), 0);
@@ -1612,7 +1590,7 @@ function getAllSalaryCycles(e){
     const start=salaryDates[k];
     const isLast=k===salaryDates.length-1;
     const end=isLast?today:dayBefore(salaryDates[k+1]);
-    cycles.push({id:`cycle_${start}_${end}`,label:isLast?`الدورة الحالية ${k+1}`:`دورة ${k+1}`,start,end,isCurrent:isLast,cycleIndex:k+1});
+    cycles.push({id:`cycle_${start}_${end}`,label:isLast?`الدورة الحالية ${k+1}`:`دورة ${k+1}`,start,end:isLast,cycleIndex:k+1});
   }
   return cycles;
 }
