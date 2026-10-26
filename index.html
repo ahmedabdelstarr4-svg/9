@@ -163,6 +163,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .cap-track{height:4px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden}
 .cap-bar{height:100%;width:0;transition:width .3s ease,background .3s ease}
 
+/* بطاقات النسب المستهدفة لكل دورة راتب */
+.tc-card{border:1px solid var(--border-subtle);border-radius:10px;background:var(--bg-card);overflow:hidden}
+.tc-card.current{border-color:var(--border-neon);background:rgba(16,185,129,0.04)}
+.tc-card summary{cursor:pointer;padding:8px 10px;font-size:11px;font-weight:800;list-style:none;display:flex;flex-direction:column;gap:2px}
+.tc-card summary::-webkit-details-marker{display:none}
+.tc-body{padding:6px 10px 8px;border-top:1px dashed var(--border-subtle);display:flex;flex-direction:column;gap:3px;font-size:10.5px}
+
 @media (max-width: 600px){.balance-card strong{font-size:20px}.today-val{font-size:18px}}
 @media (min-width: 600px){:root{--app-max: 720px}}
 @media (min-width: 900px){
@@ -430,6 +437,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
           <div><label style="font-size:10.5px">المدخرات (%) 💰</label><input id="target-savings-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="savings" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
         </div>
         <div id="target-values-summary" class="panel stack" style="background:rgba(16,185,129,0.05);border-color:var(--border-neon);font-size:10.5px;gap:3px"></div>
+        <div id="target-cycles-list" class="stack" style="gap:4px"></div>
         <button type="button" class="btn btn-primary" onclick="saveTargetPercentages()" style="padding:6px">حفظ المستهدفات 🎯</button>
         <div class="field-note">تحدد هذه النسب الخطة المالية للصناديق الأساسية. وأي نسبة متبقية تذهب تلقائيًا لصندوق المعالجة.</div>
       </div>
@@ -769,6 +777,59 @@ function loadTargetPercentages(){
   $("target-debt-pct")&&($("target-debt-pct").value=e.debt);
   $("target-savings-pct")&&($("target-savings-pct").value=e.savings||0);
 }
+
+/* عرض النسب المستهدفة لكل دورة راتب: من راتب أساسي إلى اليوم السابق للراتب الأساسي التالي */
+function renderTargetCyclesList(txs,s){
+  const box=$("target-cycles-list");
+  if(!box)return;
+  const hasSalary=(txs||[]).some(x=>x&&x.type==="income"&&x.isSalaryBase);
+  if(!hasSalary){
+    box.innerHTML='<span class="small">سجّل راتبًا أساسيًا لتظهر الدورات وقيم النسب المستهدفة لكل دورة.</span>';
+    return;
+  }
+  const cycles=getAllSalaryCycles(txs).filter(c=>!c.isPriorPeriod).slice().reverse();
+  const rows=[
+    ["fixed","📌 الثابتة"],
+    ["regular","📊 العادية"],
+    ["personal","🛍️ الشخصية"],
+    ["transfer","✈️ التحويلات"],
+    ["debt","🤝 الديون"],
+    ["savings","💰 المدخرات"]
+  ];
+  const totalPct=Object.values(s).reduce((a,b)=>a+b,0);
+  const remPct=Math.max(0,100-totalPct);
+  let html='<div class="small" style="color:var(--emerald-neon);font-weight:800">📅 النسب المستهدفة لكل دورة راتب (من راتب أساسي لحد الراتب الأساسي اللي بعده)</div>';
+  html+=cycles.map((c,i)=>{
+    const income=totalIncomeFor(txs,c);
+    const allocated=income*(totalPct/100);
+    const left=income-allocated;
+    const days=Math.max(1,dateDiffDays(c.start,c.end)+1);
+    const endTxt=c.isCurrent?"حتى اليوم":fmtDate(c.end);
+    const title=c.isCurrent?`🟢 الدورة الحالية (${c.cycleIndex})`:`دورة ${c.cycleIndex}`;
+    const rowsHtml=rows.map(([k,lbl])=>{
+      const p=Number(s[k])||0;
+      if(p<=0)return"";
+      return `<div class="row-between"><span>${lbl} (${p}%)</span><strong>${money(income*(p/100))}</strong></div>`;
+    }).join("");
+    const warnHtml=totalPct>100
+      ?`<div class="small bad">⚠️ مجموع النسب (${totalPct}%) تجاوز 100%</div>`
+      :`<div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:3px"><span>🛡️ المتبقي لصندوق المعالجة (${remPct}%)</span><strong class="good">${money(left)}</strong></div>`;
+    return `<details class="tc-card${c.isCurrent?" current":""}" ${i===0?"open":""}>
+      <summary>
+        <span>${title}</span>
+        <span class="small">${fmtDate(c.start)} ← ${endTxt} · ${days} يوم</span>
+        <span class="small">الدخل: <strong>${money(income)}</strong></span>
+      </summary>
+      <div class="tc-body">
+        ${rowsHtml||'<span class="small">لا توجد نسب مخصصة.</span>'}
+        <div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:3px"><span>💰 مجموع المخصص (${totalPct}%)</span><strong>${money(allocated)}</strong></div>
+        ${warnHtml}
+      </div>
+    </details>`;
+  }).join("");
+  box.innerHTML=html;
+}
+
 async function renderTargetValuesPreview(){
   try{
     const e=await allTransactions();
@@ -790,6 +851,7 @@ async function renderTargetValuesPreview(){
       el.textContent=`≈ ${money(val)} من دخل الدورة (${money(n)})`;
       el.className="small target-value-hint good";
     });
+    renderTargetCyclesList(e,s);
     const r=$("target-values-summary");
     if(!r)return;
     if(!cycle||n<=0)return void(r.innerHTML='<span class="small">لا توجد دورة راتب حالية مسجّلة — سجّل راتبًا أساسيًا لتظهر القيم.</span>');
@@ -1607,7 +1669,7 @@ function getAllSalaryCycles(e){
     const start=salaryDates[k];
     const isLast=k===salaryDates.length-1;
     const end=isLast?today:dayBefore(salaryDates[k+1]);
-    cycles.push({id:`cycle_${start}_${end}`,label:isLast?`الدورة الحالية ${k+1}`:`دورة ${k+1}`,start,end:isLast,cycleIndex:k+1});
+    cycles.push({id:`cycle_${start}_${end}`,label:isLast?`الدورة الحالية ${k+1}`:`دورة ${k+1}`,start,end,isCurrent:isLast,cycleIndex:k+1});
   }
   return cycles;
 }
