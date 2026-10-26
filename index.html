@@ -50,7 +50,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .alert-strip.bad{background:rgba(251, 113, 133, 0.1);border-color:var(--red-val);color:var(--red-val);}
 .alert-strip.warning{background:rgba(251, 191, 36, 0.1);border-color:var(--amber-val);color:var(--amber-val);}
 
-/* Top Dashboard Layout matching image */
+/* Top Dashboard Layout */
 .top-dash-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:6px;align-items:stretch;}
 .balance-card{background:linear-gradient(145deg, #0f241a 0%, #08140e 100%);color:white;border-radius:16px;padding:10px;text-align:center;display:flex;flex-direction:column;justify-content:space-between;border:1px solid var(--border-neon);box-shadow:0 6px 20px rgba(0,0,0,0.4), inset 0 0 10px rgba(16, 185, 129, 0.15);position:relative;overflow:hidden;}
 .balance-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center, rgba(16,185,129,0.08) 0%, transparent 60%);pointer-events:none;}
@@ -119,10 +119,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 #view-input .tab{border:0;background:transparent;color:var(--ink-muted);border-radius:8px;padding:6px 2px;font-size:10px;font-weight:800;}
 #view-input .tab.active{background:linear-gradient(135deg,#10b981,#047857);color:#ffffff;box-shadow:0 3px 10px rgba(16,185,129,0.3)}
 #expense-amount,#income-amount,#total-kwd,#debt-amount,#int-amount{font-size:20px!important;text-align:center;font-weight:900;color:var(--emerald-neon)!important;background:rgba(16,185,129,0.05)!important;border:1px solid var(--border-neon)!important;border-radius:12px;padding:8px!important}
-.nav-bottom{position:fixed;bottom:4px;left:50%;transform:translateX(-50%);width:calc(100% - 10px);max-width:440px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding:3px;border:1px solid var(--border-neon);background:var(--nav-bg);backdrop-filter:blur(16px);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:30;}
-.nav-bottom .nav-btn{background:transparent;border:0;color:var(--ink-muted);padding:4px 2px;font-size:9.5px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:1px;border-radius:12px;}
+
+/* Bottom Navigation Bar Update - 4 Tabs */
+.nav-bottom{position:fixed;bottom:4px;left:50%;transform:translateX(-50%);width:calc(100% - 10px);max-width:440px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:3px;border:1px solid var(--border-neon);background:var(--nav-bg);backdrop-filter:blur(16px);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:30;}
+.nav-bottom .nav-btn{background:transparent;border:0;color:var(--ink-muted);padding:4px 2px;font-size:9.5px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:1px;border-radius:12px;text-decoration:none;}
 .nav-bottom .nav-btn span:first-child{font-size:14px}
 .nav-bottom .nav-btn.active{background:rgba(16,185,129,0.15);color:var(--emerald-neon);box-shadow:0 0 8px var(--emerald-glow)}
+
 .small{font-size:10px;color:var(--ink-muted)}
 .hint{font-size:11px;line-height:1.4;color:var(--amber-val);background:rgba(251, 191, 36, 0.1);border:1px solid rgba(251, 191, 36, 0.3);border-radius:10px;padding:8px}
 #toast{position:fixed;bottom:65px;left:50%;transform:translateX(-50%);z-index:200;background:#090d0b;color:var(--ink);padding:8px 14px;border-radius:12px;font-size:11px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,0.6);max-width:90vw;text-align:center;display:none;border:1px solid var(--border-neon)}
@@ -159,19 +162,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .bud-mini-meta strong{font-variant-numeric:tabular-nums;font-weight:900;color:var(--ink);}
 .cap-track{height:4px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden}
 .cap-bar{height:100%;width:0;transition:width .3s ease,background .3s ease}
-
-/* Processing Fund Banner matching image */
-.processing-fund-card{background:linear-gradient(135deg, rgba(6,78,59,0.4) 0%, rgba(4,47,46,0.6) 100%);border:1px solid var(--border-neon);border-radius:14px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;text-decoration:none;color:inherit;transition:transform .15s ease;}
-.processing-fund-card:active{transform:scale(0.98)}
-.processing-fund-card::after{content:'';position:absolute;right:-10px;bottom:-10px;width:70px;height:70px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2310b981" opacity="0.1"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>') no-repeat;pointer-events:none;}
-.pf-left{display:flex;align-items:center;gap:10px;}
-.pf-icon{width:32px;height:32px;border-radius:10px;background:rgba(16,185,129,0.15);border:1px solid var(--border-neon);display:flex;align-items:center;justify-content:center;color:var(--emerald-neon);}
-.pf-info{display:flex;flex-direction:column;gap:1px;}
-.pf-title{font-size:11px;font-weight:900;color:var(--ink);}
-.pf-sub{font-size:9.5px;color:var(--ink-muted);font-weight:700;}
-.pf-val-wrap{display:flex;align-items:center;gap:6px;}
-.pf-val{font-size:15px;font-weight:900;color:var(--green-val);font-variant-numeric:tabular-nums;}
-.pf-arrow{font-size:12px;color:var(--emerald-neon);font-weight:900;}
 
 @media (max-width: 600px){.balance-card strong{font-size:20px}.today-val{font-size:18px}}
 @media (min-width: 600px){:root{--app-max: 720px}}
@@ -224,22 +214,22 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
       </div>
     </div>
     <div class="accounts-stack-side">
-      <a href="#" class="acc-mini-box" onclick="return false;">
+      <a href="#" class="acc-mini-box" onclick="switchMainView('backup'); return false;">
         <div class="acc-mini-left">
           <div class="acc-mini-icon">🏛️</div>
           <div class="acc-mini-info">
             <span class="acc-mini-title">الحساب البنكي</span>
-            <span class="acc-mini-val" id="acc-bank-val">76.926 د.ك</span>
+            <span class="acc-mini-val" id="acc-bank-val">0.000 د.ك</span>
           </div>
         </div>
         <span class="acc-mini-arrow">‹</span>
       </a>
-      <a href="#" class="acc-mini-box" onclick="return false;">
+      <a href="#" class="acc-mini-box" onclick="switchMainView('backup'); return false;">
         <div class="acc-mini-left">
           <div class="acc-mini-icon">💼</div>
           <div class="acc-mini-info">
             <span class="acc-mini-title">الكاش</span>
-            <span class="acc-mini-val" id="acc-cash-val">11.424 د.ك</span>
+            <span class="acc-mini-val" id="acc-cash-val">0.000 د.ك</span>
           </div>
         </div>
         <span class="acc-mini-arrow">‹</span>
@@ -255,30 +245,30 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
         <span>المتاح للصرف اليوم</span>
       </div>
       <div>
-        <strong class="today-val" id="dash-today-val">0.844 د.ك</strong>
-        <div class="cap-track" style="margin:4px 0;"><div class="cap-bar" id="dash-today-bar" style="width: 65%;"></div></div>
-        <small class="today-note" id="dash-today-note">من الحد اليومي المحدد 1.118 د.ك</small>
+        <strong class="today-val" id="dash-today-val">0.000 د.ك</strong>
+        <div class="cap-track" style="margin:4px 0;"><div class="cap-bar" id="dash-today-bar" style="width: 0%;"></div></div>
+        <small class="today-note" id="dash-today-note">من الحد اليومي المحدد 0.000 د.ك</small>
       </div>
     </div>
 
-    <div class="donut-card">
+    <div class="donut-card" style="cursor:pointer;" onclick="window.location.href='analytics.html'">
       <div class="donut-graphic">
         <svg class="donut-svg" viewBox="0 0 36 36">
           <path class="donut-bg" stroke="rgba(255,255,255,0.08)" stroke-width="3.5" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-          <path class="donut-segment" stroke="#10b981" stroke-width="3.5" stroke-dasharray="22.1, 77.9" stroke-dashoffset="25" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+          <path class="donut-segment" stroke="#10b981" stroke-width="3.5" stroke-dasharray="0, 100" stroke-dashoffset="25" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
         </svg>
         <div class="donut-center-text">
-          شهر أكتوبر
-          <strong style="color:var(--emerald-neon)">22.1%</strong>
+          الدورة الحالية
+          <strong style="color:var(--emerald-neon)">0.0%</strong>
           من الدخل
         </div>
       </div>
       <div class="donut-legend">
-        <div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>42%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>24%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون</span><strong>18%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>الادخار</span><strong>10%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#94a3b8"></i>أخرى</span><strong>6%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>0%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>0%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون</span><strong>0%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>الادخار</span><strong>0%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#94a3b8"></i>أخرى</span><strong>0%</strong></div>
       </div>
     </div>
   </div>
@@ -298,7 +288,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
       <div class="panel stack" id="dash-budget-box" style="gap:6px">
         <div class="row-between">
           <strong style="font-size:12px">🎯 الميزانية وصندوق المعالجة</strong>
-          <span class="small" style="color:var(--emerald-neon);cursor:pointer;" onclick="switchMainView('backup')">تفاصيل أكثر ›</span>
+          <span class="small" style="color:var(--emerald-neon);cursor:pointer;" onclick="switchMainView('backup')">تعديل المستهدفات ›</span>
         </div>
         <div id="dash-budget-summary" class="bud-grid"><span class="small" style="grid-column: span 2">سجّل راتبًا أساسيًا لعرض الميزانية.</span></div>
       </div>
@@ -403,12 +393,15 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
   <div class="row-between"><strong style="font-size:14px;color:var(--ink)">الإعدادات ⚙️</strong><span class="small">تصميم مدمج</span></div>
   <div class="stack" style="gap:6px">
     
-    <!-- كارت بوابة التحليل المالي المربوط بملف التقارير -->
+    <!-- كارت بوابة التحليل المالي والتقارير المربوط بملف analytics.html و reports.html -->
     <div class="acc-item open" id="acc-financial-analysis">
       <div class="acc-header" onclick="toggleAccordion('acc-financial-analysis')"><span>📊 التحليل المالي والتقارير المتقدمة</span><span class="acc-icon">▼</span></div>
       <div class="acc-body stack">
         <div class="field-note" style="color:var(--emerald-neon);font-weight:700;">بوابة دخول مباشرة للتقارير الشاملة وتحليل المصروفات.</div>
-        <a href="analytics.html" class="btn btn-primary" style="text-decoration:none;text-align:center;justify-content:center;margin-top:4px;">فتح صفحة التقارير والتحليل المالي 🚀</a>
+        <div class="grid2" style="margin-top:4px;">
+          <a href="reports.html" class="btn btn-soft" style="text-decoration:none;text-align:center;justify-content:center;">📜 الكشوفات والتقارير</a>
+          <a href="analytics.html" class="btn btn-primary" style="text-decoration:none;text-align:center;justify-content:center;">🚀 التحليل المالي</a>
+        </div>
       </div>
     </div>
 
@@ -438,7 +431,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
         </div>
         <div id="target-values-summary" class="panel stack" style="background:rgba(16,185,129,0.05);border-color:var(--border-neon);font-size:10.5px;gap:3px"></div>
         <button type="button" class="btn btn-primary" onclick="saveTargetPercentages()" style="padding:6px">حفظ المستهدفات 🎯</button>
-        <div class="field-note">تحدد هذه النسب الخطة المالية للصناديق الأساسية. وأي نسبة متبقية تذهب تلقائيياً لصندوق المعالجة.</div>
+        <div class="field-note">تحدد هذه النسب الخطة المالية للصناديق الأساسية. وأي نسبة متبقية تذهب تلقائيًا لصندوق المعالجة.</div>
       </div>
     </div>
     <div class="acc-item" id="acc-categories">
@@ -484,9 +477,11 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 </section>
 </main>
 
+<!-- Bottom Navigation Bar - Fully Unified (4 Tabs) -->
 <nav class="nav-bottom">
   <button type="button" id="nav-dashboard" class="nav-btn active" onclick="switchMainView('dashboard')"><span>🏠</span><span>الرئيسية</span></button>
-  <button type="button" id="nav-reports" class="nav-btn" onclick="window.location.href='reports.html'"><span>📜</span><span>التقارير</span></button>
+  <a href="reports.html" id="nav-reports" class="nav-btn"><span>📜</span><span>التقارير</span></a>
+  <a href="analytics.html" id="nav-analytics" class="nav-btn"><span>📊</span><span>التحليل</span></a>
   <button type="button" id="nav-backup" class="nav-btn" onclick="switchMainView('backup')"><span>⚙️</span><span>الإعدادات</span></button>
 </nav>
 </div>
@@ -1021,6 +1016,12 @@ function calculateExchange(){
 
 function switchMainView(e){
   ["dashboard","backup"].forEach(t=>{$("view-"+t).classList.toggle("hidden",t!==e);});
+  
+  const navDash = $("nav-dashboard");
+  const navBack = $("nav-backup");
+  if(navDash) navDash.classList.toggle("active", e === "dashboard");
+  if(navBack) navBack.classList.toggle("active", e === "backup");
+
   if(e==="dashboard")refreshDashboard();
   if(e==="backup"){
     renderExpenseCatsManageList();
@@ -1362,7 +1363,6 @@ async function renderDashBudgetCard(transactions){
         <div class="donut-legend-item"><span><i class="dot" style="background:#94a3b8"></i>أخرى</span><strong>${pctVal(otherSpent)}%</strong></div>
       `;
     }
-    // ---------------------------------------------------------------------------------------------------
 
     renderTodayCard(items);
     renderAlertStrip(items);
