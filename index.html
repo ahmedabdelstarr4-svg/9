@@ -309,7 +309,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
           <div class="pf-icon">🛡️</div>
           <div class="pf-info">
             <span class="pf-title">صندوق المعالجة</span>
-            <span class="pf-sub">المتبقي الصافي · يكفي 25 يوماً</span>
+            <span class="pf-sub" id="dash-pf-days-sub">المتبقي الصافي · يكفي 25 يوماً</span>
           </div>
         </div>
         <div class="pf-val-wrap">
@@ -417,12 +417,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
   <div class="row-between"><strong style="font-size:14px;color:var(--ink)">الإعدادات ⚙️</strong><span class="small">تصميم مدمج</span></div>
   <div class="stack" style="gap:6px">
     
-    <!-- كارت بوابة التحليل المالي المربوط بملف تاني -->
+    <!-- كارت بوابة التحليل المالي المربوط بملف التقارير -->
     <div class="acc-item open" id="acc-financial-analysis">
-      <div class="acc-header" onclick="toggleAccordion('acc-financial-analysis')"><span>📊 التحليل المالي (بوابة الملف الخارجي)</span><span class="acc-icon">▼</span></div>
+      <div class="acc-header" onclick="toggleAccordion('acc-financial-analysis')"><span>📊 التحليل المالي والتقارير المتقدمة</span><span class="acc-icon">▼</span></div>
       <div class="acc-body stack">
-        <div class="field-note" style="color:var(--emerald-neon);font-weight:700;">بوابة دخول مباشرة للوصول إلى ملف التحليل المالي الإضافي والتقارير المتقدمة.</div>
-        <a href="financial_analysis.html" target="_blank" class="btn btn-primary" style="text-decoration:none;text-align:center;justify-content:center;margin-top:4px;">فتح ملف التحليل المالي 🚀</a>
+        <div class="field-note" style="color:var(--emerald-neon);font-weight:700;">بوابة دخول مباشرة للتقارير الشاملة وتحليل المصروفات.</div>
+        <a href="reports.html" class="btn btn-primary" style="text-decoration:none;text-align:center;justify-content:center;margin-top:4px;">فتح صفحة التقارير والتحليل المالي 🚀</a>
       </div>
     </div>
 
@@ -1302,12 +1302,6 @@ function renderBudgetRowHTML(data){
   const barColor=level==="bad"?"var(--red-val)":level==="warning"?"var(--amber-val)":"var(--emerald-neon)";
   const cls=level==="bad"?"bad":level==="warning"?"warning":"good";
   
-  if(data.isDynamic){
-    const pfValEl=$("dash-pf-val");
-    if(pfValEl) pfValEl.textContent=money(data.remaining);
-    return "";
-  }
-
   const dailyTxt=(data.daysRemaining>0&&data.remaining>0)?money(data.dailyActual):"—";
   return `<div class="bud-mini-card" data-bkey="${data.budgetId}">
     <div class="bud-mini-head">
@@ -1340,11 +1334,58 @@ async function renderDashBudgetCard(transactions){
     }
     const {items}=computeAllBudgetData(txs,cycle);
     el.innerHTML=items.filter(i=>!i.isDynamic).map(renderBudgetRowHTML).join("");
+    
+    // صندوق المعالجة وتحديث الأيام المتبقية بدقة
     const dyn=items.find(i=>i.isDynamic);
     if(dyn){
       const pfValEl=$("dash-pf-val");
+      const pfSubEl=$("dash-pf-days-sub");
       if(pfValEl) pfValEl.textContent=money(dyn.remaining);
+      if(pfSubEl) pfSubEl.textContent=`المتبقي الصافي · يكفي ${dyn.daysRemaining} يوماً`;
     }
+    
+    // --- تحديث ودقة النسب الفعلية للـ Donut Chart والـ Legend بناءً على إجمالي المصروف الفعلي من الدخل ---
+    const totalSpentAll = items.reduce((sum, item) => sum + Math.max(0, item.spent), 0);
+    const donutCenterPctEl = document.querySelector(".donut-center-text strong");
+    if(donutCenterPctEl && income > 0) {
+      const overallSpentPct = (totalSpentAll / income) * 100;
+      donutCenterPctEl.textContent = overallSpentPct.toFixed(1) + "%";
+    }
+
+    // حساب وتحديث نسب الليجند (Legend) الجانبية للدونات بناءً على الفعل
+    const legendContainer = document.querySelector(".donut-legend");
+    if(legendContainer && income > 0) {
+      const getCatSpent = (bKey) => {
+        const found = items.find(i => i.budgetId === bKey);
+        return found ? Math.max(0, found.spent) : 0;
+      };
+      
+      const spentFixed = getCatSpent("fixed");
+      const spentRegular = getCatSpent("regular");
+      const spentPersonal = getCatSpent("personal");
+      const spentTransfer = getCatSpent("transfer");
+      const spentDebt = getCatSpent("debt");
+      const spentEmergency = getCatSpent("emergency");
+
+      // إجمالي مصاريف المعيشة (ثابت + عادي + شخصي)
+      const livingSpent = spentFixed + spentRegular + spentPersonal;
+      const transferSpent = spentTransfer;
+      const debtSpent = spentDebt;
+      const savingsSpent = Math.max(0, spentEmergency); 
+      const otherSpent = Math.max(0, totalSpentAll - (livingSpent + transferSpent + debtSpent));
+
+      const pctVal = (val) => income > 0 ? Math.round((val / income) * 100) : 0;
+
+      legendContainer.innerHTML = `
+        <div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>${pctVal(livingSpent)}%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>${pctVal(transferSpent)}%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون</span><strong>${pctVal(debtSpent)}%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>الادخار</span><strong>${pctVal(savingsSpent)}%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#94a3b8"></i>أخرى</span><strong>${pctVal(otherSpent)}%</strong></div>
+      `;
+    }
+    // ---------------------------------------------------------------------------------------------------
+
     renderTodayCard(items);
     renderAlertStrip(items);
     renderCyclePill(hasSalary?items[0]:null);
