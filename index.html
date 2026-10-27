@@ -163,7 +163,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .cap-track{height:4px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden}
 .cap-bar{height:100%;width:0;transition:width .3s ease,background .3s ease}
 
-/* بطاقات النسب المستهدفة لكل دورة راتب */
 .tc-card{border:1px solid var(--border-subtle);border-radius:10px;background:var(--bg-card);overflow:hidden}
 .tc-card.current{border-color:var(--border-neon);background:rgba(16,185,129,0.04)}
 .tc-card summary{cursor:pointer;padding:8px 10px;font-size:11px;font-weight:800;list-style:none;display:flex;flex-direction:column;gap:2px}
@@ -208,7 +207,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 <section id="view-dashboard" class="view">
   <div id="dash-alert-strip" class="alert-strip hidden" onclick="window.location.href='reports.html'"></div>
   
-  <!-- Top Section: Total Wealth & Separate Account Cards -->
   <div class="top-dash-grid">
     <div class="balance-card" id="accounts-balance-card">
       <div class="balance-top-row">
@@ -242,7 +240,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
     </div>
   </div>
 
-  <!-- Second Row: Daily Spending Limit & Donut Chart -->
   <div class="second-dash-grid">
     <div class="panel today-card">
       <div class="today-label-row">
@@ -398,7 +395,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
   <div class="row-between"><strong style="font-size:14px;color:var(--ink)">الإعدادات ⚙️</strong><span class="small">تصميم مدمج</span></div>
   <div class="stack" style="gap:6px">
     
-    <!-- كارت بوابة التحليل المالي والتقارير المربوط بملف analytics.html و reports.html -->
     <div class="acc-item open" id="acc-financial-analysis">
       <div class="acc-header" onclick="toggleAccordion('acc-financial-analysis')"><span>📊 التحليل المالي والتقارير المتقدمة</span><span class="acc-icon">▼</span></div>
       <div class="acc-body stack">
@@ -474,7 +470,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 </section>
 </main>
 
-<!-- Bottom Navigation Bar - Fully Unified (4 Tabs) -->
 <nav class="nav-bottom">
   <button type="button" id="nav-dashboard" class="nav-btn active" onclick="switchMainView('dashboard')"><span>🏠</span><span>الرئيسية</span></button>
   <a href="reports.html" id="nav-reports" class="nav-btn"><span>📜</span><span>التقارير</span></a>
@@ -495,6 +490,7 @@ const TARGET_PCT_KEY="pf_target_percentages";
 const THEME_KEY="pf_theme_pref";
 const PRIVACY_KEY="pf_privacy_hidden";
 const OUTSIDE_ACCOUNT_ID="outside";
+const DUMMY_ACCOUNT_ID="dummy_account";
 const DEFAULT_PILL_TEXT="الكويت · د.ك";
 const BUDGET_ITEMS=[
   {key:"fixed",label:"📌 المصروفات الثابتة",short:"ثابت",icon:"📌"},
@@ -564,6 +560,7 @@ function getAccounts(){
   return [
     {id:"cash_default",name:"الكاش",type:"cash",icon:"💵"},
     {id:"bank_default",name:"الحساب البنكي",type:"bank",icon:"🏦"},
+    {id:DUMMY_ACCOUNT_ID,name:"حساب وهمي (ديون أول المدة)",type:"dummy",icon:"🌐",hidden:false},
     {id:OUTSIDE_ACCOUNT_ID,name:"خارج النظام (بداية)",type:"outside",icon:"🌐",hidden:true}
   ];
 }
@@ -586,7 +583,7 @@ function getAccountBalance(transactions,accountId){
     else if(tx.type==="debt"){
       if(isCreditorEntry(tx))balance+=realAmount(tx);
       else if(isDebtorEntry(tx))balance-=realAmount(tx);
-      else if(isOpeningEntry(tx))balance-=realAmount(tx);
+      // ملاحظة: opening_balance تتجاهل الحسابات الفعليه ولكن إن كانت على الحساب الوهمي تتسجل فيه لوحده
     }
   });
   return balance;
@@ -937,6 +934,14 @@ function switchInputTab(type,opts={}){
     $("subtab-"+t).classList.toggle("active",t===type);
     $("section-"+t).classList.toggle("hidden",t!==type);
   });
+  
+  // تحديد الحساب الوهمي تلقائيا عند اختيار تسجيل ديون/رصيد أول المدة لراحة المستخدم
+  if(type==="debt"){
+    const txAcc=$("tx-account");
+    if(txAcc&&[...txAcc.options].some(o=>o.value===DUMMY_ACCOUNT_ID)){
+      txAcc.value=DUMMY_ACCOUNT_ID;
+    }
+  }
   return true;
 }
 function addBeneficiary(){
@@ -1133,7 +1138,7 @@ function renderAccountsBalance(transactions){
   const allAccs = getAccounts(); 
   allAccs.forEach(acc => {
     const bal = getAccountBalance(transactions, acc.id);
-    if (!acc.hidden) {
+    if (!acc.hidden && acc.type !== "dummy") {
       grandTotal += bal; 
     }
     if (acc.type === "bank" || acc.id === "bank_default") bankTotal += bal;
@@ -1159,7 +1164,7 @@ function renderRecentTransactions(t){
     else label=e.type;
     const accName=e.type==="internal_transfer"?"":(getAccountById(e.account||"cash_default").name||"");
     const isIn=e.type==="income"||isCreditorEntry(e);
-    const isOut=e.type==="expense"||e.type==="transfer"||isDebtorEntry(e)||isOpeningEntry(e);
+    const isOut=e.type==="expense"||e.type==="transfer"||isDebtorEntry(e);
     const color=isIn?"var(--green-val)":isOut?"var(--red-val)":"var(--ink-muted)";
     const sign=isIn?"+":isOut?"−":"";
     const when=e.date===today?"اليوم":fmtDate(e.date);
@@ -1577,7 +1582,7 @@ function totalExpenseFor(e,t,a){
     if(n==="personal"&&(x.type==="transfer"||x.type==="debt"||x.type==="internal_transfer"))return s;
     if(n==="transfers"&&x.type!=="transfer")return s;
     if(n==="debts"&&x.type!=="debt")return s;
-    if(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x)||isOpeningEntry(x))return s+realAmount(x);
+    if(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))return s+realAmount(x);
     return s;
   },0);
 }
