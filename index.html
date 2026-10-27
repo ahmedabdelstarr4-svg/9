@@ -586,6 +586,7 @@ function getAccountBalance(transactions,accountId){
     else if(tx.type==="debt"){
       if(isCreditorEntry(tx))balance+=realAmount(tx);
       else if(isDebtorEntry(tx))balance-=realAmount(tx);
+      else if(isOpeningEntry(tx))balance-=realAmount(tx);
     }
   });
   return balance;
@@ -1158,7 +1159,7 @@ function renderRecentTransactions(t){
     else label=e.type;
     const accName=e.type==="internal_transfer"?"":(getAccountById(e.account||"cash_default").name||"");
     const isIn=e.type==="income"||isCreditorEntry(e);
-    const isOut=e.type==="expense"||e.type==="transfer"||isDebtorEntry(e);
+    const isOut=e.type==="expense"||e.type==="transfer"||isDebtorEntry(e)||isOpeningEntry(e);
     const color=isIn?"var(--green-val)":isOut?"var(--red-val)":"var(--ink-muted)";
     const sign=isIn?"+":isOut?"−":"";
     const when=e.date===today?"اليوم":fmtDate(e.date);
@@ -1576,7 +1577,7 @@ function totalExpenseFor(e,t,a){
     if(n==="personal"&&(x.type==="transfer"||x.type==="debt"||x.type==="internal_transfer"))return s;
     if(n==="transfers"&&x.type!=="transfer")return s;
     if(n==="debts"&&x.type!=="debt")return s;
-    if(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))return s+realAmount(x);
+    if(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x)||isOpeningEntry(x))return s+realAmount(x);
     return s;
   },0);
 }
