@@ -221,7 +221,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
       </div>
     </div>
     <div class="accounts-stack-side">
-      <a href="#" class="acc-mini-box" onclick="switchMainView('backup'); return false;">
+      <div class="acc-mini-box">
         <div class="acc-mini-left">
           <div class="acc-mini-icon">🏛️</div>
           <div class="acc-mini-info">
@@ -229,9 +229,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
             <span class="acc-mini-val" id="acc-bank-val">0.000 د.ك</span>
           </div>
         </div>
-        <span class="acc-mini-arrow">‹</span>
-      </a>
-      <a href="#" class="acc-mini-box" onclick="switchMainView('backup'); return false;">
+      </div>
+      <div class="acc-mini-box">
         <div class="acc-mini-left">
           <div class="acc-mini-icon">💼</div>
           <div class="acc-mini-info">
@@ -239,8 +238,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
             <span class="acc-mini-val" id="acc-cash-val">0.000 د.ك</span>
           </div>
         </div>
-        <span class="acc-mini-arrow">‹</span>
-      </a>
+      </div>
     </div>
   </div>
 
@@ -412,15 +410,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
       </div>
     </div>
 
-    <div class="acc-item" id="acc-accounts">
-      <div class="acc-header" onclick="toggleAccordion('acc-accounts')"><span>🏦 إدارة الحسابات والمحافظ</span><span class="acc-icon">▼</span></div>
-      <div class="acc-body stack">
-        <div class="person-picker"><input id="new-account-name" placeholder="اسم الحساب (مثل: بنك مصر، محفظة إلكترونية)" maxlength="60"><button type="button" class="btn btn-primary btn-plus" onclick="addAccountFromSettings()" title="إضافة">+</button></div>
-        <div id="accounts-manage-list" class="persons-manage-list"></div>
-        <div class="field-note">كل حساب له رصيده المستقل. الأرصدة تُحسب تلقائيًا من المعاملات.</div>
-        <button type="button" class="btn btn-soft" onclick="openOpeningSetupModal()" style="padding:6px">🎬 إعادة بدء الاستخدام (تسجيل رصيد بداية جديد)</button>
-      </div>
-    </div>
     <div class="acc-item" id="acc-targets">
       <div class="acc-header" onclick="toggleAccordion('acc-targets')"><span>🎯 النسب المستهدفة للميزانية (%)</span><span class="acc-icon">▼</span></div>
       <div class="acc-body stack">
@@ -496,19 +485,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 
 <div id="toast" role="status" aria-live="polite"></div>
 <div id="person-modal" class="modal-overlay hidden"><div class="modal-box"><h3 id="person-modal-title" style="margin:0;font-size:14px">إضافة اسم جديد</h3><input id="person-modal-input" placeholder="اسم الشخص / الجهة" maxlength="80"><div class="modal-actions"><button type="button" class="btn btn-primary" onclick="confirmAddPerson()">حفظ</button><button type="button" class="btn btn-muted" onclick="closePersonModal()">إلغاء</button></div></div></div>
-<div id="opening-setup-modal" class="modal-overlay hidden">
-  <div class="modal-box">
-    <h3 style="margin:0;font-size:15px;text-align:center">👋 أهلاً بيك!</h3>
-    <p style="font-size:11.5px;color:var(--ink-muted);text-align:center;margin:0">عشان نبدأ صح، قولّي معاك كام دلوقتي:</p>
-    <div><label style="font-size:10.5px">💵 الكاش (في جيبي) — د.ك</label><input id="setup-cash-amount" type="number" min="0" step="0.001" inputmode="decimal" placeholder="0.000"></div>
-    <div><label style="font-size:10.5px">🏦 الحساب البنكي — د.ك</label><input id="setup-bank-amount" type="number" min="0" step="0.001" inputmode="decimal" placeholder="0.000"></div>
-    <div class="modal-actions">
-      <button type="button" class="btn btn-primary" onclick="confirmOpeningSetup()">ابدأ 🚀</button>
-      <button type="button" class="btn btn-muted" onclick="skipOpeningSetup()">تخطي</button>
-    </div>
-    <div class="field-note" style="text-align:center">هيتم تسجيل المعاملة في السجل كدخل افتتاحي.</div>
-  </div>
-</div>
 
 <script>
 // @ts-nocheck
@@ -516,8 +492,6 @@ const DB_NAME="PersonalFinanceDB",DB_VERSION=1,STORE_NAME="transactions";
 const PEOPLE_KEY="pf_people_list";
 const EXPENSE_CATS_KEY="pf_expense_cats_list";
 const TARGET_PCT_KEY="pf_target_percentages";
-const ACCOUNTS_KEY="pf_accounts_list";
-const SETUP_DONE_KEY="pf_setup_done";
 const THEME_KEY="pf_theme_pref";
 const PRIVACY_KEY="pf_privacy_hidden";
 const OUTSIDE_ACCOUNT_ID="outside";
@@ -587,15 +561,12 @@ function dateAddDays(iso,days){const p=iso.split("-");const d=new Date(Date.UTC(
 function dateDiffDays(fromISO,toISO){const f=fromISO.split("-"),t=toISO.split("-");const d1=new Date(Date.UTC(+f[0],+f[1]-1,+f[2]));const d2=new Date(Date.UTC(+t[0],+t[1]-1,+t[2]));return Math.floor((d2-d1)/864e5);}
 
 function getAccounts(){
-  const raw=localStorage.getItem(ACCOUNTS_KEY);
-  if(raw){try{const arr=JSON.parse(raw);if(Array.isArray(arr)&&arr.length)return arr;}catch(e){}}
   return [
-    {id:"cash_default",name:"الكاش (في جيبي)",type:"cash",icon:"💵"},
+    {id:"cash_default",name:"الكاش",type:"cash",icon:"💵"},
     {id:"bank_default",name:"الحساب البنكي",type:"bank",icon:"🏦"},
     {id:OUTSIDE_ACCOUNT_ID,name:"خارج النظام (بداية)",type:"outside",icon:"🌐",hidden:true}
   ];
 }
-function saveAccounts(arr){localStorage.setItem(ACCOUNTS_KEY,JSON.stringify(arr));populateAccountSelects();renderAccountsManageList();}
 function getAccountById(id){if(!id)return getAccounts()[0];return getAccounts().find(a=>a.id===id)||getAccounts()[0];}
 function getVisibleAccounts(){return getAccounts().filter(a=>!a.hidden&&a.id!==OUTSIDE_ACCOUNT_ID);}
 
@@ -642,87 +613,6 @@ function populateAccountSelects(){
     if(toSel.options.length>1&&!toSel.value)toSel.selectedIndex=1;
   }
 }
-
-function addAccountFromSettings(){
-  const input=$("new-account-name");
-  if(!input)return;
-  const name=input.value.trim();
-  if(!name)return;
-  const accs=getAccounts();
-  if(accs.some(a=>a.name===name&&!a.hidden))return void showToast("الحساب موجود بالفعل");
-  accs.push({id:`acc_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,name,type:"bank",icon:"💳"});
-  saveAccounts(accs);
-  input.value="";
-  showToast("تمت إضافة الحساب ✅");
-}
-
-async function deleteAccount(accountId){
-  const accs=getAccounts();
-  if(accs.filter(a=>!a.hidden).length<=1)return void showToast("لا يمكن حذف كل الحسابات.");
-  try{
-    const used=(await allTransactions()).some(tx=>tx.account===accountId||tx.toAccount===accountId);
-    if(used&&!confirm("هذا الحساب مستخدم في معاملات. سيتم حذفه من القائمة، لكن المعاملات تبقى في التقارير. متابعة؟"))return;
-    saveAccounts(accs.filter(a=>a.id!==accountId));
-    showToast("تم الحذف");
-  }catch(e){console.error(e);showToast("تعذر الحذف")}
-}
-
-function renderAccountsManageList(){
-  const container=$("accounts-manage-list");
-  if(!container)return;
-  const accs=getVisibleAccounts();
-  if(!accs.length)return void(container.innerHTML='<span class="small">لا توجد حسابات. أضف واحدًا.</span>');
-  container.innerHTML=accs.map(acc=>`
-    <div class="person-item" style="flex-direction:column;align-items:stretch;gap:4px">
-      <div class="row-between">
-        <span class="name">${acc.icon||"💳"} ${escapeHTML(acc.name)}</span>
-        <button type="button" class="btn btn-danger" style="padding:2px 8px;font-size:10px;min-height:26px" data-action="del-account" data-id="${acc.id}">حذف</button>
-      </div>
-      <div class="small">الرصيد الحالي: <strong class="account-balance-live" data-account-balance="${acc.id}">—</strong></div>
-    </div>
-  `).join("");
-  allTransactions().then(txs=>{
-    container.querySelectorAll("[data-account-balance]").forEach(el=>{
-      const bal=getAccountBalance(txs,el.dataset.accountBalance);
-      el.textContent=money(bal);
-      el.className=bal>=0?"good":"bad";
-    });
-  }).catch(()=>{});
-}
-
-function shouldShowSetup(){return localStorage.getItem(SETUP_DONE_KEY)!=="1";}
-function openOpeningSetupModal(){const m=$("opening-setup-modal");if(m)m.classList.remove("hidden");}
-function closeOpeningSetupModal(){const m=$("opening-setup-modal");if(m)m.classList.add("hidden");}
-
-async function confirmOpeningSetup(){
-  const cash=Number($("setup-cash-amount")?.value)||0;
-  const bank=Number($("setup-bank-amount")?.value)||0;
-  if(cash<0||bank<0)return void showToast("أدخل مبالغ صحيحة.");
-  if(cash===0&&bank===0){localStorage.setItem(SETUP_DONE_KEY,"1");closeOpeningSetupModal();return void showToast("تمام! ابدأ التسجيل عادي 🚀");}
-  try{
-    db||await openDB();
-    const accs=getAccounts();
-    const cashAcc=accs.find(a=>a.id==="cash_default")||accs[0];
-    const bankAcc=accs.find(a=>a.id==="bank_default")||accs[1]||accs[0];
-    const now=new Date();
-    const time=`${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
-    const today=todayISO();
-    const txs=[];
-    if(cash>0)txs.push({id:`tx_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,date:today,time,notes:"رصيد بداية — كاش",type:"income",category:"رصيد افتتاحي",isSalaryBase:false,account:cashAcc.id,amount:cash});
-    if(bank>0)txs.push({id:`tx_${Date.now()+1}_${Math.random().toString(36).slice(2,6)}`,date:today,time,notes:"رصيد بداية — بنك",type:"income",category:"رصيد افتتاحي",isSalaryBase:false,account:bankAcc.id,amount:bank});
-    await new Promise((resolve,reject)=>{
-      const tx=db.transaction(STORE_NAME,"readwrite");
-      const store=tx.objectStore(STORE_NAME);
-      txs.forEach(t=>store.put(t));
-      tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
-    });
-    localStorage.setItem(SETUP_DONE_KEY,"1");
-    closeOpeningSetupModal();
-    showToast("تم بدء الاستخدام بنجاح ✅");
-    await refreshAllViews();
-  }catch(e){console.error("opening setup:",e);showToast("تعذر حفظ رصيد البداية");}
-}
-function skipOpeningSetup(){localStorage.setItem(SETUP_DONE_KEY,"1");closeOpeningSetupModal();showToast("تمام! ابدأ التسجيل عادي 🚀");}
 
 function initDates(){
   const[e,t,a]=todayISO().split("-");
@@ -1093,7 +983,6 @@ function switchMainView(e){
   if(e==="backup"){
     renderExpenseCatsManageList();
     renderPersonsManageList();
-    renderAccountsManageList();
     loadTargetPercentages();
     renderTargetValuesPreview();
     renderBudgetCategorySelectOptions();
@@ -1610,9 +1499,7 @@ function restoreBackup(){
       tx.oncomplete=async()=>{
         if(Array.isArray(data.people))savePeopleList(data.people);
         if(Array.isArray(data.expenseCategories))saveExpenseCategories(data.expenseCategories);
-        if(Array.isArray(data.accounts)&&data.accounts.length)saveAccounts(data.accounts);
         if(data.targetPercentages){localStorage.setItem(TARGET_PCT_KEY,JSON.stringify(data.targetPercentages));loadTargetPercentages();}
-        localStorage.setItem(SETUP_DONE_KEY,"1");
         showToast("تمت الاستعادة ✅");
         await refreshAllViews();
       };
@@ -1629,7 +1516,6 @@ async function clearAllTransactions(){
   t.objectStore(STORE_NAME).clear();
   t.oncomplete=async()=>{
     showToast("تم تفريغ البيانات");
-    localStorage.removeItem(SETUP_DONE_KEY);
     await refreshAllViews();
   };
   t.onerror=()=>{showToast("فشل التفريغ")};
@@ -1701,7 +1587,6 @@ document.addEventListener("click",e=>{
   const action=t.dataset.action;
   if(action==="del-person")deletePerson(t.dataset.person);
   else if(action==="del-exp-cat")deleteExpenseCategory(t.dataset.cat);
-  else if(action==="del-account")deleteAccount(t.dataset.id);
 });
 
 $("view-input").addEventListener("click", e => {
@@ -1718,7 +1603,6 @@ document.addEventListener("keydown",e=>{
 $("person-modal-input").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();confirmAddPerson();}});
 $("new-person-name").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addPersonFromSettings();}});
 $("new-expense-cat-name").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addExpenseCategoryFromSettings();}});
-$("new-account-name").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addAccountFromSettings();}});
 
 document.addEventListener("change",e=>{
   if(e.target&&e.target.id==="expense-category")updateExpenseBudgetHint();
@@ -1794,12 +1678,10 @@ window.addEventListener("DOMContentLoaded",async()=>{
     populateAccountSelects();
     renderPersonsManageList();
     renderExpenseCatsManageList();
-    renderAccountsManageList();
     addBeneficiary();
     await openDB();
     await refreshAllViews();
     await handleEditFromQuery();
-    if(shouldShowSetup())openOpeningSetupModal();
   }catch(e){console.warn("Init warning:",e)}
 });
 </script>
