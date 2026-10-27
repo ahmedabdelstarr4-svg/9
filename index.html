@@ -1361,7 +1361,16 @@ function renderBudgetRowHTML(data){
   const barColor=level==="bad"?"var(--red-val)":level==="warning"?"var(--amber-val)":"var(--emerald-neon)";
   const cls=level==="bad"?"bad":level==="warning"?"warning":"good";
   
-  const dailyTxt=(data.daysRemaining>0&&data.remaining>0)?money(data.dailyActual):"—";
+  // الحد اليومي: لو المتبقي موجب يظهر الحد الفعلي، ولو سالب يظهر العجز الموزع على الأيام المتبقية بالسالب وباللون الأحمر
+  let dailyTxt="—",dailyCls="";
+  if(data.daysRemaining>0){
+    if(data.remaining>0){
+      dailyTxt=money(data.dailyActual);
+    }else if(data.remaining<0){
+      dailyTxt=`<span dir="ltr">${money(data.dailyRaw)}</span>`;
+      dailyCls="bad";
+    }
+  }
   return `<div class="bud-mini-card" data-bkey="${data.budgetId}">
     <div class="bud-mini-head">
       <span class="bud-mini-name">${b.icon} ${b.short}</span>
@@ -1371,7 +1380,7 @@ function renderBudgetRowHTML(data){
     <div class="bud-mini-meta">
       <div>متبقي: <strong class="${cls}">${money(data.remaining)}</strong></div>
       ${data.isDynamic ? `<div>يكفي: <strong>${data.daysRemaining} يوماً</strong></div>` : ''}
-      <div>⚡ يوميًا: <strong>${dailyTxt}</strong></div>
+      <div>⚡ يوميًا: <strong class="${dailyCls}">${dailyTxt}</strong></div>
     </div>
   </div>`;
 }
@@ -1513,9 +1522,10 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
     const fixedPct=income>0?Math.max(0,Number(((remaining/income)*100).toFixed(1))):0;
     const dailyReference=max/CYCLE_DAYS;
     const dailyActual=daysRemaining>0?Math.max(0, remaining/daysRemaining):0;
+    const dailyRaw=daysRemaining>0?remaining/daysRemaining:0;
     const spentToday=dailyBudgetSpent(txs,cycle,"emergency",today);
     const remainingToday=Math.max(0,dailyActual-spentToday);
-    return {budgetId,max,spent,remaining,pct:fixedPct,elapsed,daysRemaining,dailyReference,dailyActual,spentToday,remainingToday,cycleEndDate,isDynamic:true};
+    return {budgetId,max,spent,remaining,pct:fixedPct,elapsed,daysRemaining,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate,isDynamic:true};
   }
 
   const pct=(targets[budgetId]||0);
@@ -1524,9 +1534,10 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
   const remaining=max-spent;
   const dailyReference=max/CYCLE_DAYS;
   const dailyActual=daysRemaining>0?Math.max(0, remaining/daysRemaining):0;
+  const dailyRaw=daysRemaining>0?remaining/daysRemaining:0;
   const spentToday=dailyBudgetSpent(txs,cycle,budgetId,today);
   const remainingToday=Math.max(0,dailyActual-spentToday);
-  return {budgetId,max,spent,remaining,pct,elapsed,daysRemaining,dailyReference,dailyActual,spentToday,remainingToday,cycleEndDate};
+  return {budgetId,max,spent,remaining,pct,elapsed,daysRemaining,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate};
 }
 
 function computeAllBudgetData(txs,cycle){
