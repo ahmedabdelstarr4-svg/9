@@ -123,6 +123,10 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
     <div id="filter-section" class="stack no-print">
       <div class="panel" style="background:rgba(16,185,129,0.08);border-color:var(--border-neon);color:var(--emerald-neon);font-size:11.5px;font-weight:700">حدد معايير التقرير</div>
       <div><label>التصنيف الرئيسي</label><select id="report-type" onchange="onReportTypeChange()"><option value="expense">مصروفات</option><option value="income">دخل</option><option value="debt">ديون وعلاقات مالية</option><option value="transfer">تحويلات مالية خارجية</option><option value="internal_transfer">تحويلات بين الحسابات</option><option value="all">ملخص كل المعاملات</option></select></div>
+      
+      <!-- فلتر الحسابات (كاش / بنكي) -->
+      <div><label>الحساب / طريقة الدفع</label><select id="report-account-filter"><option value="all">كل الحسابات (شامل)</option></select></div>
+
       <div id="report-subtype-wrap"><label>النوع الفرعي</label><select id="report-subtype" onchange="updateReportTargetOptions()"></select></div>
       <div id="report-target-wrap"><label>الطرف / المستفيد</label><div class="person-picker"><select id="beneficiary-select"><option value="all">الكل</option></select><button type="button" class="btn btn-soft btn-plus" onclick="openPersonModal(this)" title="إضافة اسم جديد">+</button></div></div>
       <div class="grid2">
@@ -132,9 +136,15 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
       <button type="button" onclick="setSalaryCycleDates()" class="btn btn-soft">📅 تعبئة تاريخ آخر دورة راتب</button>
       <button type="button" onclick="generateReport()" class="btn btn-dark">إنشاء التقرير 📄</button>
     </div>
+    
     <div id="report-section" class="stack hidden">
       <button type="button" onclick="backToFilters()" class="btn btn-soft no-print">⬅️ تعديل معايير التقرير</button>
-      <div id="report-search-wrap" class="no-print"><label>🔍 بحث داخل التقرير (اسم / بيان / ملاحظات)</label><input id="report-search" placeholder="اكتب للبحث..." oninput="filterReportTable()"></div>
+      
+      <!-- أداة البحث الذكي وترتيب التواريخ -->
+      <div class="grid2 no-print">
+        <div id="report-search-wrap"><label>🔍 بحث ذكي داخل التقرير</label><input id="report-search" placeholder="اكتب للبحث (اسم، بيان، ملاحظات)..." oninput="filterReportTable()"></div>
+        <div><label>🔄 ترتيب حسب التاريخ</label><select id="report-sort-order" onchange="filterReportTable()"><option value="desc">الأحدث أولاً</option><option value="asc">الأقدم أولاً</option></select></div>
+      </div>
       
       <div id="capture-area" class="report">
         <div class="report-head">
@@ -159,6 +169,7 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
         <div style="font-size:10px;color:var(--ink-muted);text-align:center;border-top:1px solid var(--border-subtle);padding-top:8px">تم إصدار هذا المستند إلكترونياً من النظام المالي الشخصي ولا يحتاج إلى ختم.</div>
       </div>
 
+      <!-- أجزاء التصدير الأصلية (مقّددة بدون أي تغيير) -->
       <div id="report-actions" class="grid2 no-print" style="margin-top:8px">
         <button type="button" onclick="exportReportExcel()" class="btn btn-green">تصدير Excel 📗</button>
         <button type="button" onclick="shareReport()" class="btn btn-green">مشاركة / واتساب 💬</button>
@@ -219,8 +230,6 @@ function formatStrictISO(e,t,a){return`${String(e).padStart(4,"0")}-${String(t).
 function todayISO(){const e=new Date;return formatStrictISO(e.getFullYear(),e.getMonth()+1,e.getDate())}
 function firstOfMonthISO(){const e=new Date;return formatStrictISO(e.getFullYear(),e.getMonth()+1,1)}
 function fmtDate(e){if(!e)return"";const t=e.split("-");if(t.length<3)return e;const[a,n,s]=t;return`${String(s).padStart(2,"0")}/${String(n).padStart(2,"0")}/${a}`}
-function dateAddDays(iso,days){const p=iso.split("-");const d=new Date(Date.UTC(+p[0],+p[1]-1,+p[2]));d.setUTCDate(d.getUTCDate()+days);return formatStrictISO(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate());}
-function dateDiffDays(fromISO,toISO){const f=fromISO.split("-"),t=toISO.split("-");const d1=new Date(Date.UTC(+f[0],+f[1]-1,+f[2]));const d2=new Date(Date.UTC(+t[0],+t[1]-1,+t[2]));return Math.floor((d2-d1)/864e5);}
 
 function getAccounts(){
   const raw=localStorage.getItem(ACCOUNTS_KEY);
@@ -232,6 +241,16 @@ function getAccounts(){
   ];
 }
 function getAccountById(id){if(!id)return getAccounts()[0];return getAccounts().find(a=>a.id===id)||getAccounts()[0];}
+
+function populateAccountFilterSelect() {
+    const accSelect = $("report-account-filter");
+    if (!accSelect) return;
+    const accounts = getAccounts();
+    const currentVal = accSelect.value;
+    accSelect.innerHTML = '<option value="all">كل الحسابات (شامل)</option>' + 
+        accounts.map(acc => `<option value="${escapeHTML(acc.id)}">${escapeHTML(acc.icon || "")} ${escapeHTML(acc.name)}</option>`).join("");
+    if (accounts.some(a => a.id === currentVal)) accSelect.value = currentVal;
+}
 
 function initDates(){
   $("date-from-year")&&!$("date-from-year").value&&writeDateParts("date-from",firstOfMonthISO());
@@ -370,20 +389,27 @@ async function generateReport(){
         t=$("report-type").value,
         a=$("report-subtype").value,
         n=$("beneficiary-select").value,
+        accFilter=$("report-account-filter")?$("report-account-filter").value:"all",
         s=readDateParts("date-from"),
         r=readDateParts("date-to");
   if($("report-search"))$("report-search").value="";
+  if($("report-sort-order"))$("report-sort-order").value="desc";
+
   const o=e.filter(x=>{
     const iso=formatStrictISO(...x.date.split("-"));
     if(t!=="all"&&x.type!==t)return false;
     if(t==="expense"&&a!=="all"&&x.category!==a)return false;
     if(t==="income"&&a!=="all"&&x.category!==a)return false;
     if(t==="debt"&&a!=="all"&&x.debtType!==a)return false;
+    
+    if(accFilter!=="all"&&x.account!==accFilter&&x.toAccount!==accFilter)return false;
+
     if(n!=="all"&&((x.type==="debt"&&x.person!==n)||(x.type==="transfer"&&!(x.beneficiaries||[]).some(b=>b.name!==n))))return false;
     if(s&&iso<s)return false;
     if(r&&iso>r)return false;
     return true;
   });
+  
   cachedReportRecords=o;
   visibleReportRecords=o.slice();
   cachedReportRange={from:s,to:r};
@@ -393,12 +419,14 @@ async function generateReport(){
   $("display-date-range").textContent=(s?fmtDate(s):"البداية")+" إلى "+(r?fmtDate(r):"النهاية");
   $("display-target").textContent=n==="all"?"الكل":n;
   $("display-count").textContent=o.length+" حركة";
+  
   if(t==="transfer")$("report-title").textContent="كشف حساب المعاملات الخارجية (الحوالات)";
-  else if(t==="debt")$("report-title").textContent="كشف حساب الديون والعلاقات المالية الرسمية";
+  else if(t==="debt")$("report-title").textContent="كشف حساب الديون والعلاقات المالية (التفصيلي والحالة)";
   else if(t==="internal_transfer")$("report-title").textContent="كشف التحويلات بين الحسابات";
   else if(t==="expense")$("report-title").textContent="تقرير المصروفات المصنف";
   else if(t==="income")$("report-title").textContent="تقرير الدخل والإيرادات";
   else $("report-title").textContent="كشف حساب مالي — سجل المعاملات";
+  
   $("capture-area").querySelector(".table-wrap").innerHTML='<table><thead id="report-table-head"></thead><tbody id="report-table-body"></tbody></table>';
   renderReportTableRows(o);
   updateReportSummaries(o);
@@ -409,10 +437,63 @@ function renderReportTableRows(e){
   const t=$("report-table-body"),a=$("report-table-head");
   if(!t||!a)return;
   const typeVal=$("report-type").value;
+  const beneficiarySelectVal=$("beneficiary-select")?$("beneficiary-select").value:"all";
+  const sortOrder=$("report-sort-order")?$("report-sort-order").value:"desc";
+  
+  // جدول الديون الشامل (التاريخ، الشخص، البيان/الوصف، المبلغ، رصيد الدين، الحالة)
+  if(typeVal==="debt" && beneficiarySelectVal==="all"){
+    a.innerHTML='<tr><th style="width:12%">التاريخ</th><th style="width:18%">الطرف / الشخص</th><th style="width:22%">البيان / الوصف</th><th class="amount" style="width:14%">المبلغ</th><th class="amount" style="width:14%">رصيد الدين</th><th style="width:20%">الحالة</th></tr>';
+    
+    if(!e.length)return void(t.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:15px">لا توجد ديون مسجلة.</td></tr>`);
+
+    const sorted=[...e].sort((x,y)=>{
+      const cmp=x.date.localeCompare(y.date)||(x.time||"").localeCompare(y.time||"")||x.id.localeCompare(y.id);
+      return sortOrder==="asc"?cmp:-cmp;
+    });
+    
+    let debtRunning={};
+    sorted.forEach(x=>{
+      const p=x.person||"غير محدد";
+      if(!debtRunning[p])debtRunning[p]=0;
+      if(isCreditorEntry(x)||isOpeningEntry(x))debtRunning[p]+=realAmount(x);
+      else if(isDebtorEntry(x))debtRunning[p]-=realAmount(x);
+      x._currentBalance=debtRunning[p];
+    });
+
+    let html="";
+    sorted.forEach(x=>{
+      const debtLbl=debtTypeLabel(x.debtType);
+      const amt=realAmount(x);
+      const bal=x._currentBalance!==undefined?x._currentBalance:0;
+      
+      let statusText="خالص ✔️";
+      let statusClass="good";
+      if(bal>0){
+        statusText="عليه مديونية ⚠️";
+        statusClass="bad";
+      }else if(bal<0){
+        statusText="سدد زيادة (دائن) ✅";
+        statusClass="good";
+      }
+
+      html+=`<tr data-id="${x.id}">
+        <td>${fmtDate(x.date)}</td>
+        <td><strong>${escapeHTML(x.person||"—")}</strong></td>
+        <td><strong>${escapeHTML(debtLbl)}</strong><br><small>${escapeHTML(x.notes||"—")}</small></td>
+        <td class="amount">${money(amt)}</td>
+        <td class="amount"><strong>${money(bal)}</strong></td>
+        <td><span class="${statusClass}" style="font-weight:bold">${statusText}</span></td>
+      </tr>`;
+    });
+    t.innerHTML=html;
+    return;
+  }
+
+  // العرض العادي لباقي الأقسام
   const isTransfer=typeVal==="transfer";
   const isDebt=typeVal==="debt";
   const isExpense=typeVal==="expense";
-  const s=$("beneficiary-select")?$("beneficiary-select").value:"all";
+  const s=beneficiarySelectVal;
   
   if(isTransfer){
     a.innerHTML='<tr><th style="width:12%">التاريخ</th><th style="width:18%">التفاصيل</th><th style="width:14%">المستفيد</th><th style="width:10%">السعر</th><th class="amount" style="width:11%">المصري</th><th class="amount" style="width:11%">الكويتي</th><th class="amount" style="width:14%">الرصيد</th><th class="no-print" style="width:10%">إجراء</th></tr>';
@@ -421,12 +502,15 @@ function renderReportTableRows(e){
   }else if(isExpense){
     a.innerHTML='<tr><th style="width:15%">التاريخ</th><th style="width:22%">التصنيف</th><th style="width:18%">البند</th><th style="width:15%">الحساب</th><th class="amount" style="width:15%">المبلغ</th><th class="no-print" style="width:15%">إجراء</th></tr>';
   }else{
-    a.innerHTML='<tr><th style="width:12%">التاريخ</th><th style="width:22%">النوع / البيان</th><th style="width:14%">الطرف</th><th style="width:12%">الحساب</th><th class="amount" style="width:13%">المبلغ</th><th class="amount" style="width:13%">الرصيد</th><th class="no-print" style="width:14%">إجراء</th></tr>';
+    a.innerHTML='<tr><th style="width:12%">التاريخ</th><th style="width:20%">النوع / البيان</th><th style="width:14%">الطرف</th><th style="width:12%">الحساب</th><th class="amount" style="width:13%">المبلغ</th><th class="amount" style="width:13%">الرصيد</th><th class="no-print" style="width:14%">إجراء</th></tr>';
   }
 
   if(!e.length)return void(t.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:15px">لا توجد حركات مطابقة.</td></tr>`);
   let r=0;
-  const sorted=[...e].sort((a,b)=>a.date.localeCompare(b.date)||(a.time||"").localeCompare(b.time||"")||a.id.localeCompare(b.id));
+  const sorted=[...e].sort((a,b)=>{
+    const cmp=a.date.localeCompare(b.date)||(a.time||"").localeCompare(b.time||"")||a.id.localeCompare(b.id);
+    return sortOrder==="asc"?cmp:-cmp;
+  });
   const running={};
   
   if(isDebt){
@@ -452,8 +536,7 @@ function renderReportTableRows(e){
     const balance=running[x.id]!==undefined?running[x.id]:0;
     const accFromName=getAccountById(x.account||"cash_default").name||"—";
     const accToName=x.toAccount?getAccountById(x.toAccount).name:"";
-    
-    const actionBtns = `<td class="no-print" style="white-space:nowrap;text-align:center;"><button class="btn btn-muted action-btn-mini" title="تعديل" data-action="edit-report" data-id="${x.id}">✏️</button> <button class="btn btn-danger action-btn-mini" title="حذف" data-action="delete-report" data-id="${x.id}">🗑️</button></td>`;
+    const actionBtns=`<td class="no-print" style="white-space:nowrap;text-align:center;"><button class="btn btn-muted action-btn-mini" title="تعديل" data-action="edit-report" data-id="${x.id}">✏️</button> <button class="btn btn-danger action-btn-mini" title="حذف" data-action="delete-report" data-id="${x.id}">🗑️</button></td>`;
 
     if(x.type==="transfer"&&isTransfer){
       const benefs=x.beneficiaries||[];
@@ -529,23 +612,23 @@ function updateReportSummaries(e){
 }
 
 function backToFilters(){$("report-section").classList.add("hidden");$("filter-section").classList.remove("hidden");reportGenerated=false;}
+
 function filterReportTable(){
-  const e=$("report-search").value.toLowerCase().trim();
+  const searchTxt=$("report-search")?$("report-search").value.toLowerCase().trim():"";
   if(!cachedReportRecords.length)return;
-  const t=e?cachedReportRecords.filter(x=>{
+  const filtered=searchTxt?cachedReportRecords.filter(x=>{
     const accName=getAccountById(x.account||"cash_default").name||"";
     const str=`${x.category||""} ${x.person||""} ${(x.beneficiaries||[]).map(b=>b.name).join(" ")} ${x.notes||""} ${fmtDate(x.date)} ${accName}`;
-    return str.toLowerCase().includes(e);
+    return str.toLowerCase().includes(searchTxt);
   }):cachedReportRecords.slice();
-  visibleReportRecords=t;
-  renderReportTableRows(t);
-  updateReportSummaries(t);
-  $("display-count").textContent=t.length+(e?" حركة (مفلترة)":" حركة");
+  
+  visibleReportRecords=filtered;
+  renderReportTableRows(filtered);
+  updateReportSummaries(filtered);
+  $("display-count").textContent=filtered.length+(searchTxt?" حركة (مفلترة)":" حركة");
 }
 
-function editFromReport(id){
-  window.location.href = `index.html?edit=${id}`;
-}
+function editFromReport(id){ window.location.href = `index.html?edit=${id}`; }
 
 async function deleteTransactionFromReport(id){
   if(!confirm("هل أنت متأكد من حذف هذه المعاملة؟"))return;
@@ -575,6 +658,7 @@ function getSmartFilename(e,t="json"){
   return `${e}${r}_${s}.${t}`;
 }
 
+// كود التصدير الأصلي (مقدس وبدون أي تغييرات حفاظاً على سلامته)
 function exportReportExcel(){
   try{
     if(!window.XLSX)return void showToast("مكتبة Excel غير متوفرة");
@@ -968,6 +1052,7 @@ window.addEventListener("DOMContentLoaded",async()=>{
     initTheme();
     initDates();
     populatePeopleSelects();
+    populateAccountFilterSelect();
     await openDB();
     await onReportTypeChange();
   }catch(e){console.warn("Init warning:",e)}
