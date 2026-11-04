@@ -163,8 +163,8 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
             <tbody id="report-table-body"></tbody>
           </table>
         </div>
-        <!-- قسم ملخص التصنيفات والأطراف الجديد (يظهر قبل الصافي في التقرير الشامل) -->
-        <div id="sub-breakdowns-box" class="panel hidden" style="font-size:11.5px;gap:6px"></div>
+        <!-- قسم ملخص التصنيفات والأطراف المنظم الموحد مع النظام المحاسبي (مدين | دائن | صافي) -->
+        <div id="sub-breakdowns-box" class="panel hidden" style="font-size:11.5px;gap:8px"></div>
         <div class="report-summary" id="report-summary"></div>
         <div id="ledger-breakdowns" class="stack"></div>
         <div id="tafqit-box" class="panel" style="font-size:11.5px;text-align:center;font-weight:700">ملاحظات التقرير ستظهر هنا.</div>
@@ -584,47 +584,93 @@ function updateReportSummaries(e){
         d=r-o,
         m=n==="debt"?c:d;
 
-  // قسم ملخص التصنيفات والأطراف داخل التقرير الشامل (أو حسب الاختيار)
+  // قسم الملخصات المحاسبي الموحد: مدين | دائن | الصافي
   const subBox=$("sub-breakdowns-box");
   if(subBox){
-    if(n==="all"){
-      let catMap={}, personMap={};
+    if(n==="all" || n==="debt" || n==="expense" || n==="income"){
+      let expCats={}, incCats={}, debtTypes={}, personNet={};
+      
       e.forEach(x=>{
-        if(x.type==="expense"||x.type==="income"){
-          const k=x.category||"أخرى";
-          catMap[k]=(catMap[k]||0)+realAmount(x);
+        const amt=realAmount(x);
+        if(x.type==="expense"){
+          const k=x.category||"مصروفات أخرى";
+          expCats[k]=(expCats[k]||0)+amt;
+        }else if(x.type==="income"){
+          const k=x.category||"دخل آخر";
+          incCats[k]=(incCats[k]||0)+amt;
         }else if(x.type==="debt"){
+          const lbl=debtTypeLabel(x.debtType);
+          debtTypes[lbl]=(debtTypes[lbl]||0)+amt;
+          
           const p=x.person||"غير محدد";
-          personMap[p]=(personMap[p]||0)+realAmount(x);
+          if(!personNet[p]) personNet[p]={creditor:0, debtor:0, opening:0};
+          if(isCreditorEntry(x)) personNet[p].creditor+=amt;
+          else if(isDebtorEntry(x)) personNet[p].debtor+=amt;
+          else if(isOpeningEntry(x)) personNet[p].opening+=amt;
         }else if(x.type==="transfer"){
           (x.beneficiaries||[]).forEach(b=>{
             const p=b.name||"مستفيد";
-            personMap[p]=(personMap[p]||0)+(b.shareKwd!==undefined?b.shareKwd:0);
+            const share=b.shareKwd!==undefined?b.shareKwd:0;
+            if(!personNet[p]) personNet[p]={creditor:0, debtor:0, opening:0};
+            personNet[p].debtor+=share; 
           });
         }
       });
-      let boxHtml='<div style="font-weight:900;color:var(--emerald-neon);margin-bottom:4px">📊 ملخص التصنيفات والأطراف في النتائج:</div>';
-      let hasContent=false;
-      if(Object.keys(catMap).length>0){
-        hasContent=true;
-        boxHtml+='<div style="font-size:11px;font-weight:700;margin-top:2px">التصنيفات:</div>';
-        for(let k in catMap){
-          boxHtml+=`<div class="row-between" style="padding-left:10px"><span>- ${escapeHTML(k)}:</span><strong class="amount">${money(catMap[k])}</strong></div>`;
+
+      let boxHtml='<div style="font-weight:900;color:var(--emerald-neon);margin-bottom:6px;border-bottom:1px solid var(--border-subtle);padding-bottom:4px">📊 الملخص التفصيلي (مدين | دائن | الصافي):</div>';
+      
+      // 1. المصروفات
+      if(Object.keys(expCats).length>0 && (n==="all" || n==="expense")){
+        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--red-val);margin-top:4px">💸 تصنيفات المصروفات (التزامات/مدين):</div>';
+        for(let k in expCats){
+          boxHtml+=`<div class="row-between" style="padding-right:8px"><span>- ${escapeHTML(k)}:</span><strong class="amount bad">${money(expCats[k])}</strong></div>`;
         }
       }
-      if(Object.keys(personMap).length>0){
-        hasContent=true;
-        boxHtml+='<div style="font-size:11px;font-weight:700;margin-top:4px">الأطراف والجهات:</div>';
-        for(let p in personMap){
-          boxHtml+=`<div class="row-between" style="padding-left:10px"><span>- ${escapeHTML(p)}:</span><strong class="amount">${money(personMap[p])}</strong></div>`;
+
+      // 2. الدخل
+      if(Object.keys(incCats).length>0 && (n==="all" || n==="income")){
+        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--green-val);margin-top:6px">📥 مصادر الدخل (إيرادات/دائن):</div>';
+        for(let k in incCats){
+          boxHtml+=`<div class="row-between" style="padding-right:8px"><span>- ${escapeHTML(k)}:</span><strong class="amount good">${money(incCats[k])}</strong></div>`;
         }
       }
-      if(hasContent){
-        subBox.innerHTML=boxHtml;
-        subBox.classList.remove("hidden");
-      }else{
-        subBox.classList.add("hidden");
+
+      // 3. أنواع حركات الديون
+      if(Object.keys(debtTypes).length>0 && (n==="all" || n==="debt")){
+        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--amber-val);margin-top:6px">⚖️ أنواع حركات الديون:</div>';
+        for(let k in debtTypes){
+          boxHtml+=`<div class="row-between" style="padding-right:8px"><span>- ${escapeHTML(k)}:</span><strong class="amount">${money(debtTypes[k])}</strong></div>`;
+        }
       }
+
+      // 4. صافي أرصدة الأشخاص والأطراف (وفق الميزان المحاسبي: مدين | دائن | الصافي)
+      if(Object.keys(personNet).length>0 && (n==="all" || n==="debt")){
+        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--sky-val);margin-top:8px;border-top:1px dashed var(--border-subtle);padding-top:4px">👥 صافي أرصدة الأطراف والذمم المالية:</div>';
+        for(let p in personNet){
+          const data=personNet[p];
+          const totalCreditor = data.creditor + data.opening; // ما أخذناه منه + أول المدة (علينا)
+          const totalDebtor = data.debtor; // ما سددناه له (له)
+          const net = totalCreditor - totalDebtor; // الصافي
+          
+          let stClass=net>0?"bad":(net<0?"good":"");
+          let stTxt=net>0?"(عليه مديونية ⚠️)":(net<0?"(سدد زيادة ✅)":"(خالص ✔️)");
+          
+          boxHtml+=`
+          <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border-subtle);border-radius:8px;padding:6px;margin-top:4px">
+            <div class="row-between" style="font-weight:800">
+              <span>👤 ${escapeHTML(p)} <small>${stTxt}</small></span>
+              <strong class="amount ${stClass}" style="font-size:12px">${money(Math.abs(net))}</strong>
+            </div>
+            <div class="row-between small" style="margin-top:2px;color:var(--ink-muted)">
+              <span>أخذنا/أول المدة (مدين): ${money(totalCreditor)}</span>
+              <span>سددنا (دائن): ${money(totalDebtor)}</span>
+            </div>
+          </div>`;
+        }
+      }
+
+      subBox.innerHTML=boxHtml;
+      subBox.classList.remove("hidden");
     }else{
       subBox.classList.add("hidden");
     }
