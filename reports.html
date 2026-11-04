@@ -122,7 +122,19 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
   <section id="finance-ledger-view" class="stack">
     <div id="filter-section" class="stack no-print">
       <div class="panel" style="background:rgba(16,185,129,0.08);border-color:var(--border-neon);color:var(--emerald-neon);font-size:11.5px;font-weight:700">حدد معايير التقرير</div>
-      <div><label>التصنيف الرئيسي</label><select id="report-type" onchange="onReportTypeChange()"><option value="expense">مصروفات</option><option value="income">دخل</option><option value="debt">ديون وعلاقات مالية</option><option value="transfer">تحويلات مالية خارجية</option><option value="internal_transfer">تحويلات بين الحسابات</option><option value="all">ملخص كل المعاملات</option></select></div>
+      <div>
+        <label>التصنيف الرئيسي (بند الميزانية)</label>
+        <select id="report-type" onchange="onReportTypeChange()">
+          <option value="all">ملخص كل المعاملات (شامل)</option>
+          <option value="income">📥 الدخل</option>
+          <option value="expense_fixed">📌 المصروفات الثابتة</option>
+          <option value="expense_regular">📊 المصروفات العادية</option>
+          <option value="expense_personal">🛍️ المشتريات الشخصية</option>
+          <option value="transfer">✈️ التحويلات الخارجية</option>
+          <option value="debt_payment">🤝 تسديد الديون</option>
+          <option value="debt">⚖️ إدارة الذمم (أخذنا/سددنا/أول المدة)</option>
+        </select>
+      </div>
       
       <!-- فلتر الحسابات (كاش / بنكي) -->
       <div><label>الحساب / طريقة الدفع</label><select id="report-account-filter"><option value="all">كل الحسابات (شامل)</option></select></div>
@@ -242,7 +254,7 @@ function getAccounts(){
     {id:"outside",name:"خارج النظام (بداية)",type:"outside",icon:"🌐",hidden:true}
   ];
 }
-function getAccountById(id){if(!id)return getAccounts()[0];return getAccounts().find(a=>a.id===id)||getAccounts()[0];}
+function getAccountById(id){if(!id)return getAccounts()[0];return getAccounts().find(a=>a.id===id)||{name:"حساب غير معروف",id:id};}
 
 function populateAccountFilterSelect() {
     const accSelect = $("report-account-filter");
@@ -346,12 +358,6 @@ function isCreditorEntry(e){return e.type==="debt"&&e.debtType==="creditor"}
 function isDebtorEntry(e){return e.type==="debt"&&e.debtType==="debtor"}
 function isOpeningEntry(e){return e.type==="debt"&&e.debtType==="opening_balance"}
 
-/**
- * تسميات محاسبية دقيقة لأنواع حركات الديون
- * - creditor: استلفنا من الشخص => ذمة دائنة علينا (نحن مدينون له)
- * - debtor:   سددنا له        => تخفيض الذمة الدائنة (نحن نسدد ما علينا)
- * - opening_balance: رصيد افتتاحي (دين سابق مستحق علينا من قبل بدء الدورة)
- */
 function debtTypeLabel(e){
   return {
     creditor: "استلفت منه (ذمة دائنة عليّ)",
@@ -362,11 +368,25 @@ function debtTypeLabel(e){
 
 async function onReportTypeChange(){
   const e=$("report-type").value,t=$("report-subtype-wrap"),a=$("report-subtype");
-  t.classList.remove("hidden");
-  if(e==="expense")a.innerHTML='<option value="all">كل التصنيفات (شامل)</option>'+getExpenseCategories().map(c=>`<option value="${escapeHTML(c.name)}">${escapeHTML(c.name)}</option>`).join("");
-  else if(e==="income")a.innerHTML='<option value="all">كل المصادر (شامل)</option>'+getIncomeCategories().map(c=>`<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
-  else if(e==="debt")a.innerHTML='<option value="all">كل الحركات (شامل)</option><option value="creditor">استلفت منه (ذمة دائنة)</option><option value="debtor">سدّدت له (تخفيض ذمة)</option><option value="opening_balance">رصيد افتتاحي (دين سابق)</option>';
-  else t.classList.add("hidden");
+  
+  // إظهار وإخفاء خيارات الفلترة الفرعية بناءً على التصنيف الرئيسي
+  if(e==="expense_fixed" || e==="expense_regular" || e==="expense_personal"){
+    t.classList.remove("hidden");
+    const budgetId = e==="expense_fixed" ? "fixed" : (e==="expense_regular" ? "regular" : "personal");
+    a.innerHTML='<option value="all">كل التصنيفات</option>'+getExpenseCategories().filter(c=>c.budgetId===budgetId).map(c=>`<option value="${escapeHTML(c.name)}">${escapeHTML(c.name)}</option>`).join("");
+  }
+  else if(e==="income"){
+    t.classList.remove("hidden");
+    a.innerHTML='<option value="all">كل المصادر (شامل)</option>'+getIncomeCategories().map(c=>`<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
+  }
+  else if(e==="debt"){
+    t.classList.remove("hidden");
+    a.innerHTML='<option value="all">كل الحركات (شامل)</option><option value="creditor">استلفت منه (ذمة دائنة)</option><option value="debtor">سدّدت له (تخفيض ذمة)</option><option value="opening_balance">رصيد افتتاحي (دين سابق)</option>';
+  }
+  else {
+    t.classList.add("hidden");
+  }
+  
   a.value="all";
   $("report-target-wrap").classList.toggle("hidden",!(e==="debt"||e==="transfer"||e==="all"));
   await updateReportTargetOptions();
@@ -412,14 +432,31 @@ async function generateReport(){
 
   const o=e.filter(x=>{
     const iso=formatStrictISO(...x.date.split("-"));
-    if(t!=="all"&&x.type!==t)return false;
-    if(t==="expense"&&a!=="all"&&x.category!==a)return false;
-    if(t==="income"&&a!=="all"&&x.category!==a)return false;
-    if(t==="debt"&&a!=="all"&&x.debtType!==a)return false;
+    
+    // فلترة النوع الرئيسي (بناءً على بنود الميزانية)
+    if(t==="expense_fixed"){
+      if(!(x.type==="expense" && x.budgetId==="fixed")) return false;
+    } else if(t==="expense_regular"){
+      if(!(x.type==="expense" && x.budgetId==="regular")) return false;
+    } else if(t==="expense_personal"){
+      if(!(x.type==="expense" && x.budgetId==="personal")) return false;
+    } else if(t==="debt_payment"){
+      if(!(x.type==="debt" && x.debtType==="debtor")) return false;
+    } else if(t==="debt"){
+      if(x.type!=="debt") return false;
+    } else if(t!=="all"){
+      if(x.type!==t) return false;
+    }
+
+    // فلترة النوع الفرعي
+    if(a!=="all"){
+      if(t.startsWith("expense_") && x.category!==a) return false;
+      if(t==="income" && x.category!==a) return false;
+      if(t==="debt" && x.debtType!==a) return false;
+    }
     
     if(accFilter!=="all"&&x.account!==accFilter&&x.toAccount!==accFilter)return false;
 
-    // ✅ إصلاح: المطابقة الصحيحة للمستفيد (=== بدلاً من !==)
     if(n!=="all"&&((x.type==="debt"&&x.person!==n)||(x.type==="transfer"&&!(x.beneficiaries||[]).some(b=>b.name===n))))return false;
     if(s&&iso<s)return false;
     if(r&&iso>r)return false;
@@ -438,8 +475,10 @@ async function generateReport(){
   
   if(t==="transfer")$("report-title").textContent="كشف حساب المعاملات الخارجية (الحوالات)";
   else if(t==="debt")$("report-title").textContent="كشف حساب الديون والعلاقات المالية (التفصيلي والحالة)";
-  else if(t==="internal_transfer")$("report-title").textContent="كشف التحويلات بين الحسابات";
-  else if(t==="expense")$("report-title").textContent="تقرير المصروفات المصنف";
+  else if(t==="debt_payment")$("report-title").textContent="كشف تسديد الديون (تخفيض الذمم)";
+  else if(t==="expense_fixed")$("report-title").textContent="كشف المصروفات الثابتة";
+  else if(t==="expense_regular")$("report-title").textContent="كشف المصروفات العادية";
+  else if(t==="expense_personal")$("report-title").textContent="كشف المشتريات الشخصية";
   else if(t==="income")$("report-title").textContent="تقرير الدخل والإيرادات";
   else $("report-title").textContent="كشف حساب مالي — سجل المعاملات (شامل)";
   
@@ -455,8 +494,9 @@ function renderReportTableRows(e){
   const typeVal=$("report-type").value;
   const beneficiarySelectVal=$("beneficiary-select")?$("beneficiary-select").value:"all";
   const sortOrder=$("report-sort-order")?$("report-sort-order").value:"desc";
-  
-  // جدول الديون الشامل (التاريخ، الشخص، البيان/الوصف، المبلغ، رصيد الدين، الحالة)
+  const accFilter = $("report-account-filter") ? $("report-account-filter").value : "all";
+
+  // جدول الديون الشامل
   if(typeVal==="debt" && beneficiarySelectVal==="all"){
     a.innerHTML='<tr><th style="width:12%">التاريخ</th><th style="width:18%">الطرف / الشخص</th><th style="width:22%">البيان / الوصف</th><th class="amount" style="width:14%">المبلغ</th><th class="amount" style="width:14%">رصيد الدين</th><th style="width:20%">الحالة</th></tr>';
     
@@ -482,9 +522,6 @@ function renderReportTableRows(e){
       const amt=realAmount(x);
       const bal=x._currentBalance!==undefined?x._currentBalance:0;
       
-      // ✅ تسميات محاسبية دقيقة:
-      // bal > 0  =>  الرصيد في اتجاه "ذمة دائنة" (نحن مدينون له)
-      // bal < 0  =>  الرصيد في اتجاه "ذمة مدينة" (هو مدين لنا / سدد زيادة)
       let statusText="خالص ✔️";
       let statusClass="";
       if(bal>0){
@@ -510,8 +547,8 @@ function renderReportTableRows(e){
 
   // العرض العادي لباقي الأقسام
   const isTransfer=typeVal==="transfer";
-  const isDebt=typeVal==="debt";
-  const isExpense=typeVal==="expense";
+  const isDebt=typeVal==="debt" || typeVal==="debt_payment";
+  const isExpense=typeVal.startsWith("expense_");
   const s=beneficiarySelectVal;
   
   if(isTransfer){
@@ -525,6 +562,7 @@ function renderReportTableRows(e){
   }
 
   if(!e.length)return void(t.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:15px">لا توجد حركات مطابقة.</td></tr>`);
+  
   let r=0;
   const sorted=[...e].sort((a,b)=>{
     const cmp=a.date.localeCompare(b.date)||(a.time||"").localeCompare(b.time||"")||a.id.localeCompare(b.id);
@@ -542,10 +580,21 @@ function renderReportTableRows(e){
       running[x.id]=debtRunning[p];
     });
   }else{
+    // ✅ إصلاح: احتساب التحويلات الداخلية (خارج وداخل) في رصيد الحساب
     sorted.forEach(x=>{
-      if(x.type==="internal_transfer"){running[x.id]=r;return;}
-      if(x.type==="income"||isCreditorEntry(x))r+=realAmount(x);
-      else if(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))r-=realAmount(x);
+      let effectiveAmount = realAmount(x);
+      
+      if(x.type==="internal_transfer"){
+        if(accFilter !== "all"){
+          if(x.account === accFilter) r -= effectiveAmount;
+          if(x.toAccount === accFilter) r += effectiveAmount;
+        }
+        running[x.id] = r;
+        return;
+      }
+      
+      if(x.type==="income"||isCreditorEntry(x)) r+=effectiveAmount;
+      else if(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x)) r-=effectiveAmount;
       running[x.id]=r;
     });
   }
@@ -592,93 +641,112 @@ function renderReportTableRows(e){
 
 function updateReportSummaries(e){
   const n=$("report-type").value,
-        s=$("beneficiary-select")?$("beneficiary-select").value:"all",
-        r=e.reduce((a,x)=>(x.type==="income"||isCreditorEntry(x))?a+realAmount(x):a,0),
-        o=e.reduce((a,x)=>(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))?a+realAmount(x):a,0),
-        l=e.reduce((a,x)=>isDebtorEntry(x)?a+realAmount(x):a,0),
-        i=e.reduce((a,x)=>(isCreditorEntry(x)||isOpeningEntry(x))?a+realAmount(x):a,0),
-        // ✅ إصلاح: الإشارة الصحيحة محاسبياً:
-        // c > 0 => إجمالي الالتزامات أكبر => ذمم دائنة علينا (نحن مدينون)
-        // c < 0 => إجمالي المسدد أكبر => ذمم مدينة لنا (هو مدين لنا)
-        c=i-l,
-        d=r-o,
-        m=n==="debt"?c:d;
+        s=$("beneficiary-select")?$("beneficiary-select").value:"all";
+        
+  // حساب الإجماليات الأساسية
+  let totalIncome = 0, totalFixed = 0, totalRegular = 0, totalPersonal = 0, totalTransfer = 0, totalDebtPayment = 0;
+  let totalCreditor = 0, totalOpening = 0;
+  
+  let expCats = {}, incCats = {}, debtTypes = {}, personNet = {};
+  let h=0, y=0; // للتحويلات الخارجية
 
-  // قسم الملخصات المحاسبي الموحد: مدين | دائن | الصافي
+  e.forEach(x=>{
+    const amt = realAmount(x);
+    
+    if(x.type==="income"){
+      totalIncome += amt;
+      const k=x.category||"دخل آخر";
+      incCats[k]=(incCats[k]||0)+amt;
+    } 
+    else if(x.type==="expense"){
+      if(x.budgetId==="fixed") totalFixed += amt;
+      else if(x.budgetId==="personal") totalPersonal += amt;
+      else totalRegular += amt; // الافتراضي عادية
+      
+      const k=x.category||"مصروفات أخرى";
+      expCats[k]=(expCats[k]||0)+amt;
+    } 
+    else if(x.type==="transfer"){
+      totalTransfer += amt;
+      const benefs=x.beneficiaries||[];
+      const totalEGP=benefs.reduce((sum,b)=>sum+(Number(b.egp)||0),0);
+      benefs.forEach(b=>{
+        if(s!=="all"&&b.name!==s)return;
+        h+=b.shareKwd!==undefined?b.shareKwd:(totalEGP>0?b.egp/totalEGP*amt:0);
+        y+=Number(b.egp)||0;
+      });
+    } 
+    else if(x.type==="debt"){
+      if(isCreditorEntry(x)) totalCreditor += amt;
+      else if(isOpeningEntry(x)) totalOpening += amt;
+      else if(isDebtorEntry(x)) totalDebtPayment += amt;
+      
+      const lbl=debtTypeLabel(x.debtType);
+      debtTypes[lbl]=(debtTypes[lbl]||0)+amt;
+      
+      const p=x.person||"غير محدد";
+      if(!personNet[p]) personNet[p]={creditor:0, debtor:0, opening:0};
+      if(isCreditorEntry(x)) personNet[p].creditor+=amt;
+      else if(isDebtorEntry(x)) personNet[p].debtor+=amt;
+      else if(isOpeningEntry(x)) personNet[p].opening+=amt;
+    }
+  });
+
+  // 1. قسم الملخصات المحاسبي (لوحة التحكم)
   const subBox=$("sub-breakdowns-box");
   if(subBox){
-    if(n==="all" || n==="debt" || n==="expense" || n==="income"){
-      let expCats={}, incCats={}, debtTypes={}, personNet={};
-      
-      e.forEach(x=>{
-        const amt=realAmount(x);
-        if(x.type==="expense"){
-          const k=x.category||"مصروفات أخرى";
-          expCats[k]=(expCats[k]||0)+amt;
-        }else if(x.type==="income"){
-          const k=x.category||"دخل آخر";
-          incCats[k]=(incCats[k]||0)+amt;
-        }else if(x.type==="debt"){
-          const lbl=debtTypeLabel(x.debtType);
-          debtTypes[lbl]=(debtTypes[lbl]||0)+amt;
-          
-          const p=x.person||"غير محدد";
-          if(!personNet[p]) personNet[p]={creditor:0, debtor:0, opening:0};
-          if(isCreditorEntry(x)) personNet[p].creditor+=amt;
-          else if(isDebtorEntry(x)) personNet[p].debtor+=amt;
-          else if(isOpeningEntry(x)) personNet[p].opening+=amt;
-        }
-        // ⚠️ التحويلات الخارجية (transfer) مستبعدة تماماً من personNet
-        // لأنها ليست ذمماً مالية — هي مخرج نقدي فقط، وتظهر في تفصيل منفصل
-      });
-
-      let boxHtml='<div style="font-weight:900;color:var(--emerald-neon);margin-bottom:6px;border-bottom:1px solid var(--border-subtle);padding-bottom:4px">📊 الملخص التفصيلي (مدين | دائن | الصافي):</div>';
-      
-      // 1. المصروفات
-      if(Object.keys(expCats).length>0 && (n==="all" || n==="expense")){
-        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--red-val);margin-top:4px">💸 تصنيفات المصروفات (التزامات تشغيلية):</div>';
-        for(let k in expCats){
-          boxHtml+=`<div class="row-between" style="padding-right:8px"><span>- ${escapeHTML(k)}:</span><strong class="amount bad">${money(expCats[k])}</strong></div>`;
-        }
-      }
-
-      // 2. الدخل
-      if(Object.keys(incCats).length>0 && (n==="all" || n==="income")){
-        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--green-val);margin-top:6px">📥 مصادر الدخل (إيرادات):</div>';
+    let boxHtml='<div style="font-weight:900;color:var(--emerald-neon);margin-bottom:6px;border-bottom:1px solid var(--border-subtle);padding-bottom:4px">📊 لوحة التحكم المالية (توزيع الميزانية):</div>';
+    
+    if(n==="all"){
+      boxHtml+=`<div class="row-between" style="padding-right:8px"><span>📥 إجمالي الدخل التشغيلي:</span><strong class="amount good">${money(totalIncome)}</strong></div>`;
+      if(totalIncome>0){
         for(let k in incCats){
-          boxHtml+=`<div class="row-between" style="padding-right:8px"><span>- ${escapeHTML(k)}:</span><strong class="amount good">${money(incCats[k])}</strong></div>`;
+          let pct = ((incCats[k]/totalIncome)*100).toFixed(1);
+          boxHtml+=`<div class="row-between small" style="padding-right:16px"><span>- ${escapeHTML(k)}:</span><span>${money(incCats[k])} (${pct}%)</span></div>`;
         }
       }
 
-      // 3. أنواع حركات الديون (بمصطلحات محاسبية)
-      if(Object.keys(debtTypes).length>0 && (n==="all" || n==="debt")){
-        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--amber-val);margin-top:6px">⚖️ تفصيل حركات الذمم المالية:</div>';
+      boxHtml+='<div style="border-top:1px dashed var(--border-subtle);margin:6px 0"></div>';
+      
+      if(totalFixed>0){
+        let pct = totalIncome>0 ? ((totalFixed/totalIncome)*100).toFixed(1)+"%" : "—";
+        boxHtml+=`<div class="row-between" style="padding-right:8px"><span>📌 المصروفات الثابتة:</span><strong class="amount bad">${money(totalFixed)} (${pct})</strong></div>`;
+      }
+      if(totalRegular>0){
+        let pct = totalIncome>0 ? ((totalRegular/totalIncome)*100).toFixed(1)+"%" : "—";
+        boxHtml+=`<div class="row-between" style="padding-right:8px"><span>📊 المصروفات العادية:</span><strong class="amount bad">${money(totalRegular)} (${pct})</strong></div>`;
+      }
+      if(totalPersonal>0){
+        let pct = totalIncome>0 ? ((totalPersonal/totalIncome)*100).toFixed(1)+"%" : "—";
+        boxHtml+=`<div class="row-between" style="padding-right:8px"><span>🛍️ المشتريات الشخصية:</span><strong class="amount bad">${money(totalPersonal)} (${pct})</strong></div>`;
+      }
+      if(totalTransfer>0){
+        let pct = totalIncome>0 ? ((totalTransfer/totalIncome)*100).toFixed(1)+"%" : "—";
+        boxHtml+=`<div class="row-between" style="padding-right:8px"><span>✈️ التحويلات الخارجية:</span><strong class="amount bad">${money(totalTransfer)} (${pct})</strong></div>`;
+      }
+      if(totalDebtPayment>0){
+        let pct = totalIncome>0 ? ((totalDebtPayment/totalIncome)*100).toFixed(1)+"%" : "—";
+        boxHtml+=`<div class="row-between" style="padding-right:8px"><span>🤝 تسديد الديون:</span><strong class="amount warning">${money(totalDebtPayment)} (${pct})</strong></div>`;
+      }
+    } 
+    else if (n==="debt" || n==="debt_payment") {
+      if(Object.keys(debtTypes).length>0){
+        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--amber-val);margin-top:4px">⚖️ تفصيل حركات الذمم المالية:</div>';
         for(let k in debtTypes){
           boxHtml+=`<div class="row-between" style="padding-right:8px"><span>- ${escapeHTML(k)}:</span><strong class="amount">${money(debtTypes[k])}</strong></div>`;
         }
       }
-
-      // 4. صافي الذمم لكل طرف (وفق الميزان المحاسبي)
-      if(Object.keys(personNet).length>0 && (n==="all" || n==="debt")){
+      
+      if(Object.keys(personNet).length>0 && n==="debt"){
         boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--sky-val);margin-top:8px;border-top:1px dashed var(--border-subtle);padding-top:4px">👥 صافي الذمم لكل طرف:</div>';
         for(let p in personNet){
           const data=personNet[p];
-          const totalCreditor = data.creditor + data.opening; // ذمم دائنة علينا (الالتزامات)
-          const totalDebtor = data.debtor;                    // تخفيض الذمم (المسدد)
-          const net = totalCreditor - totalDebtor;            // الصافي: موجب = عليك، سالب = لك
-          
-          // ✅ تسميات محاسبية دقيقة:
-          // net > 0  =>  الالتزامات > المسدد  =>  ذمم دائنة علينا (نحن مدينون له)
-          // net < 0  =>  المسدد > الالتزامات  =>  ذمم مدينة لنا (هو مدين لنا)
-          let stClass="";
-          let stTxt="(خالص ✔️)";
-          if(net>0){
-            stClass="bad";
-            stTxt="(ذمم دائنة — عليك للغير ⚠️)";
-          }else if(net<0){
-            stClass="good";
-            stTxt="(ذمم مدينة — لك لدى الغير ✅)";
-          }
+          const totalC = data.creditor + data.opening;
+          const totalD = data.debtor;
+          const net = totalC - totalD;
+          let stClass="", stTxt="(خالص ✔️)";
+          if(net>0){ stClass="bad"; stTxt="(ذمم دائنة — عليك للغير ⚠️)"; }
+          else if(net<0){ stClass="good"; stTxt="(ذمم مدينة — لك لدى الغير ✅)"; }
           
           boxHtml+=`
           <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border-subtle);border-radius:8px;padding:6px;margin-top:4px">
@@ -687,51 +755,78 @@ function updateReportSummaries(e){
               <strong class="amount ${stClass}" style="font-size:12px">${money(Math.abs(net))}</strong>
             </div>
             <div class="row-between small" style="margin-top:2px;color:var(--ink-muted)">
-              <span>ذمم دائنة عليك: ${money(totalCreditor)}</span>
-              <span>ذمم مدينة لك: ${money(totalDebtor)}</span>
+              <span>ذمم دائنة عليك: ${money(totalC)}</span>
+              <span>ذمم مدينة لك: ${money(totalD)}</span>
             </div>
           </div>`;
         }
       }
-
-      subBox.innerHTML=boxHtml;
-      subBox.classList.remove("hidden");
-    }else{
-      subBox.classList.add("hidden");
     }
+    else {
+      // للمصروفات المفردة أو الدخل المفرد
+      if(Object.keys(expCats).length>0){
+        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--red-val);margin-top:4px">💸 تفصيل البنود:</div>';
+        for(let k in expCats){
+          boxHtml+=`<div class="row-between" style="padding-right:8px"><span>- ${escapeHTML(k)}:</span><strong class="amount bad">${money(expCats[k])}</strong></div>`;
+        }
+      }
+      if(Object.keys(incCats).length>0){
+        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--green-val);margin-top:4px">📥 تفصيل المصادر:</div>';
+        for(let k in incCats){
+          boxHtml+=`<div class="row-between" style="padding-right:8px"><span>- ${escapeHTML(k)}:</span><strong class="amount good">${money(incCats[k])}</strong></div>`;
+        }
+      }
+    }
+
+    subBox.innerHTML=boxHtml;
+    subBox.classList.remove("hidden");
   }
 
+  // 2. ملخص التقرير الرئيسي (الصافي والتفقيط)
   let p="";
-  const u=Math.abs(c),
-        g=numberToArabicWords(u);
-  let h=0,y=0;
-  if(n==="transfer")e.forEach(x=>{
-    const kwd=Number(x.totalKwd??x.amount)||0;
-    const benefs=x.beneficiaries||[];
-    const totalEGP=benefs.reduce((s,b)=>s+(Number(b.egp)||0),0);
-    benefs.forEach(b=>{
-      if(s!=="all"&&b.name!==s)return;
-      h+=b.shareKwd!==undefined?b.shareKwd:(totalEGP>0?b.egp/totalEGP*kwd:0);
-      y+=Number(b.egp)||0;
-    });
-  });
+  let m = 0;
   
-  // ✅ ملخص محاسبي دقيق للديون
+  if (n === "all") {
+    m = totalIncome - (totalFixed + totalRegular + totalPersonal + totalTransfer + totalDebtPayment);
+  } else if (n === "income") {
+    m = totalIncome;
+  } else if (n.startsWith("expense_")) {
+    m = -(totalFixed + totalRegular + totalPersonal);
+  } else if (n === "transfer") {
+    m = -totalTransfer;
+  } else if (n === "debt_payment") {
+    m = -totalDebtPayment;
+  } else if (n === "debt") {
+    m = (totalCreditor + totalOpening) - totalDebtPayment;
+  }
+
+  const u = Math.abs(m);
+  const g = numberToArabicWords(u);
+  
   if(n==="debt"){
-    if(c>0)p=`<div class="hint" style="background:rgba(251,113,133,0.1);border-color:rgba(251,113,133,0.3);color:var(--red-val);font-weight:700">⚠️ <strong>صافي الذمم:</strong> عليك للغير <strong>${money(u)}</strong> (ذمم دائنة) — ${g}.</div>`;
-    else if(c<0)p=`<div class="hint" style="background:rgba(16,185,129,0.1);border-color:var(--border-neon);color:var(--green-val);font-weight:700">✅ <strong>صافي الذمم:</strong> لك لدى الغير <strong>${money(u)}</strong> (ذمم مدينة) — ${g}.</div>`;
+    if(m>0) p=`<div class="hint" style="background:rgba(251,113,133,0.1);border-color:rgba(251,113,133,0.3);color:var(--red-val);font-weight:700">⚠️ <strong>صافي الذمم:</strong> عليك للغير <strong>${money(u)}</strong> (ذمم دائنة) — ${g}.</div>`;
+    else if(m<0) p=`<div class="hint" style="background:rgba(16,185,129,0.1);border-color:var(--border-neon);color:var(--green-val);font-weight:700">✅ <strong>صافي الذمم:</strong> لك لدى الغير <strong>${money(u)}</strong> (ذمم مدينة) — ${g}.</div>`;
     else p='<div class="hint" style="background:var(--bg-card);border-color:var(--border-subtle);color:var(--ink);font-weight:700">✅ <strong>الحساب خالص:</strong> لا توجد ذمم متبقية.</div>';
   }else if(n==="transfer"){
     p=`<div class="hint" style="background:rgba(16,185,129,0.1);border-color:var(--border-neon);color:var(--green-val);font-weight:700">✈️ <strong>إجمالي التحويلات:</strong> ${money(h)} | ${moneyEGP(y)}.</div>`;
   }
-  
+
   $("report-summary").innerHTML=`
     <div style="display:flex;flex-direction:column;gap:6px">
-      <div class="row-between"><span>${n==="debt"?"📥 إجمالي ما سدّدته (تخفيض ذمم دائنة):":n==="transfer"?"✈️ إجمالي التحويلات (د.ك):":"📥 إجمالي الواردات:"}</span><strong class="amount good" style="font-size:13px">${money(n==="debt"?l:n==="transfer"?h:r)}</strong></div>
-      ${n!=="transfer"?`<div class="row-between"><span>${n==="debt"?"💸 إجمالي الذمم الدائنة عليك:":"💸 إجمالي المصروفات:"}</span><strong class="amount bad" style="font-size:13px">${money(n==="debt"?i:o)}</strong></div>`:""}
-      ${n!=="transfer"?`<div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px"><span>⚖️ صافي الحساب الختامي:</span><strong class="amount ${m>=0?"bad":"good"}" style="font-size:14px">${m>=0?"+":""}${money(m)}</strong></div>`:""}
+      <div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px">
+        <span>⚖️ صافي التدفق النقدي / الحساب:</span>
+        <strong class="amount ${m>=0?"good":"bad"}" style="font-size:14px">${m>=0?"+":""}${money(m)}</strong>
+      </div>
     </div>${p}`;
-  $("tafqit-box").textContent="التفقيط المالي الرسمي: "+numberToArabicWords(Math.abs(m));
+    
+  // ✅ إصلاح: توضيح الاتجاه في التفقيط إذا كان المبلغ سالباً
+  let tafqitText = "التفقيط المالي الرسمي: " + g;
+  if (m < 0 && n !== "debt") {
+    tafqitText += " (مبلغ مصروف/مدين)";
+  } else if (m < 0 && n === "debt") {
+      tafqitText = "التفقيط المالي الرسمي: " + g + " (عليك)";
+  }
+  $("tafqit-box").textContent = tafqitText;
 }
 
 function backToFilters(){$("report-section").classList.add("hidden");$("filter-section").classList.remove("hidden");reportGenerated=false;}
@@ -773,9 +868,12 @@ function getSmartFilename(e,t="json"){
   if(e==="backup")return`نسخة_احتياطية_${s}.${t}`;
   let r="";
   if(a&&a!=="all")r=`_${a}`;
-  else if(n==="expense")r="_مصروفات";
+  else if(n==="expense_fixed")r="_مصروفات_ثابتة";
+  else if(n==="expense_regular")r="_مصروفات_عادية";
+  else if(n==="expense_personal")r="_مشتريات_شخصية";
   else if(n==="income")r="_دخل";
   else if(n==="debt")r="_ديون_وعلاقات";
+  else if(n==="debt_payment")r="_تسديد_ديون";
   else if(n==="transfer")r="_حوالات_خارجية";
   else if(n==="internal_transfer")r="_تحويلات_داخلية";
   return `${e}${r}_${s}.${t}`;
@@ -794,7 +892,7 @@ function exportReportExcel(){
     const s=$("display-count")?.textContent.trim()||"0";
     const typeVal=$("report-type").value;
     const r=typeVal==="transfer";
-    const isDebt=typeVal==="debt";
+    const isDebt=typeVal==="debt" || typeVal==="debt_payment";
     const o=$("beneficiary-select")?$("beneficiary-select").value:"all";
     let rows=[[t],["الفترة",a],["الطرف / التصنيف",n],["عدد الحركات",s],[]];
     if(r){
