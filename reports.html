@@ -225,7 +225,7 @@ function updateThemeUI(theme){
   }
 }
 function showToast(e){const t=$("toast");t.textContent=e;t.style.display="block";toastTimer&&clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.style.display="none",5000)}
-function escapeHTML(e){return String(e||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function escapeHTML(e){return String(e||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
 function money(e,t){return Number(e||0).toFixed(3)+" "+(t||"د.ك")}
 function moneyEGP(e){return Number(e||0).toLocaleString("en-US",{maximumFractionDigits:0})+" ج.م"}
 function formatStrictISO(e,t,a){return`${String(e).padStart(4,"0")}-${String(t).padStart(2,"0")}-${String(a).padStart(2,"0")}`}
@@ -345,17 +345,30 @@ function realAmount(e){return e?(e.type==="transfer"||e.type==="internal_transfe
 function isCreditorEntry(e){return e.type==="debt"&&e.debtType==="creditor"}
 function isDebtorEntry(e){return e.type==="debt"&&e.debtType==="debtor"}
 function isOpeningEntry(e){return e.type==="debt"&&e.debtType==="opening_balance"}
-function debtTypeLabel(e){return{creditor:"أخدنا منه (زيادة الدين)",debtor:"أدّينا له (سداد)",opening_balance:"رصيد أول المدة"}[e]||e||""}
+
+/**
+ * تسميات محاسبية دقيقة لأنواع حركات الديون
+ * - creditor: استلفنا من الشخص => ذمة دائنة علينا (نحن مدينون له)
+ * - debtor:   سددنا له        => تخفيض الذمة الدائنة (نحن نسدد ما علينا)
+ * - opening_balance: رصيد افتتاحي (دين سابق مستحق علينا من قبل بدء الدورة)
+ */
+function debtTypeLabel(e){
+  return {
+    creditor: "استلفت منه (ذمة دائنة عليّ)",
+    debtor:   "سدّدت له (تخفيض ذمة دائنة)",
+    opening_balance: "رصيد افتتاحي (دين سابق)"
+  }[e] || e || "";
+}
 
 async function onReportTypeChange(){
   const e=$("report-type").value,t=$("report-subtype-wrap"),a=$("report-subtype");
   t.classList.remove("hidden");
   if(e==="expense")a.innerHTML='<option value="all">كل التصنيفات (شامل)</option>'+getExpenseCategories().map(c=>`<option value="${escapeHTML(c.name)}">${escapeHTML(c.name)}</option>`).join("");
   else if(e==="income")a.innerHTML='<option value="all">كل المصادر (شامل)</option>'+getIncomeCategories().map(c=>`<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
-  else if(e==="debt")a.innerHTML='<option value="all">كل الحركات (شامل)</option><option value="creditor">أخدنا منه</option><option value="debtor">أدّينا له (سداد)</option><option value="opening_balance">رصيد أول المدة</option>';
+  else if(e==="debt")a.innerHTML='<option value="all">كل الحركات (شامل)</option><option value="creditor">استلفت منه (ذمة دائنة)</option><option value="debtor">سدّدت له (تخفيض ذمة)</option><option value="opening_balance">رصيد افتتاحي (دين سابق)</option>';
   else t.classList.add("hidden");
   a.value="all";
-  $("report-target-wrap").classList.toggle("hidden",!(e==="debt"||e==="transfer"||e==="all"||e==="internal_transfer"));
+  $("report-target-wrap").classList.toggle("hidden",!(e==="debt"||e==="transfer"||e==="all"));
   await updateReportTargetOptions();
 }
 
@@ -406,7 +419,8 @@ async function generateReport(){
     
     if(accFilter!=="all"&&x.account!==accFilter&&x.toAccount!==accFilter)return false;
 
-    if(n!=="all"&&((x.type==="debt"&&x.person!==n)||(x.type==="transfer"&&!(x.beneficiaries||[]).some(b=>b.name!==n))))return false;
+    // ✅ إصلاح: المطابقة الصحيحة للمستفيد (=== بدلاً من !==)
+    if(n!=="all"&&((x.type==="debt"&&x.person!==n)||(x.type==="transfer"&&!(x.beneficiaries||[]).some(b=>b.name===n))))return false;
     if(s&&iso<s)return false;
     if(r&&iso>r)return false;
     return true;
@@ -468,13 +482,16 @@ function renderReportTableRows(e){
       const amt=realAmount(x);
       const bal=x._currentBalance!==undefined?x._currentBalance:0;
       
+      // ✅ تسميات محاسبية دقيقة:
+      // bal > 0  =>  الرصيد في اتجاه "ذمة دائنة" (نحن مدينون له)
+      // bal < 0  =>  الرصيد في اتجاه "ذمة مدينة" (هو مدين لنا / سدد زيادة)
       let statusText="خالص ✔️";
-      let statusClass="good";
+      let statusClass="";
       if(bal>0){
-        statusText="عليه مديونية ⚠️";
+        statusText="ذمم دائنة — عليك للغير ⚠️";
         statusClass="bad";
       }else if(bal<0){
-        statusText="سدد زيادة (دائن) ✅";
+        statusText="ذمم مدينة — لك لدى الغير ✅";
         statusClass="good";
       }
 
@@ -580,7 +597,10 @@ function updateReportSummaries(e){
         o=e.reduce((a,x)=>(x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))?a+realAmount(x):a,0),
         l=e.reduce((a,x)=>isDebtorEntry(x)?a+realAmount(x):a,0),
         i=e.reduce((a,x)=>(isCreditorEntry(x)||isOpeningEntry(x))?a+realAmount(x):a,0),
-        c=l-i,
+        // ✅ إصلاح: الإشارة الصحيحة محاسبياً:
+        // c > 0 => إجمالي الالتزامات أكبر => ذمم دائنة علينا (نحن مدينون)
+        // c < 0 => إجمالي المسدد أكبر => ذمم مدينة لنا (هو مدين لنا)
+        c=i-l,
         d=r-o,
         m=n==="debt"?c:d;
 
@@ -607,21 +627,16 @@ function updateReportSummaries(e){
           if(isCreditorEntry(x)) personNet[p].creditor+=amt;
           else if(isDebtorEntry(x)) personNet[p].debtor+=amt;
           else if(isOpeningEntry(x)) personNet[p].opening+=amt;
-        }else if(x.type==="transfer"){
-          (x.beneficiaries||[]).forEach(b=>{
-            const p=b.name||"مستفيد";
-            const share=b.shareKwd!==undefined?b.shareKwd:0;
-            if(!personNet[p]) personNet[p]={creditor:0, debtor:0, opening:0};
-            personNet[p].debtor+=share; 
-          });
         }
+        // ⚠️ التحويلات الخارجية (transfer) مستبعدة تماماً من personNet
+        // لأنها ليست ذمماً مالية — هي مخرج نقدي فقط، وتظهر في تفصيل منفصل
       });
 
       let boxHtml='<div style="font-weight:900;color:var(--emerald-neon);margin-bottom:6px;border-bottom:1px solid var(--border-subtle);padding-bottom:4px">📊 الملخص التفصيلي (مدين | دائن | الصافي):</div>';
       
       // 1. المصروفات
       if(Object.keys(expCats).length>0 && (n==="all" || n==="expense")){
-        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--red-val);margin-top:4px">💸 تصنيفات المصروفات (التزامات/مدين):</div>';
+        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--red-val);margin-top:4px">💸 تصنيفات المصروفات (التزامات تشغيلية):</div>';
         for(let k in expCats){
           boxHtml+=`<div class="row-between" style="padding-right:8px"><span>- ${escapeHTML(k)}:</span><strong class="amount bad">${money(expCats[k])}</strong></div>`;
         }
@@ -629,31 +644,41 @@ function updateReportSummaries(e){
 
       // 2. الدخل
       if(Object.keys(incCats).length>0 && (n==="all" || n==="income")){
-        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--green-val);margin-top:6px">📥 مصادر الدخل (إيرادات/دائن):</div>';
+        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--green-val);margin-top:6px">📥 مصادر الدخل (إيرادات):</div>';
         for(let k in incCats){
           boxHtml+=`<div class="row-between" style="padding-right:8px"><span>- ${escapeHTML(k)}:</span><strong class="amount good">${money(incCats[k])}</strong></div>`;
         }
       }
 
-      // 3. أنواع حركات الديون
+      // 3. أنواع حركات الديون (بمصطلحات محاسبية)
       if(Object.keys(debtTypes).length>0 && (n==="all" || n==="debt")){
-        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--amber-val);margin-top:6px">⚖️ أنواع حركات الديون:</div>';
+        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--amber-val);margin-top:6px">⚖️ تفصيل حركات الذمم المالية:</div>';
         for(let k in debtTypes){
           boxHtml+=`<div class="row-between" style="padding-right:8px"><span>- ${escapeHTML(k)}:</span><strong class="amount">${money(debtTypes[k])}</strong></div>`;
         }
       }
 
-      // 4. صافي أرصدة الأشخاص والأطراف (وفق الميزان المحاسبي: مدين | دائن | الصافي)
+      // 4. صافي الذمم لكل طرف (وفق الميزان المحاسبي)
       if(Object.keys(personNet).length>0 && (n==="all" || n==="debt")){
-        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--sky-val);margin-top:8px;border-top:1px dashed var(--border-subtle);padding-top:4px">👥 صافي أرصدة الأطراف والذمم المالية:</div>';
+        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--sky-val);margin-top:8px;border-top:1px dashed var(--border-subtle);padding-top:4px">👥 صافي الذمم لكل طرف:</div>';
         for(let p in personNet){
           const data=personNet[p];
-          const totalCreditor = data.creditor + data.opening; // ما أخذناه منه + أول المدة (علينا)
-          const totalDebtor = data.debtor; // ما سددناه له (له)
-          const net = totalCreditor - totalDebtor; // الصافي
+          const totalCreditor = data.creditor + data.opening; // ذمم دائنة علينا (الالتزامات)
+          const totalDebtor = data.debtor;                    // تخفيض الذمم (المسدد)
+          const net = totalCreditor - totalDebtor;            // الصافي: موجب = عليك، سالب = لك
           
-          let stClass=net>0?"bad":(net<0?"good":"");
-          let stTxt=net>0?"(عليه مديونية ⚠️)":(net<0?"(سدد زيادة ✅)":"(خالص ✔️)");
+          // ✅ تسميات محاسبية دقيقة:
+          // net > 0  =>  الالتزامات > المسدد  =>  ذمم دائنة علينا (نحن مدينون له)
+          // net < 0  =>  المسدد > الالتزامات  =>  ذمم مدينة لنا (هو مدين لنا)
+          let stClass="";
+          let stTxt="(خالص ✔️)";
+          if(net>0){
+            stClass="bad";
+            stTxt="(ذمم دائنة — عليك للغير ⚠️)";
+          }else if(net<0){
+            stClass="good";
+            stTxt="(ذمم مدينة — لك لدى الغير ✅)";
+          }
           
           boxHtml+=`
           <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border-subtle);border-radius:8px;padding:6px;margin-top:4px">
@@ -662,8 +687,8 @@ function updateReportSummaries(e){
               <strong class="amount ${stClass}" style="font-size:12px">${money(Math.abs(net))}</strong>
             </div>
             <div class="row-between small" style="margin-top:2px;color:var(--ink-muted)">
-              <span>أخذنا/أول المدة (مدين): ${money(totalCreditor)}</span>
-              <span>سددنا (دائن): ${money(totalDebtor)}</span>
+              <span>ذمم دائنة عليك: ${money(totalCreditor)}</span>
+              <span>ذمم مدينة لك: ${money(totalDebtor)}</span>
             </div>
           </div>`;
         }
@@ -690,18 +715,21 @@ function updateReportSummaries(e){
       y+=Number(b.egp)||0;
     });
   });
+  
+  // ✅ ملخص محاسبي دقيق للديون
   if(n==="debt"){
-    if(c>0)p=`<div class="hint" style="background:rgba(16,185,129,0.1);border-color:var(--border-neon);color:var(--green-val);font-weight:700">⚖️ <strong>النتيجة النهائية:</strong> أنت الدائن بمبلغ <strong>${money(u)}</strong> (${g}).</div>`;
-    else if(c<0)p=`<div class="hint" style="background:rgba(251,113,133,0.1);border-color:rgba(251,113,133,0.3);color:var(--red-val);font-weight:700">⚠️ <strong>النتيجة النهائية (المتبقي عليك):</strong> ${money(u)} (${g}).</div>`;
-    else p='<div class="hint" style="background:var(--bg-card);border-color:var(--border-subtle);color:var(--ink);font-weight:700">✅ <strong>الحساب خالص:</strong> الرصيد صفر.</div>';
+    if(c>0)p=`<div class="hint" style="background:rgba(251,113,133,0.1);border-color:rgba(251,113,133,0.3);color:var(--red-val);font-weight:700">⚠️ <strong>صافي الذمم:</strong> عليك للغير <strong>${money(u)}</strong> (ذمم دائنة) — ${g}.</div>`;
+    else if(c<0)p=`<div class="hint" style="background:rgba(16,185,129,0.1);border-color:var(--border-neon);color:var(--green-val);font-weight:700">✅ <strong>صافي الذمم:</strong> لك لدى الغير <strong>${money(u)}</strong> (ذمم مدينة) — ${g}.</div>`;
+    else p='<div class="hint" style="background:var(--bg-card);border-color:var(--border-subtle);color:var(--ink);font-weight:700">✅ <strong>الحساب خالص:</strong> لا توجد ذمم متبقية.</div>';
   }else if(n==="transfer"){
     p=`<div class="hint" style="background:rgba(16,185,129,0.1);border-color:var(--border-neon);color:var(--green-val);font-weight:700">✈️ <strong>إجمالي التحويلات:</strong> ${money(h)} | ${moneyEGP(y)}.</div>`;
   }
+  
   $("report-summary").innerHTML=`
     <div style="display:flex;flex-direction:column;gap:6px">
-      <div class="row-between"><span>${n==="debt"?"📥 إجمالي المسدد (أدّينا له):":n==="transfer"?"✈️ إجمالي التحويلات (د.ك):":"📥 إجمالي الواردات:"}</span><strong class="amount good" style="font-size:13px">${money(n==="debt"?l:n==="transfer"?h:r)}</strong></div>
-      ${n!=="transfer"?`<div class="row-between"><span>${n==="debt"?"💸 إجمالي الالتزامات (أخدنا منه + أول المدة):":"💸 إجمالي المصروفات:"}</span><strong class="amount bad" style="font-size:13px">${money(n==="debt"?i:o)}</strong></div>`:""}
-      ${n!=="transfer"?`<div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px"><span>⚖️ صافي الحساب الختامي:</span><strong class="amount ${m>=0?"good":"bad"}" style="font-size:14px">${m>=0?"+":""}${money(m)}</strong></div>`:""}
+      <div class="row-between"><span>${n==="debt"?"📥 إجمالي ما سدّدته (تخفيض ذمم دائنة):":n==="transfer"?"✈️ إجمالي التحويلات (د.ك):":"📥 إجمالي الواردات:"}</span><strong class="amount good" style="font-size:13px">${money(n==="debt"?l:n==="transfer"?h:r)}</strong></div>
+      ${n!=="transfer"?`<div class="row-between"><span>${n==="debt"?"💸 إجمالي الذمم الدائنة عليك:":"💸 إجمالي المصروفات:"}</span><strong class="amount bad" style="font-size:13px">${money(n==="debt"?i:o)}</strong></div>`:""}
+      ${n!=="transfer"?`<div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px"><span>⚖️ صافي الحساب الختامي:</span><strong class="amount ${m>=0?"bad":"good"}" style="font-size:14px">${m>=0?"+":""}${money(m)}</strong></div>`:""}
     </div>${p}`;
   $("tafqit-box").textContent="التفقيط المالي الرسمي: "+numberToArabicWords(Math.abs(m));
 }
