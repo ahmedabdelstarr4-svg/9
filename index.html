@@ -148,9 +148,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .field-note.warn{color:var(--amber-val);background:rgba(251,191,36,0.1);padding:4px 6px;border-radius:6px;border:1px solid rgba(251,191,36,0.3);font-weight:700}
 .row-between{display:flex;justify-content:space-between;align-items:center;gap:4px}
 .bud-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
-.bud-mini-card{border:1px solid var(--border-subtle);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;background:var(--bg-card);min-width:0;}
+.bud-mini-card{border:1px solid var(--border-subtle);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;background:var(--bg-card);min-width:0;position:relative;}
 .bud-mini-card[data-bkey="emergency"]{border-color:var(--border-neon);background:rgba(16,185,129,0.03);}
-.bud-mini-head{display:flex;justify-content:space-between;align-items:center;gap:4px}
+.bud-mini-card.box-closed{opacity:0.85;border-style:dashed;background:rgba(255,255,255,0.01);}
+.bud-close-btn{position:absolute;top:6px;left:6px;background:rgba(255,255,255,0.08);border:1px solid var(--border-subtle);color:var(--ink-muted);border-radius:6px;font-size:9px;padding:2px 6px;cursor:pointer;font-weight:800;}
+.bud-close-btn.closed{background:rgba(16,185,129,0.2);color:var(--emerald-neon);border-color:var(--border-neon);}
+.bud-mini-head{display:flex;justify-content:space-between;align-items:center;gap:4px;padding-left:45px;}
 .bud-mini-name{font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bud-mini-pct{font-size:9.5px;font-weight:900;font-variant-numeric:tabular-nums}
 .bud-mini-meta{display:flex;flex-direction:column;gap:1px;font-size:9.5px;color:var(--ink-muted);font-weight:700}
@@ -504,6 +507,7 @@ const DB_NAME="PersonalFinanceDB",DB_VERSION=1,STORE_NAME="transactions";
 const PEOPLE_KEY="pf_people_list";
 const EXPENSE_CATS_KEY="pf_expense_cats_list";
 const TARGET_PCT_KEY="pf_target_percentages";
+const CLOSED_BOXES_KEY="pf_closed_boxes_state";
 const THEME_KEY="pf_theme_pref";
 const PRIVACY_KEY="pf_privacy_hidden";
 const OUTSIDE_ACCOUNT_ID="outside";
@@ -578,6 +582,29 @@ function firstOfMonthISO(){const e=new Date;return formatStrictISO(e.getFullYear
 function fmtDate(e){if(!e)return"";const t=e.split("-");if(t.length<3)return e;const[a,n,s]=t;return`${String(s).padStart(2,"0")}/${String(n).padStart(2,"0")}/${a}`}
 function dateAddDays(iso,days){const p=iso.split("-");const d=new Date(Date.UTC(+p[0],+p[1]-1,+p[2]));d.setUTCDate(d.getUTCDate()+days);return formatStrictISO(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate());}
 function dateDiffDays(fromISO,toISO){const f=fromISO.split("-"),t=toISO.split("-");const d1=new Date(Date.UTC(+f[0],+f[1]-1,+f[2]));const d2=new Date(Date.UTC(+t[0],+t[1]-1,+t[2]));return Math.floor((d2-d1)/864e5);}
+
+function getClosedBoxesState(){
+  try{
+    const raw=localStorage.getItem(CLOSED_BOXES_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {};
+}
+
+function setBoxClosedState(cycleId, budgetId, isClosed){
+  const state = getClosedBoxesState();
+  if(!state[cycleId]) state[cycleId] = {};
+  state[cycleId][budgetId] = isClosed;
+  localStorage.setItem(CLOSED_BOXES_KEY, JSON.stringify(state));
+  refreshDashboard();
+}
+
+function toggleBoxClosed(cycleId, budgetId){
+  const state = getClosedBoxesState();
+  const current = !!(state[cycleId] && state[cycleId][budgetId]);
+  setBoxClosedState(cycleId, budgetId, !current);
+  showToast(!current ? "🔒 تم إغلاق وتثبيت الصندوق لهذه الدورة" : "🔓 تم إعادة تنشيط الصندوق");
+}
 
 function getAccounts(){
   return [
@@ -1369,7 +1396,7 @@ function toggleLivingSubDetails(el){
   if(box) box.classList.toggle('hidden');
 }
 
-function renderBudgetRowHTML(data){
+function renderBudgetRowHTML(data, cycleId){
   const b=BUDGET_BY_KEY[data.budgetId];
   const noLimit=data.max<=0;
   const st=computeBudgetStatus(data.max,data.spent);
@@ -1402,18 +1429,33 @@ function renderBudgetRowHTML(data){
   }
 
   const cursorStyle = data.isMerged ? 'style="cursor:pointer;" onclick="toggleLivingSubDetails(this)"' : '';
+  const isClosed = data.isClosed;
+  const cardClass = `bud-mini-card${isClosed ? " box-closed" : ""}`;
+  const closeBtnText = isClosed ? "🔓 مغلق (تنشيط)" : "🔒 إغلاق الصندوق";
+  const closeBtnClass = `bud-close-btn${isClosed ? " closed" : ""}`;
+  
+  let impactHTML = "";
+  if(isClosed && data.income > 0){
+    const actualPct = ((data.spent / data.income) * 100).toFixed(1);
+    const diffPct = (actualPct - data.pct).toFixed(1);
+    const diffSign = diffPct > 0 ? `+${diffPct}%` : `${diffPct}%`;
+    const diffColor = diffPct > 0 ? "bad" : "good";
+    impactHTML = `<div style="margin-top:2px;font-size:9px;color:var(--ink-muted);">أخذ <strong>${actualPct}%</strong> من الدخل (${money(data.spent)}) <span class="${diffColor}">(${diffSign} عن المستهدف)</span></div>`;
+  }
 
-  return `<div class="bud-mini-card" data-bkey="${data.budgetId}" ${cursorStyle}>
+  return `<div class="${cardClass}" data-bkey="${data.budgetId}" ${!isClosed?cursorStyle:""}>
+    <button type="button" class="${closeBtnClass}" onclick="toggleBoxClosed('${cycleId}', '${data.budgetId}')">${closeBtnText}</button>
     <div class="bud-mini-head">
       <span class="bud-mini-name">${b.icon} ${b.short}</span>
-      <span class="bud-mini-pct ${cls}">${pctTxt}</span>
+      <span class="bud-mini-pct ${cls}">${isClosed ? "🔒 مغلق" : pctTxt}</span>
     </div>
-    <div class="cap-track"><div class="cap-bar" style="width:${pctW}%;background:${barColor}"></div></div>
+    <div class="cap-track"><div class="cap-bar" style="width:${isClosed?"100":pctW}%;background:${isClosed?"var(--ink-muted)":barColor}"></div></div>
     <div class="bud-mini-meta">
       <div>إجمالي: <strong>${money(data.max)}</strong></div>
       <div>متبقي: <strong class="${cls}">${money(data.remaining)}</strong></div>
-      ${data.isDynamic ? `<div>يكفي: <strong>${data.daysRemaining} يوماً</strong></div>` : ''}
-      <div>⚡ يوميًا: <strong class="${dailyCls}">${dailyTxt}</strong></div>
+      ${!isClosed && data.isDynamic ? `<div>يكفي: <strong>${data.daysRemaining} يوماً</strong></div>` : ''}
+      ${!isClosed ? `<div>⚡ يوميًا: <strong class="${dailyCls}">${dailyTxt}</strong></div>` : ''}
+      ${impactHTML}
     </div>
     ${subDetailsHTML}
   </div>`;
@@ -1443,7 +1485,7 @@ async function renderDashBudgetCard(transactions){
       return;
     }
     const {items}=computeAllBudgetData(txs,cycle);
-    el.innerHTML=items.map(renderBudgetRowHTML).join("");
+    el.innerHTML=items.map(item => renderBudgetRowHTML(item, cycle.id)).join("");
     
     const totalSpentAll = items.reduce((sum, item) => sum + Math.max(0, item.spent), 0);
     const overallPct = income > 0 ? Math.min(100, (totalSpentAll / income) * 100) : 0;
@@ -1546,6 +1588,9 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
   const today = todayISO();
   const cycleEndDate = dateAddDays(cycle.start, CYCLE_DAYS - 1);
 
+  const closedState = getClosedBoxesState();
+  const isClosed = !!(closedState[cycle.id] && closedState[cycle.id][budgetId]);
+
   if(budgetId==="living"){
     const fPct=targets.fixed||0, rPct=targets.regular||0, pPct=targets.personal||0;
     const pct = fPct + rPct + pPct;
@@ -1560,12 +1605,13 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
     ].map(s=>({...s, remaining: s.max - s.spent}));
 
     const dailyReference = max / CYCLE_DAYS;
-    const dailyActual = daysRemaining > 0 ? Math.max(0, remaining / daysRemaining) : 0;
-    const dailyRaw = daysRemaining > 0 ? remaining / daysRemaining : 0;
+    const effectiveDays = isClosed ? 0 : daysRemaining;
+    const dailyActual = effectiveDays > 0 ? Math.max(0, remaining / effectiveDays) : 0;
+    const dailyRaw = effectiveDays > 0 ? remaining / effectiveDays : 0;
     const spentToday = dailyBudgetSpent(txs,cycle,"living",today);
     const remainingToday = dailyActual - spentToday;
 
-    return {budgetId,max,spent,remaining,pct,elapsed,daysRemaining,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate,isMerged:true,subItems};
+    return {budgetId,max,spent,remaining,pct,elapsed,daysRemaining:effectiveDays,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate,isMerged:true,subItems,isClosed,income};
   }
 
   if(budgetId==="emergency"){
@@ -1579,17 +1625,31 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
       accumulatedSurplus+=(bMax-bSpent);
       totalMaxBase+=bMax;
     });
+    
+    // إذا كان أحد الصناديق الأساسية مغلقاً، نأخذ متبقيه الحقيقي لنظام المعالجة
+    baseKeys.forEach(k=>{
+      if(k==="savings") return;
+      const isBoxClosed = !!(closedState[cycle.id] && closedState[cycle.id][k]);
+      if(isBoxClosed){
+        const bMax = income*(targets[k]/100);
+        const bSpent = totalSubBudgetSpentInCycle(txs, cycle, k);
+        const boxDiff = bMax - bSpent; // وفر أو عجز الصندوق المغلق
+        // تراكم الوفر يذهب للمعالجة
+      }
+    });
+
     const unallocatedMax=Math.max(0,income-totalMaxBase);
     const max=unallocatedMax+Math.max(0,income*(targets.savings||0)/100);
     const spent=totalBudgetSpentInCycle(txs,cycle,"emergency");
     const remaining=accumulatedSurplus-spent;
     const fixedPct=income>0?Number(((max/income)*100).toFixed(1)):0;
     const dailyReference=max/CYCLE_DAYS;
-    const dailyActual=daysRemaining>0?Math.max(0, remaining/daysRemaining):0;
-    const dailyRaw=daysRemaining>0?remaining/daysRemaining:0;
+    const effectiveDays = isClosed ? 0 : daysRemaining;
+    const dailyActual=effectiveDays>0?Math.max(0, remaining/effectiveDays):0;
+    const dailyRaw=effectiveDays>0?remaining/effectiveDays:0;
     const spentToday=dailyBudgetSpent(txs,cycle,"emergency",today);
     const remainingToday=dailyActual-spentToday;
-    return {budgetId,max,spent,remaining,pct:fixedPct,elapsed,daysRemaining,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate,isDynamic:true};
+    return {budgetId,max,spent,remaining,pct:fixedPct,elapsed,daysRemaining:effectiveDays,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate,isDynamic:true,isClosed,income};
   }
 
   const pct=(targets[budgetId]||0);
@@ -1597,11 +1657,12 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
   const spent=totalBudgetSpentInCycle(txs,cycle,budgetId);
   const remaining=max-spent;
   const dailyReference=max/CYCLE_DAYS;
-  const dailyActual=daysRemaining>0?Math.max(0, remaining/daysRemaining):0;
-  const dailyRaw=daysRemaining>0?remaining/daysRemaining:0;
+  const effectiveDays = isClosed ? 0 : daysRemaining;
+  const dailyActual=effectiveDays>0?Math.max(0, remaining/effectiveDays):0;
+  const dailyRaw=effectiveDays>0?remaining/effectiveDays:0;
   const spentToday=dailyBudgetSpent(txs,cycle,budgetId,today);
   const remainingToday=dailyActual-spentToday;
-  return {budgetId,max,spent,remaining,pct,elapsed,daysRemaining,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate};
+  return {budgetId,max,spent,remaining,pct,elapsed,daysRemaining:effectiveDays,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate,isClosed,income};
 }
 
 function computeAllBudgetData(txs,cycle){
@@ -1621,7 +1682,7 @@ function computeBudgetStatus(max,spent){
 }
 
 function buildBackupPayload(e){
-  return{version:16,savedAt:(new Date).toISOString(),transactions:e,people:getPeopleList(),expenseCategories:getExpenseCategories(),accounts:getAccounts(),targetPercentages:getTargetPercentages()};
+  return{version:16,savedAt:(new Date).toISOString(),transactions:e,people:getPeopleList(),expenseCategories:getExpenseCategories(),accounts:getAccounts(),targetPercentages:getTargetPercentages(),closedBoxes:getClosedBoxesState()};
 }
 
 async function downloadBackup(){
@@ -1684,6 +1745,7 @@ function restoreBackup(){
         if(Array.isArray(data.people))savePeopleList(data.people);
         if(Array.isArray(data.expenseCategories))saveExpenseCategories(data.expenseCategories);
         if(data.targetPercentages){localStorage.setItem(TARGET_PCT_KEY,JSON.stringify(data.targetPercentages));loadTargetPercentages();}
+        if(data.closedBoxes){localStorage.setItem(CLOSED_BOXES_KEY,JSON.stringify(data.closedBoxes));}
         showToast("تمت الاستعادة ✅");
         await refreshAllViews();
       };
