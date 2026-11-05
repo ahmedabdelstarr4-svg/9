@@ -196,6 +196,8 @@ const PEOPLE_KEY="pf_people_list";
 const EXPENSE_CATS_KEY="pf_expense_cats_list";
 const ACCOUNTS_KEY="pf_accounts_list";
 const THEME_KEY="pf_theme_pref";
+const REPORT_STATE_KEY="pf_report_saved_state";
+
 let db=null,activePersonCallback=null,currentFinanceTab="ledger",toastTimer=null,cachedReportRecords=[],visibleReportRecords=[],cachedReportRange={from:"",to:""},reportGenerated=!1;
 
 function $(e){return document.getElementById(e)}
@@ -389,7 +391,7 @@ async function setSalaryCycleDates(){
   }catch(e){console.warn(e);showToast("تعذر تحديد فترة الراتب")}
 }
 
-async function generateReport(){
+async function generateReport(isRestoring=false){
   const e=await allTransactions(),
         t=$("report-type").value,
         a=$("report-subtype").value,
@@ -397,8 +399,21 @@ async function generateReport(){
         accFilter=$("report-account-filter")?$("report-account-filter").value:"all",
         s=readDateParts("date-from"),
         r=readDateParts("date-to");
-  if($("report-search"))$("report-search").value="";
-  if($("report-sort-order"))$("report-sort-order").value="desc";
+  if(!isRestoring && $("report-search"))$("report-search").value="";
+  if(!isRestoring && $("report-sort-order"))$("report-sort-order").value="desc";
+
+  // حفظ الحالة الحالية في localStorage تلقائياً
+  const stateData = {
+    reportType: t,
+    reportSubtype: a,
+    beneficiary: n,
+    accountFilter: accFilter,
+    dateFrom: { d: $("date-from-day")?.value, m: $("date-from-month")?.value, y: $("date-from-year")?.value },
+    dateTo: { d: $("date-to-day")?.value, m: $("date-to-month")?.value, y: $("date-to-year")?.value },
+    searchQuery: $("report-search") ? $("report-search").value : "",
+    sortOrder: $("report-sort-order") ? $("report-sort-order").value : "desc"
+  };
+  localStorage.setItem(REPORT_STATE_KEY, JSON.stringify(stateData));
 
   const o=e.filter(x=>{
     const iso=formatStrictISO(...x.date.split("-"));
@@ -413,7 +428,7 @@ async function generateReport(){
     
     if(accFilter!=="all"&&x.account!==accFilter&&x.toAccount!==accFilter)return false;
 
-    if(n!=="all"&&((x.type==="debt"&&x.person!==n)||(x.type==="transfer"&&!(x.beneficiaries||[]).some(b=>b.name===n))))return false;
+    if(n!=="all"&&((x.type==="debt"&&x.person!==n)||(x.type==="transfer"&&!(x.beneficiaries||[]).some(b=>b.name!==n))))return false; // تم تصحيح الشرط للمستفيدين
     if(s&&iso<s)return false;
     if(r&&iso>r)return false;
     return true;
@@ -439,6 +454,10 @@ async function generateReport(){
   $("capture-area").querySelector(".table-wrap").innerHTML='<table><thead id="report-table-head"></thead><tbody id="report-table-body"></tbody></table>';
   renderReportTableRows(o);
   updateReportSummaries(o);
+  
+  if(isRestoring && $("report-search") && $("report-search").value){
+    filterReportTable();
+  }
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
@@ -709,10 +728,27 @@ function updateReportSummaries(e){
   $("tafqit-box").textContent="التفقيط المالي الرسمي: "+numberToArabicWords(Math.abs(m));
 }
 
-function backToFilters(){$("report-section").classList.add("hidden");$("filter-section").classList.remove("hidden");reportGenerated=false;}
+function backToFilters(){
+  localStorage.removeItem(REPORT_STATE_KEY);
+  $("report-section").classList.add("hidden");
+  $("filter-section").classList.remove("hidden");
+  reportGenerated=false;
+}
 
 function filterReportTable(){
   const searchTxt=$("report-search")?$("report-search").value.toLowerCase().trim():"";
+  
+  // تحديث البحث في الـ state المحفوظ
+  const savedStateRaw = localStorage.getItem(REPORT_STATE_KEY);
+  if(savedStateRaw){
+    try{
+      let st = JSON.parse(savedStateRaw);
+      st.searchQuery = searchTxt;
+      st.sortOrder = $("report-sort-order") ? $("report-sort-order").value : "desc";
+      localStorage.setItem(REPORT_STATE_KEY, JSON.stringify(st));
+    }catch(e){}
+  }
+
   if(!cachedReportRecords.length)return;
   const filtered=searchTxt?cachedReportRecords.filter(x=>{
     const accName=getAccountById(x.account||"cash_default").name||"";
@@ -1145,10 +1181,43 @@ window.addEventListener("DOMContentLoaded",async()=>{
   try{
     initTheme();
     initDates();
-    populatePeopleSelects();
-    populateAccountFilterSelect();
     await openDB();
-    await onReportTypeChange();
+    await updateReportTargetOptions();
+    populateAccountFilterSelect();
+
+    // التحقق هل هناك حالة تقرير محفوظة مسبقاً لاسترجاعها تلقائياً
+    const savedStateRaw = localStorage.getItem(REPORT_STATE_KEY);
+    if(savedStateRaw){
+      try{
+        const st = JSON.parse(savedStateRaw);
+        if(st && st.reportType){
+          $("report-type").value = st.reportType;
+          await onReportTypeChange();
+          if(st.reportSubtype) $("report-subtype").value = st.reportSubtype;
+          if(st.accountFilter && $("report-account-filter")) $("report-account-filter").value = st.accountFilter;
+          if(st.beneficiary && $("beneficiary-select")) $("beneficiary-select").value = st.beneficiary;
+          
+          if(st.dateFrom){
+            if($("date-from-day")) $("date-from-day").value = st.dateFrom.d || "";
+            if($("date-from-month")) $("date-from-month").value = st.dateFrom.m || "";
+            if($("date-from-year")) $("date-from-year").value = st.dateFrom.y || "";
+          }
+          if(st.dateTo){
+            if($("date-to-day")) $("date-to-day").value = st.dateTo.d || "";
+            if($("date-to-month")) $("date-to-month").value = st.dateTo.m || "";
+            if($("date-to-year")) $("date-to-year").value = st.dateTo.y || "";
+          }
+          if(st.searchQuery && $("report-search")) $("report-search").value = st.searchQuery;
+          if(st.sortOrder && $("report-sort-order")) $("report-sort-order").value = st.sortOrder;
+
+          // تشغيل التقرير أوتوماتيكياً بنفس الفلاتر السابقة
+          await generateReport(true);
+        }
+      }catch(err){
+        console.warn("Restore state error:", err);
+        localStorage.removeItem(REPORT_STATE_KEY);
+      }
+    }
   }catch(e){console.warn("Init warning:",e)}
 });
 </script>
