@@ -158,6 +158,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .cap-track{height:4px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden}
 .cap-bar{height:100%;width:0;transition:width .3s ease,background .3s ease}
 
+.living-details-box{border-top:1px dashed var(--border-subtle);margin-top:4px;padding-top:4px;display:flex;flex-direction:column;gap:2px;font-size:9px;}
+
 .tc-card{border:1px solid var(--border-subtle);border-radius:10px;background:var(--bg-card);overflow:hidden}
 .tc-card.current{border-color:var(--border-neon);background:rgba(16,185,129,0.04)}
 .tc-card summary{cursor:pointer;padding:8px 10px;font-size:11px;font-weight:800;list-style:none;display:flex;flex-direction:column;gap:2px}
@@ -414,22 +416,32 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
     <div class="acc-item" id="acc-targets">
       <div class="acc-header" onclick="toggleAccordion('acc-targets')"><span>🎯 النسب المستهدفة للميزانية (%)</span><span class="acc-icon">▼</span></div>
       <div class="acc-body stack">
+        <div style="font-size:11px;font-weight:900;color:var(--emerald-neon);margin-bottom:2px">🏠 بنود صندوق المعيشة:</div>
         <div class="grid2">
           <div><label style="font-size:10.5px">المصروفات الثابتة (%)</label><input id="target-fixed-pct" type="number" min="0" max="100" placeholder="مثال: 30" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="fixed" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
           <div><label style="font-size:10.5px">المصروفات العادية (%)</label><input id="target-regular-pct" type="number" min="0" max="100" placeholder="مثال: 30" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="regular" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
         </div>
+        <div>
+          <label style="font-size:10.5px">المشتريات الشخصية والنثريات (%)</label>
+          <input id="target-personal-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()">
+          <small class="small target-value-hint" data-target-hint="personal" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small>
+        </div>
+
+        <div style="font-size:11px;font-weight:900;color:var(--emerald-neon);margin:6px 0 2px 0;border-top:1px dashed var(--border-subtle);padding-top:4px">✈️ باقي الصناديق الأساسية:</div>
         <div class="grid2">
-          <div><label style="font-size:10.5px">المشتريات الشخصية (%)</label><input id="target-personal-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="personal" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
           <div><label style="font-size:10.5px">التحويلات الخارجية (%)</label><input id="target-transfer-pct" type="number" min="0" max="100" placeholder="مثال: 20" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="transfer" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
-        </div>
-        <div class="grid2">
           <div><label style="font-size:10.5px">تسديد الديون (%) 🤝</label><input id="target-debt-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="debt" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
-          <div><label style="font-size:10.5px">المدخرات (%) 💰</label><input id="target-savings-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="savings" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
         </div>
-        <div id="target-values-summary" class="panel stack" style="background:rgba(16,185,129,0.05);border-color:var(--border-neon);font-size:10.5px;gap:3px"></div>
+        <div>
+          <label style="font-size:10.5px">المدخرات (%) 💰</label>
+          <input id="target-savings-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()">
+          <small class="small target-value-hint" data-target-hint="savings" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small>
+        </div>
+
+        <div id="target-values-summary" class="panel stack" style="background:rgba(16,185,129,0.05);border-color:var(--border-neon);font-size:10.5px;gap:3px;margin-top:4px"></div>
         <div id="target-cycles-list" class="stack" style="gap:4px"></div>
         <button type="button" class="btn btn-primary" onclick="saveTargetPercentages()" style="padding:6px">حفظ المستهدفات 🎯</button>
-        <div class="field-note">تحدد هذه النسب الخطة المالية للصناديق الأساسية. وأي نسبة متبقية تذهب تلقائيًا لصندوق المعالجة.</div>
+        <div class="field-note">تحدد هذه النسب الخطة المالية للصناديق الأساسية. وأي نسبة متبقية تذهب تلقائيًا لصندوق المعالجة والعجز.</div>
       </div>
     </div>
     <div class="acc-item" id="acc-categories">
@@ -439,9 +451,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
           <input id="new-expense-cat-name" placeholder="اسم التصنيف الجديد..." maxlength="80">
           <button type="button" class="btn btn-primary btn-plus" onclick="addExpenseCategoryFromSettings()" title="إضافة">+</button>
         </div>
-        <div><label style="font-size:10.5px">البند التابع للتصنيف الجديد</label><select id="new-expense-cat-budget"></select></div>
+        <div><label style="font-size:10.5px">البند التابع للتصنيف الجديد (ضمن صندوق المعيشة)</label><select id="new-expense-cat-budget"></select></div>
         <div id="expense-cats-manage-list" class="persons-manage-list"><span class="small">لا توجد تصنيفات بعد.</span></div>
-        <div class="field-note">كل تصنيف مصروف يتبع بندًا واحدًا من بنود الميزانية. عند تسجيل مصروف، اختيار التصنيف يحدد البند تلقائيًا.</div>
+        <div class="field-note">كل تصنيف مصروف يتبع بندًا فرعيًا داخل صندوق المعيشة. اختياره يحدد البند المباشر للتصنيف.</div>
       </div>
     </div>
     <div class="acc-item" id="acc-people">
@@ -497,16 +509,22 @@ const PRIVACY_KEY="pf_privacy_hidden";
 const OUTSIDE_ACCOUNT_ID="outside";
 const DUMMY_ACCOUNT_ID="dummy_account";
 const DEFAULT_PILL_TEXT="الكويت · د.ك";
+
 const BUDGET_ITEMS=[
-  {key:"fixed",label:"📌 المصروفات الثابتة",short:"ثابت",icon:"📌"},
-  {key:"regular",label:"📊 المصروفات العادية",short:"عادي",icon:"📊"},
-  {key:"personal",label:"🛍️ المشتريات الشخصية والنثريات",short:"شخصي",icon:"🛍️"},
+  {key:"living",label:"🏠 المعيشة",short:"معيشة",icon:"🏠",isMerged:true},
   {key:"transfer",label:"✈️ التحويلات الخارجية",short:"تحويلات",icon:"✈️"},
   {key:"debt",label:"🤝 تسديد الديون",short:"ديون",icon:"🤝"},
-  {key:"emergency",label:"🛡️ صندوق المعالجة",short:"معالجة",icon:"🛡️",isDynamic:true}
+  {key:"emergency",label:"🛡️ المعالجة والعجز",short:"معالجة",icon:"🛡️",isDynamic:true}
 ];
 const BUDGET_BY_KEY={};
 BUDGET_ITEMS.forEach(b=>{BUDGET_BY_KEY[b.key]=b});
+
+const SUB_BUDGET_ITEMS=[
+  {key:"fixed",label:"📌 المصروفات الثابتة",short:"ثابت"},
+  {key:"regular",label:"📊 المصروفات العادية",short:"عادي"},
+  {key:"personal",label:"🛍️ المشتريات والنثريات",short:"شخصي"}
+];
+
 const CYCLE_DAYS=30;
 let db=null,currentInputTab="expense",editingTxId=null,activePersonCallback=null,toastTimer=null,isPrivacyHidden=false;
 
@@ -759,7 +777,7 @@ function renderTargetCyclesList(txs,s){
   const rows=[
     ["fixed","📌 الثابتة"],
     ["regular","📊 العادية"],
-    ["personal","🛍️ الشخصية"],
+    ["personal","🛍️ الشخصية والنثريات"],
     ["transfer","✈️ التحويلات"],
     ["debt","🤝 الديون"],
     ["savings","💰 المدخرات"]
@@ -781,7 +799,7 @@ function renderTargetCyclesList(txs,s){
     }).join("");
     const warnHtml=totalPct>100
       ?`<div class="small bad">⚠️ مجموع النسب (${totalPct}%) تجاوز 100%</div>`
-      :`<div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:3px"><span>🛡️ المتبقي لصندوق المعالجة (${remPct}%)</span><strong class="good">${money(left)}</strong></div>`;
+      :`<div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:3px"><span>🛡️ المتبقي لصندوق المعالجة والعجز (${remPct}%)</span><strong class="good">${money(left)}</strong></div>`;
     return `<details class="tc-card${c.isCurrent?" current":""}" ${i===0?"open":""}>
       <summary>
         <span>${title}</span>
@@ -827,7 +845,7 @@ async function renderTargetValuesPreview(){
           l=n*(o/100),
           remPct=Math.max(0,100-o),
           i=n-l,
-          c=o>100?`<div class="small bad">⚠️ مجموع النسب (${o}%) تجاوز 100% — المستهدفات أكبر من دخل الدورة!</div>`:o===100?'<div class="small warning">⚠️ مجموع النسب 100% — لا ينزل متبقي لصندوق المعالجة.</div>':`<div class="small good">🛡️ المتبقي التلقائي لصندوق المعالجة: ${remPct}% (${money(i)})</div>`;
+          c=o>100?`<div class="small bad">⚠️ مجموع النسب (${o}%) تجاوز 100% — المستهدفات أكبر من دخل الدورة!</div>`:o===100?'<div class="small warning">⚠️ مجموع النسب 100% — لا ينزل متبقي لصندوق المعالجة.</div>':`<div class="small good">🛡️ المتبقي التلقائي لصندوق المعالجة والعجز: ${remPct}% (${money(i)})</div>`;
     r.innerHTML=`
       <div class="small" style="color:var(--emerald-neon);font-weight:700;border-bottom:1px dashed var(--border-neon);padding-bottom:4px">📊 القيم محسوبة على دخل الدورة الحالية</div>
       <div class="row-between"><span>📅 الدخل المرجعي:</span><strong>${money(n)}</strong></div>
@@ -865,12 +883,13 @@ function renderExpenseCatsManageList(){
   if(!e)return;
   const cats=getExpenseCategories();
   if(!cats.length)return void(e.innerHTML='<span class="small">لا توجد تصنيفات بعد. أضف تصنيفًا من الأعلى.</span>');
+  const subMap={fixed:"📌 ثابتة",regular:"📊 عادية",personal:"🛍️ شخصية ونثريات"};
   e.innerHTML=cats.map(c=>{
-    const b=BUDGET_BY_KEY[c.budgetId]||BUDGET_BY_KEY.regular;
+    const bName=subMap[c.budgetId]||"📊 عادية";
     return `<div class="person-item" style="flex-direction:column;align-items:stretch;gap:4px">
       <div class="row-between"><span class="name">${escapeHTML(c.name)}</span>
       <button type="button" class="btn btn-danger" style="padding:2px 8px;font-size:10px;min-height:26px" data-action="del-exp-cat" data-cat="${escapeHTML(c.name)}">حذف</button></div>
-      <div class="small">البند: <strong>${b.label}</strong></div>
+      <div class="small">البند التابع في المعيشة: <strong>${bName}</strong></div>
     </div>`;
   }).join("");
 }
@@ -901,8 +920,8 @@ function renderBudgetCategorySelectOptions(){
   const sel=$("new-expense-cat-budget");
   if(!sel)return;
   const cur=sel.value;
-  sel.innerHTML=BUDGET_ITEMS.filter(b=>!b.isDynamic).map(b=>`<option value="${b.key}">${b.label}</option>`).join("");
-  if(BUDGET_ITEMS.some(b=>b.key===cur&&!b.isDynamic))sel.value=cur;
+  sel.innerHTML=SUB_BUDGET_ITEMS.map(b=>`<option value="${b.key}">${b.label}</option>`).join("");
+  if(SUB_BUDGET_ITEMS.some(b=>b.key===cur))sel.value=cur;
 }
 
 function getIncomeCategories(){return["راتب أساسي","عمل إضافي","أرباح / عوائد","أخرى"]}
@@ -927,8 +946,9 @@ function updateExpenseBudgetHint(){
   const cat=$("expense-category")?.value;
   if(!cat){hint.textContent="";return;}
   const bid=getBudgetIdForCategory(cat);
-  const b=BUDGET_BY_KEY[bid]||BUDGET_BY_KEY.regular;
-  hint.innerHTML=`سيتم احتساب هذا المصروف على بند: <strong style="color:var(--green-val)">${b.label}</strong>`;
+  const subMap={fixed:"📌 المصروفات الثابتة",regular:"📊 المصروفات العادية",personal:"🛍️ المشتريات والنثريات"};
+  const bLabel=subMap[bid]||"مصروفات عادية";
+  hint.innerHTML=`سيتم احتساب هذا المصروف تحت بند المعيشة (<strong style="color:var(--green-val)">${bLabel}</strong>)`;
 }
 
 function getPeopleList(){
@@ -1304,15 +1324,15 @@ function renderTodayCard(items){
     note.textContent="سجّل راتبًا أساسيًا لحساب حد اليوم.";
     return;
   }
-  const live=items.filter(i=>(i.budgetId==="regular"||i.budgetId==="personal")&&i.daysRemaining>0);
-  if(!live.length){
+  const livingItem=items.find(i=>i.budgetId==="living"&&i.daysRemaining>0);
+  if(!livingItem){
     val.textContent=money(0);bar.style.width="0%";
     note.textContent="الدورة انتهت — سجّل راتبك الجديد.";
     return;
   }
-  const allowed=live.reduce((s,i)=>s+Math.max(0,i.dailyActual),0);
-  const spent=live.reduce((s,i)=>s+i.spentToday,0);
-  const left=live.reduce((s,i)=>s+i.remainingToday,0);
+  const allowed=Math.max(0,livingItem.dailyActual);
+  const spent=livingItem.spentToday;
+  const left=livingItem.remainingToday;
   const over=spent>allowed;
   const pct=allowed>0?Math.min(100,spent/allowed*100):(spent>0?100:0);
   const level=over?"bad":pct>=80?"warning":"good";
@@ -1333,15 +1353,20 @@ function renderAlertStrip(items){
     const b=BUDGET_BY_KEY[it.budgetId];
     const nm=`${b.icon} ${b.short}`;
     const st=computeBudgetStatus(it.max,it.spent);
-    if(it.max<=0||st.pct>=100)bad.push(nm);
+    if(it.max<=0||st.pct>=100||it.remaining<0)bad.push(nm);
     else if(st.pct>=80)warn.push(`${nm} ${st.pct.toFixed(0)}%`);
   });
   if(!bad.length&&!warn.length){el.classList.add("hidden");el.innerHTML="";return;}
   let html="";
-  if(bad.length)html+=`<div>🚨 تعدّى حده: ${bad.join("، ")}</div>`;
+  if(bad.length)html+=`<div>🚨 تعدّى حده / عجز: ${bad.join("، ")}</div>`;
   if(warn.length)html+=`<div>⚠️ قارب على حده: ${warn.join("، ")}</div>`;
   el.className="alert-strip "+(bad.length?"bad":"warning");
   el.innerHTML=html;
+}
+
+function toggleLivingSubDetails(el){
+  const box=el.querySelector('.living-details-box');
+  if(box) box.classList.toggle('hidden');
 }
 
 function renderBudgetRowHTML(data){
@@ -1349,32 +1374,48 @@ function renderBudgetRowHTML(data){
   const noLimit=data.max<=0;
   const st=computeBudgetStatus(data.max,data.spent);
   let level=st.level;
-  if(noLimit&&data.spent>0)level="bad";
-  const pctW=noLimit?(data.spent>0?100:0):Math.min(100,st.pct);
+  if(data.remaining<0) level="bad";
+  
+  const pctW=noLimit?(data.spent>0?100:0):Math.min(100,Math.max(0,st.pct));
   const pctTxt=noLimit?(data.spent>0?"—":"0%"):st.pct.toFixed(0)+"%";
   const barColor=level==="bad"?"var(--red-val)":level==="warning"?"var(--amber-val)":"var(--emerald-neon)";
   const cls=level==="bad"?"bad":level==="warning"?"warning":"good";
   
   let dailyTxt="—",dailyCls="";
   if(data.daysRemaining>0){
-    if(data.remaining>0){
-      dailyTxt=money(data.dailyActual);
-    }else if(data.remaining<0){
-      dailyTxt=`<span dir="ltr">${money(data.dailyRaw)}</span>`;
-      dailyCls="bad";
-    }
+    dailyTxt=money(data.dailyRaw);
+    if(data.dailyRaw<0) dailyCls="bad";
   }
-  return `<div class="bud-mini-card" data-bkey="${data.budgetId}">
+
+  let subDetailsHTML="";
+  if(data.isMerged && data.subItems){
+    const subRows = data.subItems.map(s => {
+      const sCls = s.remaining < 0 ? "bad" : "good";
+      return `<div>• ${s.label}: <strong>${money(s.max)}</strong> | متبقي: <strong class="${sCls}">${money(s.remaining)}</strong></div>`;
+    }).join("");
+    subDetailsHTML = `
+      <div class="living-details-box hidden">
+        <div style="font-weight:800;color:var(--emerald-neon)">🔻 التفاصيل الفرعية:</div>
+        ${subRows}
+      </div>
+    `;
+  }
+
+  const cursorStyle = data.isMerged ? 'style="cursor:pointer;" onclick="toggleLivingSubDetails(this)"' : '';
+
+  return `<div class="bud-mini-card" data-bkey="${data.budgetId}" ${cursorStyle}>
     <div class="bud-mini-head">
       <span class="bud-mini-name">${b.icon} ${b.short}</span>
       <span class="bud-mini-pct ${cls}">${pctTxt}</span>
     </div>
     <div class="cap-track"><div class="cap-bar" style="width:${pctW}%;background:${barColor}"></div></div>
     <div class="bud-mini-meta">
+      <div>إجمالي: <strong>${money(data.max)}</strong></div>
       <div>متبقي: <strong class="${cls}">${money(data.remaining)}</strong></div>
       ${data.isDynamic ? `<div>يكفي: <strong>${data.daysRemaining} يوماً</strong></div>` : ''}
       <div>⚡ يوميًا: <strong class="${dailyCls}">${dailyTxt}</strong></div>
     </div>
+    ${subDetailsHTML}
   </div>`;
 }
 
@@ -1421,27 +1462,19 @@ async function renderDashBudgetCard(transactions){
         return found ? Math.max(0, found.spent) : 0;
       };
       
-      const spentFixed = getCatSpent("fixed");
-      const spentRegular = getCatSpent("regular");
-      const spentPersonal = getCatSpent("personal");
+      const spentLiving = getCatSpent("living");
       const spentTransfer = getCatSpent("transfer");
       const spentDebt = getCatSpent("debt");
       const spentEmergency = getCatSpent("emergency");
 
-      const livingSpent = spentFixed + spentRegular + spentPersonal;
-      const transferSpent = spentTransfer;
-      const debtSpent = spentDebt;
-      const savingsSpent = Math.max(0, spentEmergency); 
-      const otherSpent = Math.max(0, totalSpentAll - (livingSpent + transferSpent + debtSpent));
-
       const pctVal = (val) => income > 0 ? Math.round((val / income) * 100) : 0;
 
       legendContainer.innerHTML = `
-        <div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>${pctVal(livingSpent)}%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>${pctVal(transferSpent)}%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون</span><strong>${pctVal(debtSpent)}%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>الادخار</span><strong>${pctVal(savingsSpent)}%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#94a3b8"></i>أخرى</span><strong>${pctVal(otherSpent)}%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>${pctVal(spentLiving)}%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>${pctVal(spentTransfer)}%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون</span><strong>${pctVal(spentDebt)}%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>الادخار والمعالجة</span><strong>${pctVal(spentEmergency)}%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#94a3b8"></i>أخرى</span><strong>0%</strong></div>
       `;
     }
 
@@ -1466,7 +1499,7 @@ function getCurrentSalaryCycle(transactions){
 function getTxBudgetId(tx){
   if(!tx)return null;
   if(tx.type==="expense"){
-    if(tx.budgetId&&BUDGET_BY_KEY[tx.budgetId])return tx.budgetId;
+    if(tx.budgetId&&["fixed","regular","personal"].includes(tx.budgetId))return tx.budgetId;
     if(tx.isFixed)return "fixed";
     if(tx.isPersonalPurchase)return "personal";
     if(tx.category==="أدوات ومشتريات شخصية"||tx.category==="نثريات ومتفرقات")return "personal";
@@ -1477,14 +1510,30 @@ function getTxBudgetId(tx){
   return null;
 }
 
+function totalSubBudgetSpentInCycle(txs,cycle,subKey){
+  return (txs||[]).filter(tx=>inPeriod(tx,cycle)&&getTxBudgetId(tx)===subKey).reduce((s,tx)=>s+realAmount(tx),0);
+}
+
 function totalBudgetSpentInCycle(txs,cycle,budgetId){
+  if(budgetId==="living"){
+    return (txs||[]).filter(tx=>{
+      if(!inPeriod(tx,cycle))return false;
+      const b=getTxBudgetId(tx);
+      return b==="fixed"||b==="regular"||b==="personal";
+    }).reduce((s,tx)=>s+realAmount(tx),0);
+  }
   return (txs||[]).filter(tx=>inPeriod(tx,cycle)&&getTxBudgetId(tx)===budgetId).reduce((s,tx)=>s+realAmount(tx),0);
 }
 
 function dailyBudgetSpent(txs,cycle,budgetId,dayISO){
   return (txs||[]).filter(tx=>{
     if(!inPeriod(tx,cycle))return false;
-    if(getTxBudgetId(tx)!==budgetId)return false;
+    const b=getTxBudgetId(tx);
+    if(budgetId==="living"){
+      if(b!=="fixed"&&b!=="regular"&&b!=="personal")return false;
+    } else {
+      if(b!==budgetId)return false;
+    }
     return formatStrictISO(...tx.date.split("-"))===dayISO;
   }).reduce((s,tx)=>s+realAmount(tx),0);
 }
@@ -1497,6 +1546,28 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
   const today = todayISO();
   const cycleEndDate = dateAddDays(cycle.start, CYCLE_DAYS - 1);
 
+  if(budgetId==="living"){
+    const fPct=targets.fixed||0, rPct=targets.regular||0, pPct=targets.personal||0;
+    const pct = fPct + rPct + pPct;
+    const max = income * (pct / 100);
+    const spent = totalBudgetSpentInCycle(txs,cycle,"living");
+    const remaining = max - spent;
+
+    const subItems = [
+      { key:"fixed", label:"ثابتة", max: income*(fPct/100), spent: totalSubBudgetSpentInCycle(txs,cycle,"fixed") },
+      { key:"regular", label:"عادية", max: income*(rPct/100), spent: totalSubBudgetSpentInCycle(txs,cycle,"regular") },
+      { key:"personal", label:"شخصية ونثريات", max: income*(pPct/100), spent: totalSubBudgetSpentInCycle(txs,cycle,"personal") }
+    ].map(s=>({...s, remaining: s.max - s.spent}));
+
+    const dailyReference = max / CYCLE_DAYS;
+    const dailyActual = daysRemaining > 0 ? Math.max(0, remaining / daysRemaining) : 0;
+    const dailyRaw = daysRemaining > 0 ? remaining / daysRemaining : 0;
+    const spentToday = dailyBudgetSpent(txs,cycle,"living",today);
+    const remainingToday = dailyActual - spentToday;
+
+    return {budgetId,max,spent,remaining,pct,elapsed,daysRemaining,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate,isMerged:true,subItems};
+  }
+
   if(budgetId==="emergency"){
     const baseKeys=["fixed","regular","personal","transfer","debt","savings"];
     let accumulatedSurplus=0;
@@ -1504,20 +1575,20 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
     baseKeys.forEach(k=>{
       const pct=targets[k]||0;
       const bMax=income*(pct/100);
-      const bSpent=totalBudgetSpentInCycle(txs,cycle,k);
+      const bSpent=totalSubBudgetSpentInCycle(txs,cycle,k);
       accumulatedSurplus+=(bMax-bSpent);
       totalMaxBase+=bMax;
     });
     const unallocatedMax=Math.max(0,income-totalMaxBase);
-    const max=unallocatedMax+Math.max(0,accumulatedSurplus);
+    const max=unallocatedMax+Math.max(0,income*(targets.savings||0)/100);
     const spent=totalBudgetSpentInCycle(txs,cycle,"emergency");
     const remaining=accumulatedSurplus-spent;
-    const fixedPct=income>0?Math.max(0,Number(((remaining/income)*100).toFixed(1))):0;
+    const fixedPct=income>0?Number(((max/income)*100).toFixed(1)):0;
     const dailyReference=max/CYCLE_DAYS;
     const dailyActual=daysRemaining>0?Math.max(0, remaining/daysRemaining):0;
     const dailyRaw=daysRemaining>0?remaining/daysRemaining:0;
     const spentToday=dailyBudgetSpent(txs,cycle,"emergency",today);
-    const remainingToday=Math.max(0,dailyActual-spentToday);
+    const remainingToday=dailyActual-spentToday;
     return {budgetId,max,spent,remaining,pct:fixedPct,elapsed,daysRemaining,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate,isDynamic:true};
   }
 
@@ -1529,7 +1600,7 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
   const dailyActual=daysRemaining>0?Math.max(0, remaining/daysRemaining):0;
   const dailyRaw=daysRemaining>0?remaining/daysRemaining:0;
   const spentToday=dailyBudgetSpent(txs,cycle,budgetId,today);
-  const remainingToday=Math.max(0,dailyActual-spentToday);
+  const remainingToday=dailyActual-spentToday;
   return {budgetId,max,spent,remaining,pct,elapsed,daysRemaining,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate};
 }
 
@@ -1544,7 +1615,7 @@ function computeBudgetStatus(max,spent){
   const remaining=max-spent;
   const pct=max>0?(spent/max)*100:0;
   let level="good";
-  if(pct>=100)level="bad";
+  if(pct>=100||remaining<0)level="bad";
   else if(pct>=80)level="warning";
   return {remaining,pct,level};
 }
