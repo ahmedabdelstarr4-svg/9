@@ -148,12 +148,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .field-note.warn{color:var(--amber-val);background:rgba(251,191,36,0.1);padding:4px 6px;border-radius:6px;border:1px solid rgba(251,191,36,0.3);font-weight:700}
 .row-between{display:flex;justify-content:space-between;align-items:center;gap:4px}
 .bud-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
-.bud-mini-card{border:1px solid var(--border-subtle);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;background:var(--bg-card);min-width:0;position:relative;}
+.bud-mini-card{border:1px solid var(--border-subtle);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;background:var(--bg-card);min-width:0;}
 .bud-mini-card[data-bkey="emergency"]{border-color:var(--border-neon);background:rgba(16,185,129,0.03);}
-.bud-mini-card.box-closed{opacity:0.85;border-style:dashed;background:rgba(255,255,255,0.01);}
-.bud-close-btn{position:absolute;top:6px;left:6px;background:rgba(255,255,255,0.08);border:1px solid var(--border-subtle);color:var(--ink-muted);border-radius:6px;font-size:9px;padding:2px 6px;cursor:pointer;font-weight:800;}
-.bud-close-btn.closed{background:rgba(16,185,129,0.2);color:var(--emerald-neon);border-color:var(--border-neon);}
-.bud-mini-head{display:flex;justify-content:space-between;align-items:center;gap:4px;padding-left:45px;}
+.bud-mini-head{display:flex;justify-content:space-between;align-items:center;gap:4px}
 .bud-mini-name{font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bud-mini-pct{font-size:9.5px;font-weight:900;font-variant-numeric:tabular-nums}
 .bud-mini-meta{display:flex;flex-direction:column;gap:1px;font-size:9.5px;color:var(--ink-muted);font-weight:700}
@@ -269,7 +266,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
         <div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>0%</strong></div>
         <div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>0%</strong></div>
         <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون</span><strong>0%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>الادخار</span><strong>0%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#38bdf8"></i>فائض الدورة</span><strong>0%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>المعالجة</span><strong>0%</strong></div>
         <div class="donut-legend-item"><span><i class="dot" style="background:#94a3b8"></i>أخرى</span><strong>0%</strong></div>
       </div>
     </div>
@@ -440,6 +438,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
           <input id="target-savings-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()">
           <small class="small target-value-hint" data-target-hint="savings" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small>
         </div>
+        <div>
+          <label style="font-size:10.5px">نسبة صندوق الفائض من المتبقي (%) 💎</label>
+          <input id="target-surplus-pct" type="number" min="0" max="100" placeholder="مثال: 20" oninput="renderTargetValuesPreview()">
+          <small class="small target-value-hint" data-target-hint="surplus" style="display:block;margin-top:2px;color:var(--sky-val);font-weight:700"></small>
+          <div class="field-note" style="font-size:9.5px;margin-top:2px">تُحسب من: (الدخل − المصروفات الفعلية). لو مفيش فائض، تبقى صفر.</div>
+        </div>
 
         <div id="target-values-summary" class="panel stack" style="background:rgba(16,185,129,0.05);border-color:var(--border-neon);font-size:10.5px;gap:3px;margin-top:4px"></div>
         <div id="target-cycles-list" class="stack" style="gap:4px"></div>
@@ -496,18 +500,15 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
   <a href="analytics.html" id="nav-analytics" class="nav-btn"><span>📊</span><span>التحليل</span></a>
   <button type="button" id="nav-backup" class="nav-btn" onclick="switchMainView('backup')"><span>⚙️</span><span>الإعدادات</span></button>
 </nav>
-</div>
-
+</div
 <div id="toast" role="status" aria-live="polite"></div>
 <div id="person-modal" class="modal-overlay hidden"><div class="modal-box"><h3 id="person-modal-title" style="margin:0;font-size:14px">إضافة اسم جديد</h3><input id="person-modal-input" placeholder="اسم الشخص / الجهة" maxlength="80"><div class="modal-actions"><button type="button" class="btn btn-primary" onclick="confirmAddPerson()">حفظ</button><button type="button" class="btn btn-muted" onclick="closePersonModal()">إلغاء</button></div></div></div>
-
 <script>
 // @ts-nocheck
 const DB_NAME="PersonalFinanceDB",DB_VERSION=1,STORE_NAME="transactions";
 const PEOPLE_KEY="pf_people_list";
 const EXPENSE_CATS_KEY="pf_expense_cats_list";
 const TARGET_PCT_KEY="pf_target_percentages";
-const CLOSED_BOXES_KEY="pf_closed_boxes_state";
 const THEME_KEY="pf_theme_pref";
 const PRIVACY_KEY="pf_privacy_hidden";
 const OUTSIDE_ACCOUNT_ID="outside";
@@ -518,6 +519,7 @@ const BUDGET_ITEMS=[
   {key:"living",label:"🏠 المعيشة",short:"معيشة",icon:"🏠",isMerged:true},
   {key:"transfer",label:"✈️ التحويلات الخارجية",short:"تحويلات",icon:"✈️"},
   {key:"debt",label:"🤝 تسديد الديون",short:"ديون",icon:"🤝"},
+  {key:"surplus",label:"💎 فائض الدورة",short:"فائض",icon:"💎",isDynamic:true},
   {key:"emergency",label:"🛡️ المعالجة والعجز",short:"معالجة",icon:"🛡️",isDynamic:true}
 ];
 const BUDGET_BY_KEY={};
@@ -583,29 +585,6 @@ function fmtDate(e){if(!e)return"";const t=e.split("-");if(t.length<3)return e;c
 function dateAddDays(iso,days){const p=iso.split("-");const d=new Date(Date.UTC(+p[0],+p[1]-1,+p[2]));d.setUTCDate(d.getUTCDate()+days);return formatStrictISO(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate());}
 function dateDiffDays(fromISO,toISO){const f=fromISO.split("-"),t=toISO.split("-");const d1=new Date(Date.UTC(+f[0],+f[1]-1,+f[2]));const d2=new Date(Date.UTC(+t[0],+t[1]-1,+t[2]));return Math.floor((d2-d1)/864e5);}
 
-function getClosedBoxesState(){
-  try{
-    const raw=localStorage.getItem(CLOSED_BOXES_KEY);
-    if(raw) return JSON.parse(raw);
-  }catch(e){}
-  return {};
-}
-
-function setBoxClosedState(cycleId, budgetId, isClosed){
-  const state = getClosedBoxesState();
-  if(!state[cycleId]) state[cycleId] = {};
-  state[cycleId][budgetId] = isClosed;
-  localStorage.setItem(CLOSED_BOXES_KEY, JSON.stringify(state));
-  refreshDashboard();
-}
-
-function toggleBoxClosed(cycleId, budgetId){
-  const state = getClosedBoxesState();
-  const current = !!(state[cycleId] && state[cycleId][budgetId]);
-  setBoxClosedState(cycleId, budgetId, !current);
-  showToast(!current ? "🔒 تم إغلاق وتثبيت الصندوق لهذه الدورة" : "🔓 تم إعادة تنشيط الصندوق");
-}
-
 function getAccounts(){
   return [
     {id:"cash_default",name:"الكاش",type:"cash",icon:"💵"},
@@ -647,7 +626,7 @@ function populateAccountSelects(){
     if(visible.some(a=>a.id===cur))txAcc.value=cur;
   }
   const fromSel=$("int-from-account"),toSel=$("int-to-account");
-  const all=getAccounts().filter(a=>a.id!==OUTSIDE_ACCOUNT_ID);
+  const all=getAccounts().filter(a=>a.id!==OUTSIDE_ACCOUNT_ID&&a.id!==DUMMY_ACCOUNT_ID);
   if(fromSel){
     const cur=fromSel.value;
     fromSel.innerHTML=all.map(a=>`<option value="${escapeHTML(a.id)}">${a.icon||"💳"} ${escapeHTML(a.name)}</option>`).join("");
@@ -767,8 +746,11 @@ function writeDateParts(e,t){
 
 function getTargetPercentages(){
   const e=localStorage.getItem(TARGET_PCT_KEY);
-  if(e)try{return JSON.parse(e)}catch(e){}
-  return{fixed:30,regular:30,personal:10,transfer:20,debt:10,savings:0};
+  if(e)try{
+    const parsed=JSON.parse(e);
+    return Object.assign({fixed:30,regular:30,personal:10,transfer:20,debt:10,savings:0,surplus:0},parsed);
+  }catch(e){}
+  return{fixed:30,regular:30,personal:10,transfer:20,debt:10,savings:0,surplus:0};
 }
 function saveTargetPercentages(){
   const e=Number($("target-fixed-pct").value)||0,
@@ -776,8 +758,9 @@ function saveTargetPercentages(){
         a=Number($("target-personal-pct").value)||0,
         n=Number($("target-transfer-pct").value)||0,
         s=Number($("target-debt-pct").value)||0,
-        sv=Number($("target-savings-pct").value)||0;
-  localStorage.setItem(TARGET_PCT_KEY,JSON.stringify({fixed:e,regular:t,personal:a,transfer:n,debt:s,savings:sv}));
+        sv=Number($("target-savings-pct").value)||0,
+        sp=Number($("target-surplus-pct")?.value)||0;
+  localStorage.setItem(TARGET_PCT_KEY,JSON.stringify({fixed:e,regular:t,personal:a,transfer:n,debt:s,savings:sv,surplus:sp}));
   showToast("تم حفظ النسب المستهدفة للميزانية ✅");
   renderTargetValuesPreview();
   renderDashBudgetCard();
@@ -790,6 +773,7 @@ function loadTargetPercentages(){
   $("target-transfer-pct")&&($("target-transfer-pct").value=e.transfer);
   $("target-debt-pct")&&($("target-debt-pct").value=e.debt);
   $("target-savings-pct")&&($("target-savings-pct").value=e.savings||0);
+  $("target-surplus-pct")&&($("target-surplus-pct").value=e.surplus||0);
 }
 
 function renderTargetCyclesList(txs,s){
@@ -807,19 +791,28 @@ function renderTargetCyclesList(txs,s){
     ["personal","🛍️ الشخصية والنثريات"],
     ["transfer","✈️ التحويلات"],
     ["debt","🤝 الديون"],
-    ["savings","💰 المدخرات"]
+    ["savings","💰 المدخرات"],
+    ["surplus","💎 صندوق الفائض"]
   ];
   const totalPct=Object.values(s).reduce((a,b)=>a+b,0);
   const remPct=Math.max(0,100-totalPct);
   let html='<div class="small" style="color:var(--emerald-neon);font-weight:800">📅 النسب المستهدفة لكل دورة راتب (من راتب أساسي لحد الراتب الأساسي اللي بعده)</div>';
   html+=cycles.map((c,i)=>{
     const income=totalIncomeFor(txs,c);
+    const actualExp=totalBudgetSpentInCycle(txs,c,"living")+totalBudgetSpentInCycle(txs,c,"transfer")+totalBudgetSpentInCycle(txs,c,"debt");
+    const surplusAmount=Math.max(0,income-actualExp);
     const allocated=income*(totalPct/100);
-    const left=income-allocated;
+    const surplusAlloc=surplusAmount*((s.surplus||0)/100);
+    const left=income-allocated-surplusAlloc;
     const days=Math.max(1,dateDiffDays(c.start,c.end)+1);
     const endTxt=c.isCurrent?"حتى اليوم":fmtDate(c.end);
     const title=c.isCurrent?`🟢 الدورة الحالية (${c.cycleIndex})`:`دورة ${c.cycleIndex}`;
     const rowsHtml=rows.map(([k,lbl])=>{
+      if(k==="surplus"){
+        const p=Number(s.surplus)||0;
+        if(p<=0)return"";
+        return `<div class="row-between"><span>${lbl} (${p}% من فائض ${money(surplusAmount)})</span><strong style="color:var(--sky-val)">${money(surplusAlloc)}</strong></div>`;
+      }
       const p=Number(s[k])||0;
       if(p<=0)return"";
       return `<div class="row-between"><span>${lbl} (${p}%)</span><strong>${money(income*(p/100))}</strong></div>`;
@@ -836,6 +829,7 @@ function renderTargetCyclesList(txs,s){
       <div class="tc-body">
         ${rowsHtml||'<span class="small">لا توجد نسب مخصصة.</span>'}
         <div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:3px"><span>💰 مجموع المخصص (${totalPct}%)</span><strong>${money(allocated)}</strong></div>
+        ${surplusAlloc>0?`<div class="row-between"><span>💎 صندوق الفائض (مستقل)</span><strong style="color:var(--sky-val)">${money(surplusAlloc)}</strong></div>`:""}
         ${warnHtml}
       </div>
     </details>`;
@@ -854,12 +848,30 @@ async function renderTargetValuesPreview(){
       personal:Number($("target-personal-pct")?.value)||0,
       transfer:Number($("target-transfer-pct")?.value)||0,
       debt:Number($("target-debt-pct")?.value)||0,
-      savings:Number($("target-savings-pct")?.value)||0
+      savings:Number($("target-savings-pct")?.value)||0,
+      surplus:Number($("target-surplus-pct")?.value)||0
     };
     Object.entries(s).forEach(([k,v])=>{
       const el=document.querySelector(`[data-target-hint="${k}"]`);
       if(!el)return;
-      if(v<=0||n<=0)return el.textContent="",void(el.className="small target-value-hint");
+      if(k==="surplus"){
+        if(!cycle){el.textContent="";el.className="small target-value-hint";return;}
+        const actualExp=totalBudgetSpentInCycle(e,cycle,"living")+totalBudgetSpentInCycle(e,cycle,"transfer")+totalBudgetSpentInCycle(e,cycle,"debt");
+        const surplusAmount=Math.max(0,n-actualExp);
+        if(v>0&&surplusAmount>0){
+          el.textContent=`≈ ${money(surplusAmount*v/100)} من فائض ${money(surplusAmount)}`;
+          el.className="small target-value-hint";
+          el.style.color="var(--sky-val)";
+        } else if(v>0){
+          el.textContent="لا يوجد فائض حاليًا — الصندوق صفر";
+          el.className="small target-value-hint warning";
+          el.style.color="";
+        } else {
+          el.textContent="";el.className="small target-value-hint";el.style.color="";
+        }
+        return;
+      }
+      if(v<=0||n<=0){el.textContent="";el.className="small target-value-hint";return;}
       const val=n*(v/100);
       el.textContent=`≈ ${money(val)} من دخل الدورة (${money(n)})`;
       el.className="small target-value-hint good";
@@ -868,14 +880,20 @@ async function renderTargetValuesPreview(){
     const r=$("target-values-summary");
     if(!r)return;
     if(!cycle||n<=0)return void(r.innerHTML='<span class="small">لا توجد دورة راتب حالية مسجّلة — سجّل راتبًا أساسيًا لتظهر القيم.</span>');
-    const o=Object.values(s).reduce((a,b)=>a+b,0),
+    const o=Object.entries(s).filter(([k])=>k!=="surplus").reduce((a,[,b])=>a+b,0),
           l=n*(o/100),
           remPct=Math.max(0,100-o),
           i=n-l,
           c=o>100?`<div class="small bad">⚠️ مجموع النسب (${o}%) تجاوز 100% — المستهدفات أكبر من دخل الدورة!</div>`:o===100?'<div class="small warning">⚠️ مجموع النسب 100% — لا ينزل متبقي لصندوق المعالجة.</div>':`<div class="small good">🛡️ المتبقي التلقائي لصندوق المعالجة والعجز: ${remPct}% (${money(i)})</div>`;
+    const actualExp=totalBudgetSpentInCycle(e,cycle,"living")+totalBudgetSpentInCycle(e,cycle,"transfer")+totalBudgetSpentInCycle(e,cycle,"debt");
+    const surplusAmount=Math.max(0,n-actualExp);
+    const surplusAlloc=surplusAmount*((s.surplus||0)/100);
     r.innerHTML=`
       <div class="small" style="color:var(--emerald-neon);font-weight:700;border-bottom:1px dashed var(--border-neon);padding-bottom:4px">📊 القيم محسوبة على دخل الدورة الحالية</div>
       <div class="row-between"><span>📅 الدخل المرجعي:</span><strong>${money(n)}</strong></div>
+      <div class="row-between"><span>💸 مصروفات فعلية:</span><strong>${money(actualExp)}</strong></div>
+      <div class="row-between"><span>💎 فائض الدورة:</span><strong style="color:var(--sky-val)">${money(surplusAmount)}</strong></div>
+      <div class="row-between"><span>🎁 صندوق الفائض (${s.surplus}%):</span><strong style="color:var(--sky-val)">${money(surplusAlloc)}</strong></div>
       <div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px"><span>🧮 مجموع النسب المخصصة:</span><strong>${o}%</strong></div>
       <div class="row-between"><span>💰 مجموع المبالغ المخصصة:</span><strong>${money(l)}</strong></div>
       ${c}
@@ -885,7 +903,7 @@ async function renderTargetValuesPreview(){
 
 function getExpenseCategories(){
   const raw=localStorage.getItem(EXPENSE_CATS_KEY);
-  if(raw)try{const arr=JSON.parse(raw);if(Array.isArray(arr))return arr.map(normalizeCategory);}catch(e){}
+  if(raw)try{const arr=JSON.parse(raw);if(Array.isArray(arr))return arr.map(normalizeCategory).filter(Boolean);}catch(e){}
   return [];
 }
 function normalizeCategory(c){
@@ -997,7 +1015,7 @@ function populatePeopleSelects(){
 function renderPeopleHints(){
   const e=getPeopleList(),t=$("debt-people-hint"),a=$("transfer-people-hint");
   t&&(e.length===0?(t.className="field-note warn",t.textContent="لسه مفيش أسماء. اضغط زر ➕ لإضافة أول اسم."):(t.className="field-note",t.textContent=""));
-  a&&(e.length===0?(a.className="field-note warn",a.textContent="لسه مفيش أسماء. اضغط زر ➕ جنب الصف لإضافة أول مستفيد."):(a.className="field-note",t.textContent="لو الاسم مش موجود، دوس زر ➕ جنبه لإضافته للقائمة."));
+  a&&(e.length===0?(a.className="field-note warn",a.textContent="لسه مفيش أسماء. اضغط زر ➕ جنب الصف لإضافة أول مستفيد."):(a.className="field-note",a.textContent="لو الاسم مش موجود، دوس زر ➕ جنبه لإضافته للقائمة."));
 }
 function renderPersonsManageList(){
   const e=$("persons-manage-list");
@@ -1378,6 +1396,7 @@ function renderAlertStrip(items){
   items.forEach(it=>{
     if(it.max<=0&&it.spent<=0)return;
     const b=BUDGET_BY_KEY[it.budgetId];
+    if(!b)return;
     const nm=`${b.icon} ${b.short}`;
     const st=computeBudgetStatus(it.max,it.spent);
     if(it.max<=0||st.pct>=100||it.remaining<0)bad.push(nm);
@@ -1396,8 +1415,9 @@ function toggleLivingSubDetails(el){
   if(box) box.classList.toggle('hidden');
 }
 
-function renderBudgetRowHTML(data, cycleId){
+function renderBudgetRowHTML(data){
   const b=BUDGET_BY_KEY[data.budgetId];
+  if(!b)return "";
   const noLimit=data.max<=0;
   const st=computeBudgetStatus(data.max,data.spent);
   let level=st.level;
@@ -1429,33 +1449,18 @@ function renderBudgetRowHTML(data, cycleId){
   }
 
   const cursorStyle = data.isMerged ? 'style="cursor:pointer;" onclick="toggleLivingSubDetails(this)"' : '';
-  const isClosed = data.isClosed;
-  const cardClass = `bud-mini-card${isClosed ? " box-closed" : ""}`;
-  const closeBtnText = isClosed ? "🔓 مغلق (تنشيط)" : "🔒 إغلاق الصندوق";
-  const closeBtnClass = `bud-close-btn${isClosed ? " closed" : ""}`;
-  
-  let impactHTML = "";
-  if(isClosed && data.income > 0){
-    const actualPct = ((data.spent / data.income) * 100).toFixed(1);
-    const diffPct = (actualPct - data.pct).toFixed(1);
-    const diffSign = diffPct > 0 ? `+${diffPct}%` : `${diffPct}%`;
-    const diffColor = diffPct > 0 ? "bad" : "good";
-    impactHTML = `<div style="margin-top:2px;font-size:9px;color:var(--ink-muted);">أخذ <strong>${actualPct}%</strong> من الدخل (${money(data.spent)}) <span class="${diffColor}">(${diffSign} عن المستهدف)</span></div>`;
-  }
 
-  return `<div class="${cardClass}" data-bkey="${data.budgetId}" ${!isClosed?cursorStyle:""}>
-    <button type="button" class="${closeBtnClass}" onclick="toggleBoxClosed('${cycleId}', '${data.budgetId}')">${closeBtnText}</button>
+  return `<div class="bud-mini-card" data-bkey="${data.budgetId}" ${cursorStyle}>
     <div class="bud-mini-head">
       <span class="bud-mini-name">${b.icon} ${b.short}</span>
-      <span class="bud-mini-pct ${cls}">${isClosed ? "🔒 مغلق" : pctTxt}</span>
+      <span class="bud-mini-pct ${cls}">${pctTxt}</span>
     </div>
-    <div class="cap-track"><div class="cap-bar" style="width:${isClosed?"100":pctW}%;background:${isClosed?"var(--ink-muted)":barColor}"></div></div>
+    <div class="cap-track"><div class="cap-bar" style="width:${pctW}%;background:${barColor}"></div></div>
     <div class="bud-mini-meta">
       <div>إجمالي: <strong>${money(data.max)}</strong></div>
       <div>متبقي: <strong class="${cls}">${money(data.remaining)}</strong></div>
-      ${!isClosed && data.isDynamic ? `<div>يكفي: <strong>${data.daysRemaining} يوماً</strong></div>` : ''}
-      ${!isClosed ? `<div>⚡ يوميًا: <strong class="${dailyCls}">${dailyTxt}</strong></div>` : ''}
-      ${impactHTML}
+      ${data.isDynamic ? `<div>يكفي: <strong>${data.daysRemaining} يوماً</strong></div>` : ''}
+      <div>⚡ يوميًا: <strong class="${dailyCls}">${dailyTxt}</strong></div>
     </div>
     ${subDetailsHTML}
   </div>`;
@@ -1485,7 +1490,7 @@ async function renderDashBudgetCard(transactions){
       return;
     }
     const {items}=computeAllBudgetData(txs,cycle);
-    el.innerHTML=items.map(item => renderBudgetRowHTML(item, cycle.id)).join("");
+    el.innerHTML=items.map(renderBudgetRowHTML).join("");
     
     const totalSpentAll = items.reduce((sum, item) => sum + Math.max(0, item.spent), 0);
     const overallPct = income > 0 ? Math.min(100, (totalSpentAll / income) * 100) : 0;
@@ -1507,6 +1512,7 @@ async function renderDashBudgetCard(transactions){
       const spentLiving = getCatSpent("living");
       const spentTransfer = getCatSpent("transfer");
       const spentDebt = getCatSpent("debt");
+      const spentSurplus = getCatSpent("surplus");
       const spentEmergency = getCatSpent("emergency");
 
       const pctVal = (val) => income > 0 ? Math.round((val / income) * 100) : 0;
@@ -1515,7 +1521,8 @@ async function renderDashBudgetCard(transactions){
         <div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>${pctVal(spentLiving)}%</strong></div>
         <div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>${pctVal(spentTransfer)}%</strong></div>
         <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون</span><strong>${pctVal(spentDebt)}%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>الادخار والمعالجة</span><strong>${pctVal(spentEmergency)}%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#38bdf8"></i>فائض الدورة</span><strong>${pctVal(spentSurplus)}%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>المعالجة</span><strong>${pctVal(spentEmergency)}%</strong></div>
         <div class="donut-legend-item"><span><i class="dot" style="background:#94a3b8"></i>أخرى</span><strong>0%</strong></div>
       `;
     }
@@ -1525,7 +1532,7 @@ async function renderDashBudgetCard(transactions){
     renderCyclePill(hasSalary?items[0]:null);
   }catch(e){console.warn("renderDashBudgetCard:",e)}
 }
-
+  
 function realAmount(e){return e?(e.type==="transfer"||e.type==="internal_transfer")?Number(e.totalKwd??e.amount)||0:Number(e.amount)||0:0}
 function isCreditorEntry(e){return e.type==="debt"&&e.debtType==="creditor"}
 function isDebtorEntry(e){return e.type==="debt"&&e.debtType==="debtor"}
@@ -1588,9 +1595,6 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
   const today = todayISO();
   const cycleEndDate = dateAddDays(cycle.start, CYCLE_DAYS - 1);
 
-  const closedState = getClosedBoxesState();
-  const isClosed = !!(closedState[cycle.id] && closedState[cycle.id][budgetId]);
-
   if(budgetId==="living"){
     const fPct=targets.fixed||0, rPct=targets.regular||0, pPct=targets.personal||0;
     const pct = fPct + rPct + pPct;
@@ -1605,13 +1609,29 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
     ].map(s=>({...s, remaining: s.max - s.spent}));
 
     const dailyReference = max / CYCLE_DAYS;
-    const effectiveDays = isClosed ? 0 : daysRemaining;
-    const dailyActual = effectiveDays > 0 ? Math.max(0, remaining / effectiveDays) : 0;
-    const dailyRaw = effectiveDays > 0 ? remaining / effectiveDays : 0;
+    const dailyActual = daysRemaining > 0 ? Math.max(0, remaining / daysRemaining) : 0;
+    const dailyRaw = daysRemaining > 0 ? remaining / daysRemaining : 0;
     const spentToday = dailyBudgetSpent(txs,cycle,"living",today);
     const remainingToday = dailyActual - spentToday;
 
-    return {budgetId,max,spent,remaining,pct,elapsed,daysRemaining:effectiveDays,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate,isMerged:true,subItems,isClosed,income};
+    return {budgetId,max,spent,remaining,pct,elapsed,daysRemaining,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate,isMerged:true,subItems};
+  }
+
+  if(budgetId==="surplus"){
+    const actualExpenses = totalBudgetSpentInCycle(txs,cycle,"living")
+                         + totalBudgetSpentInCycle(txs,cycle,"transfer")
+                         + totalBudgetSpentInCycle(txs,cycle,"debt");
+    const surplusAmount = Math.max(0, income - actualExpenses);
+    const pct = targets.surplus || 0;
+    const max = surplusAmount * (pct / 100);
+    const spent = totalBudgetSpentInCycle(txs,cycle,"surplus");
+    const remaining = max - spent;
+    const dailyReference = max / CYCLE_DAYS;
+    const dailyActual = daysRemaining > 0 ? Math.max(0, remaining / daysRemaining) : 0;
+    const dailyRaw = daysRemaining > 0 ? remaining / daysRemaining : 0;
+    const spentToday = dailyBudgetSpent(txs,cycle,"surplus",today);
+    const remainingToday = dailyActual - spentToday;
+    return {budgetId,max,spent,remaining,pct,elapsed,daysRemaining,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate,isDynamic:true};
   }
 
   if(budgetId==="emergency"){
@@ -1625,31 +1645,17 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
       accumulatedSurplus+=(bMax-bSpent);
       totalMaxBase+=bMax;
     });
-    
-    // إذا كان أحد الصناديق الأساسية مغلقاً، نأخذ متبقيه الحقيقي لنظام المعالجة
-    baseKeys.forEach(k=>{
-      if(k==="savings") return;
-      const isBoxClosed = !!(closedState[cycle.id] && closedState[cycle.id][k]);
-      if(isBoxClosed){
-        const bMax = income*(targets[k]/100);
-        const bSpent = totalSubBudgetSpentInCycle(txs, cycle, k);
-        const boxDiff = bMax - bSpent; // وفر أو عجز الصندوق المغلق
-        // تراكم الوفر يذهب للمعالجة
-      }
-    });
-
     const unallocatedMax=Math.max(0,income-totalMaxBase);
     const max=unallocatedMax+Math.max(0,income*(targets.savings||0)/100);
     const spent=totalBudgetSpentInCycle(txs,cycle,"emergency");
     const remaining=accumulatedSurplus-spent;
     const fixedPct=income>0?Number(((max/income)*100).toFixed(1)):0;
     const dailyReference=max/CYCLE_DAYS;
-    const effectiveDays = isClosed ? 0 : daysRemaining;
-    const dailyActual=effectiveDays>0?Math.max(0, remaining/effectiveDays):0;
-    const dailyRaw=effectiveDays>0?remaining/effectiveDays:0;
+    const dailyActual=daysRemaining>0?Math.max(0, remaining/daysRemaining):0;
+    const dailyRaw=daysRemaining>0?remaining/daysRemaining:0;
     const spentToday=dailyBudgetSpent(txs,cycle,"emergency",today);
     const remainingToday=dailyActual-spentToday;
-    return {budgetId,max,spent,remaining,pct:fixedPct,elapsed,daysRemaining:effectiveDays,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate,isDynamic:true,isClosed,income};
+    return {budgetId,max,spent,remaining,pct:fixedPct,elapsed,daysRemaining,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate,isDynamic:true};
   }
 
   const pct=(targets[budgetId]||0);
@@ -1657,12 +1663,11 @@ function computeBudgetItemData(txs,cycle,income,budgetId){
   const spent=totalBudgetSpentInCycle(txs,cycle,budgetId);
   const remaining=max-spent;
   const dailyReference=max/CYCLE_DAYS;
-  const effectiveDays = isClosed ? 0 : daysRemaining;
-  const dailyActual=effectiveDays>0?Math.max(0, remaining/effectiveDays):0;
-  const dailyRaw=effectiveDays>0?remaining/effectiveDays:0;
+  const dailyActual=daysRemaining>0?Math.max(0, remaining/daysRemaining):0;
+  const dailyRaw=daysRemaining>0?remaining/daysRemaining:0;
   const spentToday=dailyBudgetSpent(txs,cycle,budgetId,today);
   const remainingToday=dailyActual-spentToday;
-  return {budgetId,max,spent,remaining,pct,elapsed,daysRemaining:effectiveDays,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate,isClosed,income};
+  return {budgetId,max,spent,remaining,pct,elapsed,daysRemaining,dailyReference,dailyActual,dailyRaw,spentToday,remainingToday,cycleEndDate};
 }
 
 function computeAllBudgetData(txs,cycle){
@@ -1682,7 +1687,7 @@ function computeBudgetStatus(max,spent){
 }
 
 function buildBackupPayload(e){
-  return{version:16,savedAt:(new Date).toISOString(),transactions:e,people:getPeopleList(),expenseCategories:getExpenseCategories(),accounts:getAccounts(),targetPercentages:getTargetPercentages(),closedBoxes:getClosedBoxesState()};
+  return{version:16,savedAt:(new Date).toISOString(),transactions:e,people:getPeopleList(),expenseCategories:getExpenseCategories(),accounts:getAccounts(),targetPercentages:getTargetPercentages()};
 }
 
 async function downloadBackup(){
@@ -1745,7 +1750,6 @@ function restoreBackup(){
         if(Array.isArray(data.people))savePeopleList(data.people);
         if(Array.isArray(data.expenseCategories))saveExpenseCategories(data.expenseCategories);
         if(data.targetPercentages){localStorage.setItem(TARGET_PCT_KEY,JSON.stringify(data.targetPercentages));loadTargetPercentages();}
-        if(data.closedBoxes){localStorage.setItem(CLOSED_BOXES_KEY,JSON.stringify(data.closedBoxes));}
         showToast("تمت الاستعادة ✅");
         await refreshAllViews();
       };
