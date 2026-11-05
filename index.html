@@ -568,7 +568,6 @@ const allAccounts=()=>getAccounts().filter(a=>a.id!==OUTSIDE);
 const realAmt=tx=>!tx?0:(tx.type==="transfer"||tx.type==="internal_transfer")?toNum(tx.totalKwd??tx.amount):toNum(tx.amount);
 const isDebtKind=(tx,k)=>tx&&tx.type==="debt"&&tx.debtType===k;
 
-// ✅ إصلاح: opening_balance يؤثر على الرصيد كدين علينا (دخل)
 function getAccountBalance(txs,accId){
   let bal=0;
   (txs||[]).forEach(tx=>{
@@ -584,7 +583,7 @@ function getAccountBalance(txs,accId){
     else if(tx.type==="debt"){
       if(isDebtKind(tx,"creditor"))bal+=realAmt(tx);
       else if(isDebtKind(tx,"debtor"))bal-=realAmt(tx);
-      else if(isDebtKind(tx,"opening_balance"))bal+=realAmt(tx); // دين قديم = مال دخل
+      else if(isDebtKind(tx,"opening_balance"))bal+=realAmt(tx);
     }
   });
   return bal;
@@ -610,11 +609,10 @@ function inPeriod(tx,cyc){
   return iso>=cyc.start&&iso<=cyc.end;
 }
 
+// 🟢 التعديل الجوهري: حساب الدخل المرجعي للدورة بناءً على الراتب الأساسي فقط
 function totalIncome(txs,cyc){
   return (txs||[]).filter(x=>inPeriod(x,cyc)).reduce((s,x)=>{
-    if(x.type==="income")return s+realAmt(x);
-    if(isDebtKind(x,"creditor")||isDebtKind(x,"opening_balance"))return s+realAmt(x);
-    if(x.type==="internal_transfer"&&x.account===OUTSIDE)return s+realAmt(x);
+    if(x.type==="income" && x.isSalaryBase) return s + realAmt(x);
     return s;
   },0);
 }
@@ -661,7 +659,6 @@ const currentCycle=txs=>{const c=getAllCycles(txs);return c.length?c[c.length-1]
    ============================================================ */
 function getTargets(){
   try{const s=JSON.parse(localStorage.getItem(K_TARGET)||"null");if(s)return s}catch(e){}
-  // ✅ إصلاح: الافتراضي يترك 10% للطوارئ (30+30+10+20+0+0=90)
   return {fixed:30,regular:30,personal:10,transfer:20,debt:0,savings:0};
 }
 
@@ -692,7 +689,6 @@ function calcBudgetItem(txs,cyc,income,budgetId){
   const cycEnd=dateAdd(cyc.start,CYCLE_DAYS-1);
   const base={elapsed,daysRemaining:remainDays,cycleEndDate:cycEnd};
 
-  // صندوق المعيشة = ثابتة + عادية + شخصية
   if(budgetId==="living"){
     const pct=(tg.fixed||0)+(tg.regular||0)+(tg.personal||0);
     const max=income*pct/100;
@@ -710,7 +706,6 @@ function calcBudgetItem(txs,cyc,income,budgetId){
       spentToday:spentT,remainingToday:dailyActual-spentT};
   }
 
-  // ✅ إصلاح صندوق الطوارئ: الدخل - مجموع المستهدفات الأساسية، بدون ازدواج savings
   if(budgetId==="emergency"){
     const baseKeys=["fixed","regular","personal","transfer","debt"];
     let surplus=0,totalBase=0;
@@ -720,7 +715,7 @@ function calcBudgetItem(txs,cyc,income,budgetId){
       surplus+=kmax-kspent;
       totalBase+=kmax;
     });
-    const max=Math.max(0,income-totalBase); // المتبقي فقط (لا savings مزدوج)
+    const max=Math.max(0,income-totalBase);
     const spent=spentInCycle(txs,cyc,"emergency");
     const remaining=surplus-spent;
     const dailyActual=remainDays>0?Math.max(0,remaining/remainDays):0;
@@ -730,7 +725,6 @@ function calcBudgetItem(txs,cyc,income,budgetId){
       spentToday:spentT,remainingToday:dailyActual-spentT};
   }
 
-  // صناديق عادية
   const pct=tg[budgetId]||0;
   const max=income*pct/100;
   const spent=spentInCycle(txs,cyc,budgetId);
@@ -815,7 +809,7 @@ const budgetIdForCat=name=>{
 };
 
 /* ============================================================
-   تعبئة القوائم (دالة موحّدة)
+   تعبئة القوائم
    ============================================================ */
 function fillSelect(el,items,valKey,labelKey,keepCurrent=true){
   if(!el)return;
@@ -874,7 +868,7 @@ function renderPeopleHints(){
     if(!ppl.length){dh.className="field-note warn";dh.textContent="لسه مفيش أسماء. اضغط زر ➕ لإضافة أول اسم."}
     else{dh.className="field-note";dh.textContent=""}
   }
-  if(th){ // ✅ إصلاح: كان يستخدم t بدل a
+  if(th){
     if(!ppl.length){th.className="field-note warn";th.textContent="لسه مفيش أسماء. اضغط زر ➕ جنب الصف لإضافة أول مستفيد."}
     else{th.className="field-note";th.textContent="لو الاسم مش موجود، دوس زر ➕ جنبه لإضافته للقائمة."}
   }
@@ -951,6 +945,7 @@ function renderRecentTx(txs){
 
 function toggleLivingSub(el){const b=el.querySelector(".living-details-box");if(b)b.classList.toggle("hidden")}
 
+// 🟢 تعديل العرض في البطاقات الرئيسية: عرض المصروف الفعلي والنسبة المئوية بدلاً من كلمة إجمالي المبهمة
 function renderBudgetRow(d){
   const b=BUDGET_MAP[d.budgetId];
   const noLimit=d.max<=0;
@@ -966,14 +961,15 @@ function renderBudgetRow(d){
   let subHTML="";
   if(d.isMerged&&d.subItems){
     subHTML=`<div class="living-details-box hidden"><div style="font-weight:800;color:var(--emerald-neon)">🔻 التفاصيل الفرعية:</div>${
-      d.subItems.map(s=>`<div>• ${s.label}: <strong>${money(s.max)}</strong> | متبقي: <strong class="${s.remaining<0?"bad":"good"}">${money(s.remaining)}</strong></div>`).join("")
+      d.subItems.map(s=>`<div>• ${s.label}: <strong>${money(s.max)}</strong> | مصروف: <strong>${money(s.spent)}</strong> | متبقي: <strong class="${s.remaining<0?"bad":"good"}">${money(s.remaining)}</strong></div>`).join("")
     }</div>`;
   }
   return`<div class="bud-mini-card" data-bkey="${d.budgetId}" ${d.isMerged?'style="cursor:pointer" onclick="toggleLivingSub(this)"':""}>
     <div class="bud-mini-head"><span class="bud-mini-name">${b.icon} ${b.short}</span><span class="bud-mini-pct ${cls}">${pctTxt}</span></div>
     <div class="cap-track"><div class="cap-bar" style="width:${pctW}%;background:${barColor}"></div></div>
     <div class="bud-mini-meta">
-      <div>إجمالي: <strong>${money(d.max)}</strong></div>
+      <div>المصروف: <strong>${money(d.spent)}</strong> (${pctTxt})</div>
+      <div>المستهدف: <strong>${money(d.max)}</strong></div>
       <div>متبقي: <strong class="${cls}">${money(d.remaining)}</strong></div>
       ${d.isDynamic?`<div>يكفي: <strong>${d.daysRemaining} يوماً</strong></div>`:""}
       <div>⚡ يوميًا: <strong class="${dailyCls}">${dailyTxt}</strong></div>
@@ -1026,8 +1022,7 @@ function renderCyclePill(cyc){
   const p=$("hdr-pill");
   if(!p)return;
   p.classList.remove("warn");
-  if(!cyc){p.textContent=DEFAULT_PILL;return}
-  p.textContent=DEFAULT_PILL; // احتفظنا بالعرض البسيط، لكن البيانات متاحة لو أردت لاحقاً
+  p.textContent=DEFAULT_PILL;
 }
 
 function renderDonut(items,income){
@@ -1294,28 +1289,27 @@ async function renderTargetValuesPreview(){
     const income=cyc?totalIncome(txs,cyc):0;
     const s={};
     ["fixed","regular","personal","transfer","debt","savings"].forEach(k=>s[k]=toNum($("target-"+k+"-pct")?.value));
-    // تلميحات الحقول
     Object.entries(s).forEach(([k,v])=>{
       const el=document.querySelector(`[data-target-hint="${k}"]`);
       if(!el)return;
       if(v<=0||income<=0){el.textContent="";el.className="small target-value-hint";return}
-      el.textContent=`≈ ${money(income*v/100)} من دخل الدورة (${money(income)})`;
+      el.textContent=`≈ ${money(income*v/100)} من دخل الراتب الأساسي (${money(income)})`;
       el.className="small target-value-hint good";
     });
     renderCyclesList(txs,s);
     const sum=$("target-values-summary");
     if(!sum)return;
-    if(!cyc||income<=0)return void(sum.innerHTML='<span class="small">لا توجد دورة راتب حالية مسجّلة — سجّل راتبًا أساسيًا لتظهر القيم.</span>');
+    if(!cyc||income<=0)return void(sum.innerHTML='<span class="small">لا توجد دورة راتب أساسي حالية مسجّلة — سجّل راتبًا أساسيًا لتظهر القيم.</span>');
     const totalPct=Object.values(s).reduce((a,b)=>a+b,0);
     const allocated=income*totalPct/100;
     const remPct=Math.max(0,100-totalPct);
     const left=income-allocated;
-    let warn=totalPct>100?`<div class="small bad">⚠️ مجموع النسب (${totalPct}%) تجاوز 100% — المستهدفات أكبر من دخل الدورة!</div>`
+    let warn=totalPct>100?`<div class="small bad">⚠️ مجموع النسب (${totalPct}%) تجاوز 100% — المستهدفات أكبر من الراتب الأساسي!</div>`
       :totalPct===100?'<div class="small warning">⚠️ مجموع النسب 100% — لا ينزل متبقي لصندوق المعالجة.</div>'
       :`<div class="small good">🛡️ المتبقي التلقائي لصندوق المعالجة والعجز: ${remPct}% (${money(left)})</div>`;
     sum.innerHTML=`
-      <div class="small" style="color:var(--emerald-neon);font-weight:700;border-bottom:1px dashed var(--border-neon);padding-bottom:4px">📊 القيم محسوبة على دخل الدورة الحالية</div>
-      <div class="row-between"><span>📅 الدخل المرجعي:</span><strong>${money(income)}</strong></div>
+      <div class="small" style="color:var(--emerald-neon);font-weight:700;border-bottom:1px dashed var(--border-neon);padding-bottom:4px">📊 القيم محسوبة على دخل الراتب الأساسي للدورة الحالية</div>
+      <div class="row-between"><span>📅 الراتب الأساسي المرجعي:</span><strong>${money(income)}</strong></div>
       <div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px"><span>🧮 مجموع النسب:</span><strong>${totalPct}%</strong></div>
       <div class="row-between"><span>💰 مجموع المبالغ:</span><strong>${money(allocated)}</strong></div>
       ${warn}`;
@@ -1331,7 +1325,7 @@ function renderCyclesList(txs,s){
   const rows=[["fixed","📌 الثابتة"],["regular","📊 العادية"],["personal","🛍️ الشخصية"],["transfer","✈️ التحويلات"],["debt","🤝 الديون"],["savings","💰 المدخرات"]];
   const totalPct=Object.values(s).reduce((a,b)=>a+b,0);
   const remPct=Math.max(0,100-totalPct);
-  let html='<div class="small" style="color:var(--emerald-neon);font-weight:800">📅 النسب المستهدفة لكل دورة راتب</div>';
+  let html='<div class="small" style="color:var(--emerald-neon);font-weight:800">📅 النسب المستهدفة لكل دورة راتب أساسي</div>';
   html+=cycles.map((c,i)=>{
     const income=totalIncome(txs,c);
     const allocated=income*totalPct/100;
@@ -1347,7 +1341,7 @@ function renderCyclesList(txs,s){
     const warn=totalPct>100?`<div class="small bad">⚠️ مجموع النسب (${totalPct}%) تجاوز 100%</div>`
       :`<div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:3px"><span>🛡️ المتبقي للطوارئ (${remPct}%)</span><strong class="good">${money(left)}</strong></div>`;
     return`<details class="tc-card${c.isCurrent?" current":""}" ${i===0?"open":""}>
-      <summary><span>${title}</span><span class="small">${fmtDate(c.start)} ← ${endTxt} · ${days} يوم</span><span class="small">الدخل: <strong>${money(income)}</strong></span></summary>
+      <summary><span>${title}</span><span class="small">${fmtDate(c.start)} ← ${endTxt} · ${days} يوم</span><span class="small">الراتب الأساسي: <strong>${money(income)}</strong></span></summary>
       <div class="tc-body">${rowsHtml||'<span class="small">لا توجد نسب مخصصة.</span>'}
         <div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:3px"><span>💰 مجموع المخصص (${totalPct}%)</span><strong>${money(allocated)}</strong></div>
         ${warn}</div>
