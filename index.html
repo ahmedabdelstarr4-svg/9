@@ -50,7 +50,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .alert-strip.bad{background:rgba(251, 113, 133, 0.1);border-color:var(--red-val);color:var(--red-val);}
 .alert-strip.warning{background:rgba(251, 191, 36, 0.1);border-color:var(--amber-val);color:var(--amber-val);}
 
-/* Top Dashboard Layout */
 .top-dash-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:6px;align-items:stretch;}
 .balance-card{background:linear-gradient(145deg, #0f241a 0%, #08140e 100%);color:white;border-radius:16px;padding:10px;text-align:center;display:flex;flex-direction:column;justify-content:space-between;border:1px solid var(--border-neon);box-shadow:0 6px 20px rgba(0,0,0,0.4), inset 0 0 10px rgba(16, 185, 129, 0.15);position:relative;overflow:hidden;}
 .balance-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center, rgba(16,185,129,0.08) 0%, transparent 60%);pointer-events:none;}
@@ -68,7 +67,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .acc-mini-title{font-size:9.5px;color:var(--ink-muted);font-weight:800}
 .acc-mini-val{font-size:11.5px;font-weight:900;color:var(--green-val);font-variant-numeric:tabular-nums}
 
-/* Second Row: Today Card & Donut Chart */
 .second-dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .today-card{background:var(--bg-card);border:1px solid var(--border-neon);text-align:right;gap:4px;padding:10px!important;border-radius:14px;display:flex;flex-direction:column;justify-content:space-between;}
 .today-label-row{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:800;color:var(--emerald-neon)}
@@ -87,7 +85,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .donut-legend-item span:first-child{display:flex;align-items:center;gap:3px;}
 .dot{width:5px;height:5px;border-radius:50%;display:inline-block;}
 
-/* Quick Actions */
 .quick-actions{display:flex;flex-direction:column;gap:4px}
 .qa-main{border:0;width:100%;min-height:38px;padding:6px;border-radius:14px;font-size:12px;font-weight:900;color:#fff;background:linear-gradient(135deg, #10b981 0%, #047857 100%);box-shadow:0 4px 14px rgba(16, 185, 129, 0.3);display:flex;justify-content:center;align-items:center;gap:4px;transition:transform .15s ease, box-shadow .15s ease;}
 .qa-main:active{transform:scale(0.98)}
@@ -119,7 +116,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 #view-input .tab.active{background:linear-gradient(135deg,#10b981,#047857);color:#ffffff;box-shadow:0 3px 10px rgba(16,185,129,0.3)}
 #expense-amount,#income-amount,#total-kwd,#debt-amount,#int-amount{font-size:20px!important;text-align:center;font-weight:900;color:var(--emerald-neon)!important;background:rgba(16,185,129,0.05)!important;border:1px solid var(--border-neon)!important;border-radius:12px;padding:8px!important}
 
-/* Bottom Navigation Bar Update - 4 Tabs */
 .nav-bottom{position:fixed;bottom:4px;left:50%;transform:translateX(-50%);width:calc(100% - 10px);max-width:440px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:3px;border:1px solid var(--border-neon);background:var(--nav-bg);backdrop-filter:blur(16px);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:30;}
 .nav-bottom .nav-btn{background:transparent;border:0;color:var(--ink-muted);padding:4px 2px;font-size:9.5px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:1px;border-radius:12px;text-decoration:none;}
 .nav-bottom .nav-btn span:first-child{font-size:14px}
@@ -293,7 +289,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
         </div>
         <div id="dash-budget-summary" class="bud-grid"><span class="small" style="grid-column: span 2">سجّل راتبًا أساسيًا لعرض الميزانية.</span></div>
       </div>
-
     </div>
 
     <div class="dash-col">
@@ -405,7 +400,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
       </div>
     </div>
 
-    <!-- قسم تسوية الأرصدة الفورية الجديد -->
     <div class="acc-item" id="acc-reconciliation">
       <div class="acc-header" onclick="toggleAccordion('acc-reconciliation')"><span>⚖️ تسوية الأرصدة الفورية</span><span class="acc-icon">▼</span></div>
       <div class="acc-body stack">
@@ -1361,7 +1355,6 @@ function renderBudgetRowHTML(data){
   const barColor=level==="bad"?"var(--red-val)":level==="warning"?"var(--amber-val)":"var(--emerald-neon)";
   const cls=level==="bad"?"bad":level==="warning"?"warning":"good";
   
-  // الحد اليومي: لو المتبقي موجب يظهر الحد الفعلي، ولو سالب يظهر العجز الموزع على الأيام المتبقية بالسالب وباللون الأحمر
   let dailyTxt="—",dailyCls="";
   if(data.daysRemaining>0){
     if(data.remaining>0){
