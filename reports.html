@@ -143,7 +143,7 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
       <button type="button" onclick="backToFilters()" class="btn btn-soft no-print">⬅️ تعديل معايير التقرير</button>
       
       <div class="grid2 no-print">
-        <div id="report-search-wrap"><label>🔍 بحث ذكي داخل التقرير</label><input id="report-search" placeholder="اكتب للبحث (اسم، بيان، ملاحظات)..." oninput="filterReportTable()"></div>
+        <div id="report-search-wrap"><label>🔍 بحث ذكي داخل التقرير</label><input id="report-search" placeholder="اكتب للبحث في كافة عناصر التقرير..." oninput="filterReportTable()"></div>
         <div><label>🔄 ترتيب حسب التاريخ</label><select id="report-sort-order" onchange="filterReportTable()"><option value="desc">الأحدث أولاً</option><option value="asc">الأقدم أولاً</option></select></div>
       </div>
       
@@ -802,45 +802,55 @@ function backToFilters(){
 }
 
 function filterReportTable(){
-  const searchTxt=$("report-search")?$("report-search").value.toLowerCase().trim():"";
-  const savedStateRaw=localStorage.getItem(REPORT_STATE_KEY);
+  const searchTxt = $("report-search") ? $("report-search").value.toLowerCase().trim() : "";
+  const savedStateRaw = localStorage.getItem(REPORT_STATE_KEY);
+  
   if(savedStateRaw){
     try{
-      let st=JSON.parse(savedStateRaw);
-      st.searchQuery=searchTxt;
-      st.sortOrder=$("report-sort-order")?$("report-sort-order").value:"desc";
-      localStorage.setItem(REPORT_STATE_KEY,JSON.stringify(st));
+      let st = JSON.parse(savedStateRaw);
+      st.searchQuery = searchTxt;
+      st.sortOrder = $("report-sort-order") ? $("report-sort-order").value : "desc";
+      localStorage.setItem(REPORT_STATE_KEY, JSON.stringify(st));
     }catch(e){}
   }
-  if(!cachedReportRecords.length)return;
-  const filtered=searchTxt?cachedReportRecords.filter(x=>{
-    const accName=getAccountById(x.account||"cash_default").name||"";
-    const toAccName=x.toAccount?(getAccountById(x.toAccount).name||""):"";
-    const party=x.person||(x.beneficiaries||[]).map(b=>b.name).join(" ")||"";
-    const notes=x.notes||"";
-    const dateFormatted=fmtDate(x.date);
-    const category=x.category||"";
-    
-    let dynamicText="";
-    const typeVal=$("report-type")?$("report-type").value:"";
-    if(x.type==="debt"||typeVal==="debt"){
-      dynamicText+=" "+debtTypeLabel(x.debtType);
-    }
-    if(x.type==="transfer"){
-      dynamicText+=" "+(x.beneficiaries||[]).map(b=>`${b.name} ${b.egp} جنيه`).join(" ");
-    }
-    if(x.type==="expense"){
-      dynamicText+=(x.budgetId==="fixed"||x.isFixed)?" مصروفات ثابتة":" نثريات وعادية";
-    }
-
-    const fullSearchString=`${category} ${party} ${notes} ${dateFormatted} ${accName} ${toAccName} ${dynamicText}`.toLowerCase();
-    return fullSearchString.includes(searchTxt);
-  }):cachedReportRecords.slice();
   
-  visibleReportRecords=filtered;
-  renderReportTableRows(filtered);
-  updateReportSummaries(filtered);
-  $("display-count").textContent=filtered.length+(searchTxt?" حركة (مفلترة)":" حركة");
+  if(!cachedReportRecords.length) return;
+  
+  // 1. إعادة رسم الجدول بالبيانات الأصلية كاملة عشان نضمن إن كل الخلايا موجودة
+  renderReportTableRows(cachedReportRecords);
+
+  // 2. لو مفيش نص للبحث، نرجع كل البيانات ونحدث الملخصات
+  if(!searchTxt) {
+    visibleReportRecords = cachedReportRecords.slice();
+    updateReportSummaries(visibleReportRecords);
+    $("display-count").textContent = visibleReportRecords.length + " حركة";
+    return;
+  }
+
+  // 3. فلترة الصفوف بناءً على النص اللي ظاهر جوه كل صف (بحث شامل)
+  const rows = $("report-table-body").querySelectorAll("tr");
+  let visibleCount = 0;
+  let visibleTxs = [];
+
+  rows.forEach(row => {
+    const rowText = row.textContent.toLowerCase().trim(); // بيجيب كل النص اللي في الصف
+    if(rowText.includes(searchTxt)) {
+      row.style.display = ""; // إظهار
+      visibleCount++;
+      const txId = row.getAttribute("data-id");
+      if(txId && !visibleTxs.some(t => t.id === txId)) {
+        const tx = cachedReportRecords.find(t => t.id === txId);
+        if(tx) visibleTxs.push(tx);
+      }
+    } else {
+      row.style.display = "none"; // إخفاء
+    }
+  });
+
+  // 4. تحديث الملخصات بناءً على المعاملات اللي ظهرت بس
+  visibleReportRecords = visibleTxs;
+  updateReportSummaries(visibleReportRecords);
+  $("display-count").textContent = visibleCount + " حركة (مفلترة)";
 }
 
 function editFromReport(id){ window.location.href = `index.html?edit=${id}`; }
@@ -1171,34 +1181,73 @@ function shareReport(){
   window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(o)}`,"_blank");
 }
 
-function getAllSalaryCycles(e){
-  const today=todayISO();
-  const arr=(e||[]).map(x=>{
-    if(x&&x.date){const p=x.date.split("-");if(p.length===3)x.date=formatStrictISO(p[0],p[1],p[2]);xs}
+function getAllSalaryCycles(txs){
+  const today = todayISO();
+  
+  // 1. تنظيف وترتيب البيانات
+  const arr = (txs || []).map(x => {
+    if (x && x.date) {
+      const p = x.date.split("-");
+      if (p.length === 3) x.date = formatStrictISO(p[0], p[1], p[2]);
+    }
     return x;
-  }).filter(x=>x&&x.date);
-  const salaryDates=[...new Set(arr.filter(x=>x.type==="income"&&x.isSalaryBase).map(x=>x.date).sort())];
-  const cycles=[];
-  if(!salaryDates.length){
-    const dates=arr.map(x=>x.date).sort();
-    const start=dates.length?dates[0]:firstOfMonthISO();
-    cycles.push({id:`cycle_${start}_${today}`,label:`الدورة الحالية`,start,end:today,isCurrent:true,cycleIndex:1});
+  }).filter(x => x && x.date).sort((a, b) => a.date.localeCompare(b.date));
+
+  // 2. استخراج تواريخ الرواتب الأساسية فقط بدون تكرار
+  const salaryDates = [...new Set(
+    arr.filter(x => x.type === "income" && x.isSalaryBase).map(x => x.date)
+  )].sort();
+
+  const cycles = [];
+
+  // 3. لو مفيش رواتب أساسية متسجلة، نعمل دورة افتراضية من أول معاملة لحد اليوم
+  if (salaryDates.length === 0) {
+    const start = arr.length > 0 ? arr[0].date : firstOfMonthISO();
+    cycles.push({ 
+      id: `cycle_default_${start}_${today}`, 
+      label: `دورة (بدون راتب محدد)`, 
+      start: start, 
+      end: today, 
+      isCurrent: true, 
+      cycleIndex: 1 
+    });
     return cycles;
   }
-  const first=salaryDates[0];
-  const earlier=arr.filter(x=>x.date<first);
-  if(earlier.length>0){
-    earlier.sort((a,b)=>a.date.localeCompare(b.date));
-    const start=earlier[0].date;
-    const end=formatStrictISO(...dayBefore(first).split("-"));
-    cycles.push({id:`cycle_prior_${start}_${end}`,label:`الأرصدة القديمة`,start,end,isCurrent:false});
+
+  // 4. لو فيه معاملات قديمة قبل أول راتب، نعملها دورة منفصلة اسمها "الأرصدة القديمة"
+  const firstSalary = salaryDates[0];
+  const earlierTxs = arr.filter(x => x.date < firstSalary);
+  if (earlierTxs.length > 0) {
+    const oldStart = earlierTxs[0].date;
+    const oldEnd = dayBefore(firstSalary);
+    cycles.push({ 
+      id: `cycle_prior_${oldStart}`, 
+      label: `الأرصدة القديمة`, 
+      start: oldStart, 
+      end: oldEnd, 
+      isCurrent: false, 
+      cycleIndex: 1 
+    });
   }
-  for(let k=0;k<salaryDates.length;k++){
-    const start=salaryDates[k];
-    const isLast=k===salaryDates.length-1;
-    const end=isLast?today:formatStrictISO(...dayBefore(salaryDates[k+1]).split("-"));
-    cycles.push({id:`cycle_${start}_${end}`,label:isLast?`الدورة الحالية ${k+1}`:`دورة ${k+1}`,start,end,isCurrent:isLast,cycleIndex:k+1});
+
+  // 5. بناء الدورات بناءً على تواريخ الرواتب
+  for (let i = 0; i < salaryDates.length; i++) {
+    const start = salaryDates[i];
+    const isLast = i === salaryDates.length - 1;
+    
+    // نهاية الدورة: اليوم اللي قبل الراتب اللي بعده، أو اليوم الحالي لو دي آخر دورة
+    const end = isLast ? today : dayBefore(salaryDates[i + 1]);
+
+    cycles.push({
+      id: `cycle_${start}`,
+      label: isLast ? `الدورة الحالية` : `دورة راتب ${i + 1}`,
+      start: start,
+      end: end,
+      isCurrent: isLast,
+      cycleIndex: i + 1
+    });
   }
+
   return cycles;
 }
 function dayBefore(e){
