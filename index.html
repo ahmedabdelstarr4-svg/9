@@ -468,9 +468,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 
 <script>
 // @ts-nocheck
-/* ============================================================
-   ثوابت
-   ============================================================ */
 const DB_NAME="PersonalFinanceDB",DB_VER=1,STORE="transactions";
 const K_PEOPLE="pf_people_list",K_CATS="pf_expense_cats_list",K_TARGET="pf_target_percentages";
 const K_THEME="pf_theme_pref",K_PRIVACY="pf_privacy_hidden";
@@ -490,14 +487,8 @@ const BUDGETS=[
 ];
 const BUDGET_MAP=Object.fromEntries(BUDGETS.map(b=>[b.key,b]));
 
-/* ============================================================
-   حالة عامة
-   ============================================================ */
 let db=null,inputTab="expense",editId=null,personCb=null,toastT=null,privacyHidden=false;
 
-/* ============================================================
-   أدوات مساعدة عامة
-   ============================================================ */
 const $=id=>document.getElementById(id);
 const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const toast=(msg,dur=5000)=>{const t=$("toast");t.textContent=msg;t.style.display="block";clearTimeout(toastT);toastT=setTimeout(()=>t.style.display="none",dur)};
@@ -509,9 +500,6 @@ function money(v,cur="د.ك"){
   return toNum(v).toFixed(3)+" "+cur;
 }
 
-/* ============================================================
-   التواريخ
-   ============================================================ */
 const isoDate=(y,m,d)=>`${String(y).padStart(4,"0")}-${pad2(m)}-${pad2(d)}`;
 const todayISO=()=>{const d=new Date;return isoDate(d.getFullYear(),d.getMonth()+1,d.getDate())};
 const firstOfMonthISO=()=>{const d=new Date;return isoDate(d.getFullYear(),d.getMonth()+1,1)};
@@ -520,9 +508,6 @@ const dateAdd=(iso,days)=>{const[y,m,d]=iso.split("-").map(Number);const dt=new 
 const dateDiff=(a,b)=>{const[a1,b1,c1]=a.split("-").map(Number),[a2,b2,c2]=b.split("-").map(Number);return Math.floor((Date.UTC(a2,b2-1,c2)-Date.UTC(a1,b1-1,c1))/864e5)};
 const dayBefore=iso=>dateAdd(iso,-1);
 
-/* ============================================================
-   الثيم والخصوصية
-   ============================================================ */
 function initTheme(){
   const t=localStorage.getItem(K_THEME)||"dark";
   document.documentElement.setAttribute("data-theme",t);
@@ -547,9 +532,7 @@ function togglePrivacy(){
   refreshDashboard();
 }
 
-/* ============================================================
-   الحسابات
-   ============================================================ */
+// 🟢 توحيد مسمى الحساب "الكاش" ليطابق التقارير حرفياً
 function getAccounts(){
   return [
     {id:"cash_default",name:"الكاش",type:"cash",icon:"💵"},
@@ -562,9 +545,6 @@ const accById=id=>getAccounts().find(a=>a.id===id)||getAccounts()[0];
 const visibleAccounts=()=>getAccounts().filter(a=>!a.hidden&&a.id!==OUTSIDE&&a.id!==DUMMY);
 const allAccounts=()=>getAccounts().filter(a=>a.id!==OUTSIDE);
 
-/* ============================================================
-   منطق المعاملات — مساعدات موحّدة
-   ============================================================ */
 const realAmt=tx=>!tx?0:(tx.type==="transfer"||tx.type==="internal_transfer")?toNum(tx.totalKwd??tx.amount):toNum(tx.amount);
 const isDebtKind=(tx,k)=>tx&&tx.type==="debt"&&tx.debtType===k;
 
@@ -623,16 +603,13 @@ function totalExpense(txs,cyc){
   },0);
 }
 
-/* ============================================================
-   دورات الرواتب
-   ============================================================ */
 function getAllCycles(txs){
   const today=todayISO();
   const arr=(txs||[]).map(x=>{
     if(x&&x.date){const p=x.date.split("-");if(p.length===3)x.date=isoDate(p[0],p[1],p[2])}
     return x;
   }).filter(x=>x&&x.date);
-  const salDates=[...new Set(arr.filter(x=>x.type==="income"&&x.isSalaryBase).map(x=>x.date))].sort();
+  const salDates=[...new Set(arr.filter(x=>x.type==="income"&&x.isSalaryBase).map(x.date))].sort();
   const cycles=[];
   if(!salDates.length){
     const dates=arr.map(x=>x.date).sort();
@@ -653,9 +630,6 @@ function getAllCycles(txs){
 }
 const currentCycle=txs=>{const c=getAllCycles(txs);return c.length?c[c.length-1]:null};
 
-/* ============================================================
-   حساب الميزانية
-   ============================================================ */
 function getTargets(){
   try{const s=JSON.parse(localStorage.getItem(K_TARGET)||"null");if(s)return s}catch(e){}
   return {fixed:30,regular:30,personal:10,transfer:20,debt:0,savings:0};
@@ -747,9 +721,6 @@ const budgetStatus=(max,spent)=>{
   return {remaining,pct,level:pct>=100||remaining<0?"bad":pct>=80?"warning":"good"};
 };
 
-/* ============================================================
-   IndexedDB
-   ============================================================ */
 const openDB=()=>db?Promise.resolve(db):new Promise((res,rej)=>{
   const req=indexedDB.open(DB_NAME,DB_VER);
   req.onupgradeneeded=e=>{
@@ -784,9 +755,6 @@ const putTx=tx=>new Promise((res,rej)=>{
   t.onerror=()=>rej(t.error);
 });
 
-/* ============================================================
-   الأسماء والتصنيفات (localStorage)
-   ============================================================ */
 const getPeople=()=>{try{const a=JSON.parse(localStorage.getItem(K_PEOPLE)||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}};
 const savePeople=arr=>{localStorage.setItem(K_PEOPLE,JSON.stringify([...new Set(arr)]));populatePeopleSelects();renderPeopleList()};
 
@@ -807,9 +775,6 @@ const budgetIdForCat=name=>{
   return c?c.budgetId:"regular";
 };
 
-/* ============================================================
-   تعبئة القوائم
-   ============================================================ */
 function fillSelect(el,items,valKey,labelKey,keepCurrent=true){
   if(!el)return;
   const cur=keepCurrent?el.value:null;
@@ -857,9 +822,6 @@ function populateReconcileSelect(){
   updateReconcileCurrentBalance();
 }
 
-/* ============================================================
-   تحديثات الواجهة
-   ============================================================ */
 function renderPeopleHints(){
   const ppl=getPeople();
   const dh=$("debt-people-hint"),th=$("transfer-people-hint");
@@ -1090,9 +1052,6 @@ async function refreshAllViews(txs){
   updateReconcileCurrentBalance();
 }
 
-/* ============================================================
-   شاشة الإدخال
-   ============================================================ */
 function readDate(prefix){
   const d=$(prefix+"-day")?.value,m=$(prefix+"-month")?.value,y=$(prefix+"-year")?.value;
   if(!d||!m||!y)return"";
@@ -1190,9 +1149,6 @@ function calculateExchange(){
   });
 }
 
-/* ============================================================
-   حفظ المعاملة
-   ============================================================ */
 async function saveTransaction(){
   const btn=$("save-transaction");
   if(btn.disabled)return;
@@ -1204,7 +1160,6 @@ async function saveTransaction(){
     const notes=$("tx-notes").value.trim();
     const id=editId||`tx_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
     
-    // 🟢 التعديل المعتمد لضمان ترحيل الحساب المالي الحقيقي بدقة تامة
     let acc=$("tx-account")?.value;
     if(!acc||acc===DUMMY)acc="cash_default";
 
@@ -1271,9 +1226,6 @@ async function saveTransaction(){
   finally{btn.disabled=false}
 }
 
-/* ============================================================
-   الإعدادات — النسب المستهدفة
-   ============================================================ */
 function loadTargetPercentages(){
   const t=getTargets();
   ["fixed","regular","personal","transfer","debt","savings"].forEach(k=>{
@@ -1359,9 +1311,6 @@ function renderCyclesList(txs,s){
   box.innerHTML=html;
 }
 
-/* ============================================================
-   الإعدادات — الأسماء والتصنيفات
-   ============================================================ */
 function addPersonFromSettings(){
   const el=$("new-person-name");
   if(!el)return;
@@ -1406,9 +1355,6 @@ async function deleteCategory(name){
   }catch(e){console.error(e);toast("تعذر حذف التصنيف")}
 }
 
-/* ============================================================
-   نافذة إضافة الاسم
-   ============================================================ */
 function openPersonModal(btn){
   const picker=btn?.closest?.(".person-picker, .beneficiary");
   personCb=picker?picker.querySelector("select"):null;
@@ -1427,9 +1373,6 @@ function confirmAddPerson(){
   closePersonModal();
 }
 
-/* ============================================================
-   التسوية
-   ============================================================ */
 async function updateReconcileCurrentBalance(){
   const sel=$("reconcile-account-select"),sys=$("reconcile-system-val"),act=$("reconcile-actual-val");
   if(!sel||!sys)return;
@@ -1459,9 +1402,6 @@ async function executeReconciliation(){
   updateReconcileCurrentBalance();
 }
 
-/* ============================================================
-   النسخ الاحتياطي
-   ============================================================ */
 function backupPayload(txs){
   return{version:16,savedAt:new Date().toISOString(),transactions:txs,people:getPeople(),expenseCategories:getCats(),accounts:getAccounts(),targetPercentages:getTargets()};
 }
@@ -1542,9 +1482,6 @@ async function clearAllTransactions(){
   t.onerror=()=>toast("فشل التفريغ");
 }
 
-/* ============================================================
-   التنقل بين الشاشات
-   ============================================================ */
 function switchMainView(view){
   ["dashboard","backup"].forEach(v=>$("view-"+v).classList.toggle("hidden",v!==view));
   $("nav-dashboard")?.classList.toggle("active",view==="dashboard");
@@ -1560,9 +1497,6 @@ function switchMainView(view){
 
 function toggleAccordion(id){$(id)?.classList.toggle("open")}
 
-/* ============================================================
-   تحرير معاملة من الرابط
-   ============================================================ */
 async function handleEditFromQuery(){
   const editQ=new URLSearchParams(window.location.search).get("edit");
   if(!editQ)return;
@@ -1613,9 +1547,6 @@ async function handleEditFromQuery(){
   }catch(e){console.warn(e)}
 }
 
-/* ============================================================
-   مستمعو الأحداث
-   ============================================================ */
 document.addEventListener("click",e=>{
   const t=e.target.closest("[data-action]");
   if(!t)return;
@@ -1656,9 +1587,6 @@ window.addEventListener("beforeunload",e=>{
   if(editId){e.preventDefault();e.returnValue="لديك تعديلات غير محفوظة.";return e.returnValue}
 });
 
-/* ============================================================
-   التهيئة
-   ============================================================ */
 window.addEventListener("DOMContentLoaded",async()=>{
   try{
     initTheme();
