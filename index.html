@@ -607,11 +607,48 @@ function getAllCycles(txs){
   const arr=(txs||[]).map(x=>{
     if(x&&x.date){const p=x.date.split("-");if(p.length===3)x.date=isoDate(p[0],p[1],p[2])}
     return x;
-  }).filter(x=>x&&x.date);
-  const dates=arr.map(x=>x.date).sort();
-  const start=dates.length?dates[0]:firstOfMonthISO();
-  return [{id:`c_${start}_${today}`,start,end:today,isCurrent:true,cycleIndex:1}];
+  }).filter(x=>x&&x.date).sort((a,b)=>a.date.localeCompare(b.date));
+
+  if(!arr.length){
+    const start=firstOfMonthISO();
+    return [{id:`c_${start}_${today}`,start,end:today,isCurrent:true,cycleIndex:1}];
+  }
+
+  const salaryDates = arr
+    .filter(x => x.type === "income" && x.isSalaryBase)
+    .map(x => x.date);
+
+  const firstStart = salaryDates.length ? salaryDates[0] : arr[0].date;
+  const allStarts = [...new Set([firstStart, ...salaryDates])].sort();
+
+  const cycles = [];
+  
+  for (let i = 0; i < allStarts.length; i++) {
+    const start = allStarts[i];
+    const nextStart = allStarts[i + 1];
+    let end = nextStart ? dayBefore(nextStart) : today;
+
+    // تجنب إنشاء دورة بتاريخ مستقبلي لو معاملة مسجلة بالغلط
+    if (start > today) continue;
+
+    cycles.push({
+      id: `c_${start}_${end}`,
+      start: start,
+      end: end,
+      isCurrent: i === allStarts.length - 1,
+      cycleIndex: i + 1
+    });
+  }
+
+  // لو مفيش دورات اتبنت (كل التواريخ مستقبلية)، نرجع دورة افتراضية
+  if (!cycles.length) {
+    const start=firstOfMonthISO();
+    return [{id:`c_${start}_${today}`,start,end:today,isCurrent:true,cycleIndex:1}];
+  }
+
+  return cycles;
 }
+
 const currentCycle=txs=>{const c=getAllCycles(txs);return c.length?c[c.length-1]:null};
 
 function getTargets(){
