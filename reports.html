@@ -55,8 +55,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .small{font-size:10.5px;color:var(--ink-muted)}
 .hint{font-size:11px;line-height:1.4;color:var(--amber-val);background:rgba(251, 191, 36, 0.1);border:1px solid rgba(251, 191, 36, 0.3);border-radius:10px;padding:8px}
 .table-wrap{overflow-x:auto;border:1px solid var(--border-subtle);border-radius:10px;width:100%;background:var(--bg-card)}
-table{border-collapse:separate;border-spacing:0;width:100%;min-width:100%;font-size:11px;text-align:right;table-layout:fixed}
-th,td{padding:8px 6px;border-bottom:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle);vertical-align:middle;word-wrap:break-word}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:420px;font-size:10.5px;text-align:right;table-layout:auto}
+th,td{padding:6px 4px;border-bottom:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle);vertical-align:middle;word-break:keep-all;white-space:nowrap}
 th:last-child,td:last-child{border-left:0}
 th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
 .report{background:var(--bg-app);border:1px solid var(--border-subtle);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;width:100%}
@@ -234,16 +234,22 @@ function todayISO(){const e=new Date;return formatStrictISO(e.getFullYear(),e.ge
 function firstOfMonthISO(){const e=new Date;return formatStrictISO(e.getFullYear(),e.getMonth()+1,1)}
 function fmtDate(e){if(!e)return"";const t=e.split("-");if(t.length<3)return e;const[a,n,s]=t;return`${String(s).padStart(2,"0")}/${String(n).padStart(2,"0")}/${a}`}
 
+// 🟢 توحيد مسمى "الكاش" ليطابق الصفحة الرئيسية حرفياً
 function getAccounts(){
-  const raw=localStorage.getItem(ACCOUNTS_KEY);
-  if(raw){try{const arr=JSON.parse(raw);if(Array.isArray(arr)&&arr.length)return arr;}catch(e){}}
   return [
-    {id:"cash_default",name:"الكاش (في جيبي)",type:"cash",icon:"💵"},
+    {id:"cash_default",name:"الكاش",type:"cash",icon:"💵"},
     {id:"bank_default",name:"الحساب البنكي",type:"bank",icon:"🏦"},
     {id:"outside",name:"خارج النظام (بداية)",type:"outside",icon:"🌐",hidden:true}
   ];
 }
-function getAccountById(id){if(!id)return getAccounts()[0];return getAccounts().find(a=>a.id===id)||getAccounts()[0];}
+
+// 🟢 دالة ذكية للتعامل مع المعاملات القديمة وترجمتها للكاش تلقائياً
+function getAccountById(id){
+  if(!id || id === "outside" || id === "dummy_account") {
+    return { id: "cash_default", name: "الكاش", type: "cash", icon: "💵" };
+  }
+  return getAccounts().find(a=>a.id===id)||{ id: "cash_default", name: "الكاش", type: "cash", icon: "💵" };
+}
 
 function populateAccountFilterSelect() {
     const accSelect = $("report-account-filter");
@@ -480,7 +486,8 @@ async function generateReport(isRestoring=false){
     if(t==="debt"&&a!=="all"&&x.debtType!==a)return false;
     
     if(accFilter!=="all"){
-      const matchAccount = (x.account === accFilter) || (x.toAccount === accFilter);
+      const txAcc = x.account || "cash_default";
+      const matchAccount = (txAcc === accFilter) || (x.toAccount === accFilter);
       if(!matchAccount) return false;
     }
 
@@ -1167,7 +1174,7 @@ function shareReport(){
 function getAllSalaryCycles(e){
   const today=todayISO();
   const arr=(e||[]).map(x=>{
-    if(x&&x.date){const p=x.date.split("-");if(p.length===3)x.date=formatStrictISO(p[0],p[1],p[2]);}
+    if(x&&x.date){const p=x.date.split("-");if(p.length===3)x.date=formatStrictISO(p[0],p[1],p[2]);xs}
     return x;
   }).filter(x=>x&&x.date);
   const salaryDates=[...new Set(arr.filter(x=>x.type==="income"&&x.isSalaryBase).map(x=>x.date).sort())];
