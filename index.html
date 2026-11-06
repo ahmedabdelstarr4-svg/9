@@ -609,7 +609,6 @@ function inPeriod(tx,cyc){
   return iso>=cyc.start&&iso<=cyc.end;
 }
 
-// 🟢 التعديل الجوهري: حساب الدخل المرجعي للدورة بناءً على الراتب الأساسي فقط
 function totalIncome(txs,cyc){
   return (txs||[]).filter(x=>inPeriod(x,cyc)).reduce((s,x)=>{
     if(x.type==="income" && x.isSalaryBase) return s + realAmt(x);
@@ -945,7 +944,6 @@ function renderRecentTx(txs){
 
 function toggleLivingSub(el){const b=el.querySelector(".living-details-box");if(b)b.classList.toggle("hidden")}
 
-// 🟢 تعديل العرض في البطاقات الرئيسية: عرض المصروف الفعلي والنسبة المئوية بدلاً من كلمة إجمالي المبهمة
 function renderBudgetRow(d){
   const b=BUDGET_MAP[d.budgetId];
   const noLimit=d.max<=0;
@@ -1205,7 +1203,11 @@ async function saveTransaction(){
     const time=$("tx-time").value||"00:00";
     const notes=$("tx-notes").value.trim();
     const id=editId||`tx_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
-    const acc=$("tx-account")?.value||"cash_default";
+    
+    // 🟢 التعديل المعتمد لضمان ترحيل الحساب المالي الحقيقي بدقة تامة
+    let acc=$("tx-account")?.value;
+    if(!acc||acc===DUMMY)acc="cash_default";
+
     const tx={id,date,time,notes,type:inputTab};
 
     if(inputTab==="expense"){
@@ -1238,7 +1240,14 @@ async function saveTransaction(){
       const person=$("debt-person-select").value;
       if(!person)return void toast("حدد الشخص أو الجهة.");
       if(amt<=0)return void toast("أدخل مبلغًا صحيحًا.");
-      tx.amount=amt;tx.person=person;tx.debtType=$("debt-type").value;tx.account=acc;
+      tx.amount=amt;tx.person=person;tx.debtType=$("debt-type").value;
+      
+      if(tx.debtType==="opening_balance"){
+        tx.account=DUMMY;
+      }else{
+        tx.account=acc;
+      }
+
       if(tx.debtType==="debtor")tx.budgetId="debt";
       if(tx.debtType==="opening_balance"){
         const exists=(await allTx()).some(x=>x.id!==editId&&x.type==="debt"&&x.debtType==="opening_balance"&&x.person===tx.person);
