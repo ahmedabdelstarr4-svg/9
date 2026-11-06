@@ -263,7 +263,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
           <strong style="font-size:12px">🎯 الميزانية وصندوق المعالجة</strong>
           <span class="small" style="color:var(--emerald-neon);cursor:pointer" onclick="switchMainView('backup')">تعديل المستهدفات ›</span>
         </div>
-        <div id="dash-budget-summary" class="bud-grid"><span class="small" style="grid-column:span 2">سجّل راتبًا أساسيًا لعرض الميزانية.</span></div>
+        <div id="dash-budget-summary" class="bud-grid"><span class="small" style="grid-column:span 2">جاري تحميل الصناديق والميزانية...</span></div>
       </div>
     </div>
     <div class="dash-col">
@@ -590,7 +590,7 @@ function inPeriod(tx,cyc){
 
 function totalIncome(txs,cyc){
   return (txs||[]).filter(x=>inPeriod(x,cyc)).reduce((s,x)=>{
-    if(x.type==="income" && x.isSalaryBase) return s + realAmt(x);
+    if(x.type==="income") return s + realAmt(x);
     return s;
   },0);
 }
@@ -608,24 +608,9 @@ function getAllCycles(txs){
     if(x&&x.date){const p=x.date.split("-");if(p.length===3)x.date=isoDate(p[0],p[1],p[2])}
     return x;
   }).filter(x=>x&&x.date);
-  const salDates=[...new Set(arr.filter(x=>x.type==="income"&&x.isSalaryBase).map(x.date))].sort();
-  const cycles=[];
-  if(!salDates.length){
-    const dates=arr.map(x=>x.date).sort();
-    const start=dates.length?dates[0]:firstOfMonthISO();
-    return [{id:`c_${start}_${today}`,start,end:today,isCurrent:true,cycleIndex:1}];
-  }
-  const first=salDates[0];
-  const earlier=arr.filter(x=>x.date<first).sort((a,b)=>a.date.localeCompare(b.date));
-  if(earlier.length){
-    cycles.push({id:`c_prior_${earlier[0].date}_${dayBefore(first)}`,start:earlier[0].date,end:dayBefore(first),isCurrent:false,isPriorPeriod:true});
-  }
-  salDates.forEach((start,k)=>{
-    const isLast=k===salDates.length-1;
-    const end=isLast?today:dayBefore(salDates[k+1]);
-    cycles.push({id:`c_${start}_${end}`,start,end,isCurrent:isLast,cycleIndex:k+1});
-  });
-  return cycles;
+  const dates=arr.map(x=>x.date).sort();
+  const start=dates.length?dates[0]:firstOfMonthISO();
+  return [{id:`c_${start}_${today}`,start,end:today,isCurrent:true,cycleIndex:1}];
 }
 const currentCycle=txs=>{const c=getAllCycles(txs);return c.length?c[c.length-1]:null};
 
@@ -940,9 +925,9 @@ function renderTodayCard(items){
   const v=$("dash-today-val"),bar=$("dash-today-bar"),note=$("dash-today-note");
   if(!v||!bar||!note)return;
   v.className="today-val";
-  if(!items){v.textContent=money(0);bar.style.width="0%";note.textContent="سجّل راتبًا أساسيًا لحساب حد اليوم.";return}
+  if(!items){v.textContent=money(0);bar.style.width="0%";note.textContent="سجّل دخلًا أو رصيدًا لحساب حد اليوم.";return}
   const living=items.find(i=>i.budgetId==="living"&&i.daysRemaining>0);
-  if(!living){v.textContent=money(0);bar.style.width="0%";note.textContent="الدورة انتهت — سجّل راتبك الجديد.";return}
+  if(!living){v.textContent=money(0);bar.style.width="0%";note.textContent="الدورة انتهت — سجّل دخلك الجديد.";return}
   const allowed=Math.max(0,living.dailyActual);
   const spent=living.spentToday;
   const left=living.remainingToday;
@@ -1017,9 +1002,8 @@ async function renderDashBudget(txs){
   try{
     const data=txs||await allTx();
     const cyc=currentCycle(data);
-    const hasSalary=data.some(x=>x.type==="income"&&x.isSalaryBase);
-    if(!cyc||(!hasSalary&&totalIncome(data,cyc)<=0)){
-      el.innerHTML='<span class="small" style="grid-column:span 2">سجّل راتبًا أساسيًا أو رصيد بداية لعرض الميزانية.</span>';
+    if(!cyc){
+      el.innerHTML='<span class="small" style="grid-column:span 2">لا توجد بيانات كافية لعرض الميزانية.</span>';
       renderTodayCard(null);
       renderAlertStrip(null);
       renderCyclePill(null);
@@ -1031,7 +1015,7 @@ async function renderDashBudget(txs){
     renderDonut(items,income);
     renderTodayCard(items);
     renderAlertStrip(items);
-    renderCyclePill(hasSalary?items[0]:null);
+    renderCyclePill(items[0]);
   }catch(e){console.warn("renderDashBudget:",e)}
 }
 
@@ -1253,23 +1237,23 @@ async function renderTargetValuesPreview(){
       const el=document.querySelector(`[data-target-hint="${k}"]`);
       if(!el)return;
       if(v<=0||income<=0){el.textContent="";el.className="small target-value-hint";return}
-      el.textContent=`≈ ${money(income*v/100)} من دخل الراتب الأساسي (${money(income)})`;
+      el.textContent=`≈ ${money(income*v/100)} من الدخل (${money(income)})`;
       el.className="small target-value-hint good";
     });
     renderCyclesList(txs,s);
     const sum=$("target-values-summary");
     if(!sum)return;
-    if(!cyc||income<=0)return void(sum.innerHTML='<span class="small">لا توجد دورة راتب أساسي حالية مسجّلة — سجّل راتبًا أساسيًا لتظهر القيم.</span>');
+    if(!cyc||income<=0)return void(sum.innerHTML='<span class="small">لا توجد دورة مسجّلة.</span>');
     const totalPct=Object.values(s).reduce((a,b)=>a+b,0);
     const allocated=income*totalPct/100;
     const remPct=Math.max(0,100-totalPct);
     const left=income-allocated;
-    let warn=totalPct>100?`<div class="small bad">⚠️ مجموع النسب (${totalPct}%) تجاوز 100% — المستهدفات أكبر من الراتب الأساسي!</div>`
-      :totalPct===100?'<div class="small warning">⚠️ مجموع النسب 100% — لا ينزل متبقي لصندوق المعالجة.</div>'
-      :`<div class="small good">🛡️ المتبقي التلقائي لصندوق المعالجة والعجز: ${remPct}% (${money(left)})</div>`;
+    let warn=totalPct>100?`<div class="small bad">⚠️ مجموع النسب (${totalPct}%) تجاوز 100%!</div>`
+      :totalPct===100?'<div class="small warning">⚠️ مجموع النسب 100%.</div>'
+      :`<div class="small good">🛡️ المتبقي التلقائي: ${remPct}% (${money(left)})</div>`;
     sum.innerHTML=`
-      <div class="small" style="color:var(--emerald-neon);font-weight:700;border-bottom:1px dashed var(--border-neon);padding-bottom:4px">📊 القيم محسوبة على دخل الراتب الأساسي للدورة الحالية</div>
-      <div class="row-between"><span>📅 الراتب الأساسي المرجعي:</span><strong>${money(income)}</strong></div>
+      <div class="small" style="color:var(--emerald-neon);font-weight:700;border-bottom:1px dashed var(--border-neon);padding-bottom:4px">📊 القيم محسوبة على إجمالي الدخل</div>
+      <div class="row-between"><span>📅 إجمالي الدخل المرجعي:</span><strong>${money(income)}</strong></div>
       <div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px"><span>🧮 مجموع النسب:</span><strong>${totalPct}%</strong></div>
       <div class="row-between"><span>💰 مجموع المبالغ:</span><strong>${money(allocated)}</strong></div>
       ${warn}`;
@@ -1279,32 +1263,28 @@ async function renderTargetValuesPreview(){
 function renderCyclesList(txs,s){
   const box=$("target-cycles-list");
   if(!box)return;
-  const hasSalary=(txs||[]).some(x=>x.type==="income"&&x.isSalaryBase);
-  if(!hasSalary)return void(box.innerHTML='<span class="small">سجّل راتبًا أساسيًا لتظهر الدورات وقيم النسب لكل دورة.</span>');
-  const cycles=getAllCycles(txs).filter(c=>!c.isPriorPeriod).slice().reverse();
+  const cycles=getAllCycles(txs).slice().reverse();
   const rows=[["fixed","📌 الثابتة"],["regular","📊 العادية"],["personal","🛍️ الشخصية"],["transfer","✈️ التحويلات"],["debt","🤝 الديون"],["savings","💰 المدخرات"]];
   const totalPct=Object.values(s).reduce((a,b)=>a+b,0);
   const remPct=Math.max(0,100-totalPct);
-  let html='<div class="small" style="color:var(--emerald-neon);font-weight:800">📅 النسب المستهدفة لكل دورة راتب أساسي</div>';
+  let html='<div class="small" style="color:var(--emerald-neon);font-weight:800">📅 النسب المستهدفة</div>';
   html+=cycles.map((c,i)=>{
     const income=totalIncome(txs,c);
     const allocated=income*totalPct/100;
     const left=income-allocated;
     const days=Math.max(1,dateDiff(c.start,c.end)+1);
     const endTxt=c.isCurrent?"حتى اليوم":fmtDate(c.end);
-    const title=c.isCurrent?`🟢 الدورة الحالية (${c.cycleIndex||""})`:`دورة ${c.cycleIndex||i+1}`;
+    const title=c.isCurrent?`🟢 الدورة الحالية`:`دورة ${i+1}`;
     const rowsHtml=rows.map(([k,lbl])=>{
       const p=s[k]||0;
       if(p<=0)return"";
       return`<div class="row-between"><span>${lbl} (${p}%)</span><strong>${money(income*p/100)}</strong></div>`;
     }).join("");
-    const warn=totalPct>100?`<div class="small bad">⚠️ مجموع النسب (${totalPct}%) تجاوز 100%</div>`
-      :`<div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:3px"><span>🛡️ المتبقي للطوارئ (${remPct}%)</span><strong class="good">${money(left)}</strong></div>`;
     return`<details class="tc-card${c.isCurrent?" current":""}" ${i===0?"open":""}>
-      <summary><span>${title}</span><span class="small">${fmtDate(c.start)} ← ${endTxt} · ${days} يوم</span><span class="small">الراتب الأساسي: <strong>${money(income)}</strong></span></summary>
+      <summary><span>${title}</span><span class="small">${fmtDate(c.start)} ← ${endTxt} · ${days} يوم</span><span class="small">الدخل: <strong>${money(income)}</strong></span></summary>
       <div class="tc-body">${rowsHtml||'<span class="small">لا توجد نسب مخصصة.</span>'}
         <div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:3px"><span>💰 مجموع المخصص (${totalPct}%)</span><strong>${money(allocated)}</strong></div>
-        ${warn}</div>
+      </div>
     </details>`;
   }).join("");
   box.innerHTML=html;
