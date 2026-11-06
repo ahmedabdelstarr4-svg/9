@@ -132,7 +132,10 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
         <div><label>من تاريخ</label><div class="date-parts"><input id="date-from-day" type="number" min="1" max="31" inputmode="numeric" placeholder="يوم"><input id="date-from-month" type="number" min="1" max="12" inputmode="numeric" placeholder="شهر"><input id="date-from-year" type="number" min="2000" max="2100" inputmode="numeric" placeholder="سنة"></div></div>
         <div><label>إلى تاريخ</label><div class="date-parts"><input id="date-to-day" type="number" min="1" max="31" inputmode="numeric" placeholder="يوم"><input id="date-to-month" type="number" min="1" max="12" inputmode="numeric" placeholder="شهر"><input id="date-to-year" type="number" min="2000" max="2100" inputmode="numeric" placeholder="سنة"></div></div>
       </div>
-      <button type="button" onclick="setSalaryCycleDates()" class="btn btn-soft">📅 تعبئة تاريخ آخر دورة راتب</button>
+      <div class="grid2">
+        <button type="button" onclick="setSalaryCycleDates()" class="btn btn-soft" style="font-size:10.5px;padding:4px 6px;">📅 دورة الراتب</button>
+        <button type="button" onclick="setOldestTransactionDate()" class="btn btn-soft" style="font-size:10.5px;padding:4px 6px;">⏮️ أقدم معاملة</button>
+      </div>
       <button type="button" onclick="generateReport()" class="btn btn-dark">إنشاء التقرير 📄</button>
     </div>
     
@@ -367,9 +370,13 @@ async function onReportTypeChange(){
 async function updateReportTargetOptions(){
   try{
     const e=await allTransactions(),t=new Set;
+    const reportType=$("report-type")?$("report-type").value:"all";
+    
     e.forEach(x=>{
-      if(x.type==="debt"&&x.person)t.add(x.person);
-      if(x.type==="transfer")(x.beneficiaries||[]).forEach(b=>{if(b.name)t.add(b.name);});
+      if(reportType==="all" || reportType===x.type || (reportType==="debt" && x.type==="debt") || (reportType==="transfer" && x.type==="transfer")){
+        if(x.type==="debt"&&x.person)t.add(x.person);
+        if(x.type==="transfer")(x.beneficiaries||[]).forEach(b=>{if(b.name)t.add(b.name);});
+      }
     });
     const a=[...t].sort((x,y)=>x.localeCompare(y,"ar")),n=$("beneficiary-select");
     if(!n)return;
@@ -391,6 +398,53 @@ async function setSalaryCycleDates(){
   }catch(e){console.warn(e);showToast("تعذر تحديد فترة الراتب")}
 }
 
+async function setOldestTransactionDate(){
+  try{
+    const txs = await allTransactions();
+    if(txs.length > 0){
+      const oldest = txs[txs.length - 1].date;
+      writeDateParts("date-from", oldest);
+      writeDateParts("date-to", todayISO());
+      showToast("تم تحديد تاريخ أقدم معاملة ⏮️");
+    } else {
+      showToast("لا توجد معاملات مسجلة بعد");
+    }
+  }catch(e){
+    showToast("تعذر جلب أقدم معاملة");
+  }
+}
+
+function calculatePeriodDuration(dateFromStr, dateToStr){
+  if(!dateFromStr || !dateToStr) return "—";
+  const start = new Date(dateFromStr);
+  const end = new Date(dateToStr);
+  if(isNaN(start) || isNaN(end) || start > end) return "—";
+
+  let years = end.getFullYear() - start.getFullYear();
+  let months = end.getMonth() - start.getMonth();
+  let days = end.getDate() - start.getDate();
+
+  if (days < 0) {
+    months--;
+    const prevMonth = new Date(end.getFullYear(), end.getMonth(), 0);
+    days += prevMonth.getDate();
+  }
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  const diffTime = Math.abs(end - start);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+  let parts = [];
+  if (years > 0) parts.push(`${years} ${years === 1 ? 'سنة' : 'سنوات'}`);
+  if (months > 0) parts.push(`${months} ${months === 1 ? 'شهر' : 'شهور'}`);
+  if (days > 0 || parts.length === 0) parts.push(`${days} ${days === 1 ? 'يوم' : 'أيام'}`);
+
+  return `${parts.join(' و ')} (${diffDays} يوم)`;
+}
+
 async function generateReport(isRestoring=false){
   const e=await allTransactions(),
         t=$("report-type").value,
@@ -402,7 +456,6 @@ async function generateReport(isRestoring=false){
   if(!isRestoring && $("report-search"))$("report-search").value="";
   if(!isRestoring && $("report-sort-order"))$("report-sort-order").value="desc";
 
-  // حفظ الحالة الحالية في localStorage تلقائياً
   const stateData = {
     reportType: t,
     reportSubtype: a,
@@ -426,9 +479,12 @@ async function generateReport(isRestoring=false){
     if(t==="income"&&a!=="all"&&x.category!==a)return false;
     if(t==="debt"&&a!=="all"&&x.debtType!==a)return false;
     
-    if(accFilter!=="all"&&x.account!==accFilter&&x.toAccount!==accFilter)return false;
+    if(accFilter!=="all"){
+      const matchAccount = (x.account === accFilter) || (x.toAccount === accFilter);
+      if(!matchAccount) return false;
+    }
 
-    if(n!=="all"&&((x.type==="debt"&&x.person!==n)||(x.type==="transfer"&&!(x.beneficiaries||[]).some(b=>b.name!==n))))return false; // تم تصحيح الشرط للمستفيدين
+    if(n!=="all"&&((x.type==="debt"&&x.person!==n)||(x.type==="transfer"&&!(x.beneficiaries||[]).some(b=>b.name!==n))))return false;
     if(s&&iso<s)return false;
     if(r&&iso>r)return false;
     return true;
@@ -440,7 +496,10 @@ async function generateReport(isRestoring=false){
   $("filter-section").classList.add("hidden");
   $("report-section").classList.remove("hidden");
   reportGenerated=true;
-  $("display-date-range").textContent=(s?fmtDate(s):"البداية")+" إلى "+(r?fmtDate(r):"النهاية");
+  
+  const durationText = calculatePeriodDuration(s, r);
+  $("display-date-range").innerHTML = `${(s?fmtDate(s):"البداية")} إلى ${(r?fmtDate(r):"النهاية")} <br><small style="color:var(--emerald-neon)">⏱️ المدة: ${durationText}</small>`;
+  
   $("display-target").textContent=n==="all"?"الكل":n;
   $("display-count").textContent=o.length+" حركة";
   
@@ -651,7 +710,7 @@ function updateReportSummaries(e){
       }
 
       if(Object.keys(debtTypes).length>0 && (n==="all" || n==="debt")){
-        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--amber-val);margin-top:6px">⚖️ تفصيل حركات الذمم المالية:</div>';
+        boxHtml+='<div style="font-size:11.5px;font-weight:800;color:var(--amber-val);margin-top:6px">⚖️ تفصيل حركات الذمم المالية:</div>';
         for(let k in debtTypes){
           boxHtml+=`<div class="row-between" style="padding-right:8px"><span>- ${escapeHTML(k)}:</span><strong class="amount">${money(debtTypes[k])}</strong></div>`;
         }
@@ -737,23 +796,38 @@ function backToFilters(){
 
 function filterReportTable(){
   const searchTxt=$("report-search")?$("report-search").value.toLowerCase().trim():"";
-  
-  // تحديث البحث في الـ state المحفوظ
-  const savedStateRaw = localStorage.getItem(REPORT_STATE_KEY);
+  const savedStateRaw=localStorage.getItem(REPORT_STATE_KEY);
   if(savedStateRaw){
     try{
-      let st = JSON.parse(savedStateRaw);
-      st.searchQuery = searchTxt;
-      st.sortOrder = $("report-sort-order") ? $("report-sort-order").value : "desc";
-      localStorage.setItem(REPORT_STATE_KEY, JSON.stringify(st));
+      let st=JSON.parse(savedStateRaw);
+      st.searchQuery=searchTxt;
+      st.sortOrder=$("report-sort-order")?$("report-sort-order").value:"desc";
+      localStorage.setItem(REPORT_STATE_KEY,JSON.stringify(st));
     }catch(e){}
   }
-
   if(!cachedReportRecords.length)return;
   const filtered=searchTxt?cachedReportRecords.filter(x=>{
     const accName=getAccountById(x.account||"cash_default").name||"";
-    const str=`${x.category||""} ${x.person||""} ${(x.beneficiaries||[]).map(b=>b.name).join(" ")} ${x.notes||""} ${fmtDate(x.date)} ${accName}`;
-    return str.toLowerCase().includes(searchTxt);
+    const toAccName=x.toAccount?(getAccountById(x.toAccount).name||""):"";
+    const party=x.person||(x.beneficiaries||[]).map(b=>b.name).join(" ")||"";
+    const notes=x.notes||"";
+    const dateFormatted=fmtDate(x.date);
+    const category=x.category||"";
+    
+    let dynamicText="";
+    const typeVal=$("report-type")?$("report-type").value:"";
+    if(x.type==="debt"||typeVal==="debt"){
+      dynamicText+=" "+debtTypeLabel(x.debtType);
+    }
+    if(x.type==="transfer"){
+      dynamicText+=" "+(x.beneficiaries||[]).map(b=>`${b.name} ${b.egp} جنيه`).join(" ");
+    }
+    if(x.type==="expense"){
+      dynamicText+=(x.budgetId==="fixed"||x.isFixed)?" مصروفات ثابتة":" نثريات وعادية";
+    }
+
+    const fullSearchString=`${category} ${party} ${notes} ${dateFormatted} ${accName} ${toAccName} ${dynamicText}`.toLowerCase();
+    return fullSearchString.includes(searchTxt);
   }):cachedReportRecords.slice();
   
   visibleReportRecords=filtered;
@@ -1185,7 +1259,6 @@ window.addEventListener("DOMContentLoaded",async()=>{
     await updateReportTargetOptions();
     populateAccountFilterSelect();
 
-    // التحقق هل هناك حالة تقرير محفوظة مسبقاً لاسترجاعها تلقائياً
     const savedStateRaw = localStorage.getItem(REPORT_STATE_KEY);
     if(savedStateRaw){
       try{
@@ -1210,7 +1283,6 @@ window.addEventListener("DOMContentLoaded",async()=>{
           if(st.searchQuery && $("report-search")) $("report-search").value = st.searchQuery;
           if(st.sortOrder && $("report-sort-order")) $("report-sort-order").value = st.sortOrder;
 
-          // تشغيل التقرير أوتوماتيكياً بنفس الفلاتر السابقة
           await generateReport(true);
         }
       }catch(err){
