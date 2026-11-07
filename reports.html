@@ -78,6 +78,38 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
 .date-parts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
 .date-parts input{text-align:center;padding:6px 2px}
 .row-between{display:flex;justify-content:space-between;align-items:center;gap:4px}
+
+/* ====== NEW: Health Score / Budget / Heatmap / Anomaly ====== */
+.health-score-panel{
+  background:linear-gradient(135deg, rgba(16,185,129,0.08), rgba(16,185,129,0.02));
+  border:1px solid var(--border-neon);border-radius:12px;padding:10px;
+}
+.budget-bar-wrap{
+  background:var(--border-subtle);border-radius:6px;height:22px;overflow:hidden;position:relative;
+  border:1px solid var(--border-subtle);
+}
+.budget-bar-fill{
+  height:100%;display:flex;align-items:center;justify-content:flex-end;
+  padding:0 8px;font-size:10.5px;font-weight:900;color:white;
+  transition:width 0.4s ease;min-width:40px;
+}
+.heatmap-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:2px;direction:rtl;
+}
+.heatmap-day-label{
+  text-align:center;font-weight:900;font-size:9px;color:var(--ink-muted);padding:2px 0;
+}
+.heatmap-cell{
+  aspect-ratio:1;border-radius:4px;display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;border:1px solid var(--border-subtle);
+  color:var(--ink);cursor:help;position:relative;
+}
+.heatmap-empty{background:transparent;border:0;}
+.anomaly-item{
+  background:rgba(251,113,133,0.06);border:1px solid rgba(251,113,133,0.3);
+  border-radius:8px;padding:6px 8px;margin-top:4px;font-size:11px;
+}
+
 @media (min-width: 600px){:root{--app-max: 720px}}
 @media (min-width: 900px){
   :root{--app-max: 1100px}
@@ -91,7 +123,7 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
 }
 @media print{
   .no-print{display:none!important}
-  .report tr,.report .report-head,.report .report-meta,.report .report-summary,.report .metric,.report .balance-card,.report .panel,.person-item,.table-wrap{break-inside:avoid;page-break-inside:avoid}
+  .report tr,.report .report-head,.report .report-meta,.report .report-summary,.report .metric,.report .balance-card,.report .panel,.person-item,.table-wrap,.health-score-panel{break-inside:avoid;page-break-inside:avoid}
   .table-wrap{overflow:visible!important}
   .report{box-shadow:none;border:0;width:100%!important;padding:0!important}
 }
@@ -122,9 +154,37 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
   <section id="finance-ledger-view" class="stack">
     <div id="filter-section" class="stack no-print">
       <div class="panel" style="background:rgba(16,185,129,0.08);border-color:var(--border-neon);color:var(--emerald-neon);font-size:11.5px;font-weight:700">حدد معايير التقرير</div>
-      <div><label>التصنيف الرئيسي</label><select id="report-type" onchange="onReportTypeChange()"><option value="expense">مصروفات</option><option value="income">دخل</option><option value="debt">ديون وعلاقات مالية</option><option value="transfer">تحويلات مالية خارجية</option><option value="internal_transfer">تحويلات بين الحسابات</option><option value="all">ملخص كل المعاملات</option></select></div>
-      
-      <div><label>الحساب / طريقة الدفع</label><select id="report-account-filter"><option value="all">كل الحسابات (شامل)</option></select></div>
+
+      <div class="grid2">
+        <div><label>التصنيف الرئيسي</label><select id="report-type" onchange="onReportTypeChange()"><option value="expense">مصروفات</option><option value="income">دخل</option><option value="debt">ديون وعلاقات مالية</option><option value="transfer">تحويلات مالية خارجية</option><option value="internal_transfer">تحويلات بين الحسابات</option><option value="all">ملخص كل المعاملات</option></select></div>
+        <div><label>الحساب / طريقة الدفع</label><select id="report-account-filter"><option value="all">كل الحسابات (شامل)</option></select></div>
+      </div>
+
+      <div class="panel" style="background:rgba(16,185,129,0.05);border-color:var(--border-neon);gap:8px;">
+        <div class="row-between" style="font-weight:800;font-size:11.5px;color:var(--emerald-neon);">
+          <span>🔄 مقارنة بين دورتين راتب</span>
+          <button type="button" class="btn btn-soft action-btn-mini" onclick="toggleCompareMode()" id="compare-mode-toggle-btn">تفعيل المقارنة ➕</button>
+        </div>
+        <div id="compare-selectors-box" class="stack hidden" style="margin-top:2px;">
+          <div class="grid2">
+            <div>
+              <label>الدورة الأولى (السابقة)</label>
+              <select id="filter-cycle-1" onchange="applyCycleSelection(1)">
+                <option value="">اختر الدورة...</option>
+              </select>
+            </div>
+            <div>
+              <label>الدورة الثانية (المقارنة)</label>
+              <select id="filter-cycle-2" onchange="applyCycleSelection(2)">
+                <option value="">اختر الدورة...</option>
+              </select>
+            </div>
+          </div>
+          <div class="small" style="color:var(--ink-muted);text-align:center;">
+            💡 عند التفعيل، سيتم مقارنة الإيرادات، المصروفات الثابتة، والنثريات بين الدورتين جنباً إلى جنب.
+          </div>
+        </div>
+      </div>
 
       <div id="report-subtype-wrap"><label>النوع الفرعي</label><select id="report-subtype" onchange="updateReportTargetOptions()"></select></div>
       <div id="report-target-wrap"><label>الطرف / المستفيد</label><div class="person-picker"><select id="beneficiary-select"><option value="all">الكل</option></select><button type="button" class="btn btn-soft btn-plus" onclick="openPersonModal(this)" title="إضافة اسم جديد">+</button></div></div>
@@ -136,17 +196,22 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
         <button type="button" onclick="setSalaryCycleDates()" class="btn btn-soft" style="font-size:10.5px;padding:4px 6px;">📅 دورة الراتب</button>
         <button type="button" onclick="setOldestTransactionDate()" class="btn btn-soft" style="font-size:10.5px;padding:4px 6px;">⏮️ أقدم معاملة</button>
       </div>
+
+      <!-- NEW: Custom title + Notes -->
+      <div><label>🏷️ اسم التقرير (اختياري)</label><input id="report-custom-title" maxlength="60" placeholder="مثال: تقرير أكتوبر 2026"></div>
+      <div><label>📝 ملاحظات التقرير (اختياري — تظهر في المستند النهائي)</label><textarea id="report-notes" maxlength="500" rows="2" placeholder="أي ملاحظات تريد إضافتها للتقرير..." style="resize:vertical;min-height:44px"></textarea></div>
+
       <button type="button" onclick="generateReport()" class="btn btn-dark">إنشاء التقرير 📄</button>
     </div>
-    
+
     <div id="report-section" class="stack hidden">
       <button type="button" onclick="backToFilters()" class="btn btn-soft no-print">⬅️ تعديل معايير التقرير</button>
-      
+
       <div class="grid2 no-print">
         <div id="report-search-wrap"><label>🔍 بحث ذكي داخل التقرير</label><input id="report-search" placeholder="اكتب للبحث في كافة عناصر التقرير..." oninput="filterReportTable()"></div>
         <div><label>🔄 ترتيب حسب التاريخ</label><select id="report-sort-order" onchange="filterReportTable()"><option value="desc">الأحدث أولاً</option><option value="asc">الأقدم أولاً</option></select></div>
       </div>
-      
+
       <div id="capture-area" class="report">
         <div class="report-head">
           <h2 id="report-title" style="margin:0;font-size:16px">كشف حساب مالي</h2>
@@ -158,6 +223,13 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
           <div class="row-between"><span>الطرف / التصنيف:</span><strong id="display-target">الكل</strong></div>
           <div class="row-between"><span>عدد الحركات:</span><strong id="display-count">0</strong></div>
         </div>
+
+        <!-- NEW: Health Score -->
+        <div id="health-score-panel" class="health-score-panel hidden"></div>
+
+        <!-- NEW: Budget vs Actual -->
+        <div id="budget-panel" class="panel hidden" style="gap:8px"></div>
+
         <div class="table-wrap">
           <table>
             <thead id="report-table-head"></thead>
@@ -165,9 +237,38 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
           </table>
         </div>
         <div id="sub-breakdowns-box" class="panel hidden" style="font-size:11.5px;gap:8px"></div>
+
+        <!-- NEW: Heatmap -->
+        <div id="heatmap-panel" class="panel hidden" style="gap:8px">
+          <div style="font-weight:900;color:var(--emerald-neon);font-size:11.5px">🔥 خريطة الصرف اليومي</div>
+          <div id="heatmap-container"></div>
+          <div class="small" style="display:flex;justify-content:center;gap:8px;align-items:center">
+            <span>أقل</span>
+            <span style="display:inline-block;width:10px;height:10px;background:rgba(251,191,36,0.15);border-radius:2px"></span>
+            <span style="display:inline-block;width:10px;height:10px;background:rgba(251,191,36,0.4);border-radius:2px"></span>
+            <span style="display:inline-block;width:10px;height:10px;background:rgba(251,191,36,0.7);border-radius:2px"></span>
+            <span style="display:inline-block;width:10px;height:10px;background:rgba(251,113,133,0.9);border-radius:2px"></span>
+            <span>أكثر</span>
+          </div>
+        </div>
+
+        <!-- NEW: Anomaly -->
+        <div id="anomaly-panel" class="panel hidden"></div>
+
         <div class="report-summary" id="report-summary"></div>
+
+        <!-- NEW: Forecast -->
+        <div id="forecast-line" class="hint hidden" style="text-align:center;font-weight:700"></div>
+
         <div id="ledger-breakdowns" class="stack"></div>
         <div id="tafqit-box" class="panel" style="font-size:11.5px;text-align:center;font-weight:700">ملاحظات التقرير ستظهر هنا.</div>
+
+        <!-- NEW: Notes Display -->
+        <div id="report-notes-display" class="panel hidden" style="background:rgba(56,189,248,0.05);border-color:rgba(56,189,248,0.3)">
+          <div style="font-weight:900;color:var(--sky-val);font-size:11.5px">📝 ملاحظات</div>
+          <div id="report-notes-text" style="font-size:11.5px;line-height:1.5;white-space:pre-wrap"></div>
+        </div>
+
         <div style="font-size:10px;color:var(--ink-muted);text-align:center;border-top:1px solid var(--border-subtle);padding-top:8px">تم إصدار هذا المستند إلكترونياً من النظام المالي الشخصي ولا يحتاج إلى ختم.</div>
       </div>
 
@@ -202,6 +303,8 @@ const THEME_KEY="pf_theme_pref";
 const REPORT_STATE_KEY="pf_report_saved_state";
 
 let db=null,activePersonCallback=null,currentFinanceTab="ledger",toastTimer=null,cachedReportRecords=[],visibleReportRecords=[],cachedReportRange={from:"",to:""},reportGenerated=!1;
+let isCompareModeActive=false, allCyclesCache=[];
+let cachedBudgetData=null, cachedHealthScore=null, cachedAnomalies=[], cachedForecast=null;
 
 function $(e){return document.getElementById(e)}
 
@@ -234,7 +337,6 @@ function todayISO(){const e=new Date;return formatStrictISO(e.getFullYear(),e.ge
 function firstOfMonthISO(){const e=new Date;return formatStrictISO(e.getFullYear(),e.getMonth()+1,1)}
 function fmtDate(e){if(!e)return"";const t=e.split("-");if(t.length<3)return e;const[a,n,s]=t;return`${String(s).padStart(2,"0")}/${String(n).padStart(2,"0")}/${a}`}
 
-// 🟢 توحيد مسمى "الكاش" ليطابق الصفحة الرئيسية حرفياً
 function getAccounts(){
   return [
     {id:"cash_default",name:"الكاش",type:"cash",icon:"💵"},
@@ -243,7 +345,6 @@ function getAccounts(){
   ];
 }
 
-// 🟢 دالة ذكية للتعامل مع المعاملات القديمة وترجمتها للكاش تلقائياً
 function getAccountById(id){
   if(!id || id === "outside" || id === "dummy_account") {
     return { id: "cash_default", name: "الكاش", type: "cash", icon: "💵" };
@@ -342,7 +443,7 @@ async function allTransactions(){
         }
         return e;
       });
-      res(t.sort((x,y)=>y.date.localeCompare(x.date)||(y.time||"").localeCompare(x.time||"")||y.id.localeCompare(x.id)));
+      res(t.sort((x,y)=>y.date.localeCompare(x.date)||(y.time||"").localeCompare(y.time||"")||y.id.localeCompare(x.id)));
     };
     a.onerror=()=>rej(a.error);
   });
@@ -359,6 +460,55 @@ function debtTypeLabel(e){
     debtor:   "سدّدت له (تخفيض ذمة دائنة)",
     opening_balance: "رصيد افتتاحي (دين سابق)"
   }[e] || e || "";
+}
+
+function toggleCompareMode(){
+  isCompareModeActive = !isCompareModeActive;
+  const box = $("compare-selectors-box");
+  const btn = $("compare-mode-toggle-btn");
+  if(isCompareModeActive){
+    box.classList.remove("hidden");
+    btn.textContent = "إلغاء المقارنة ✖";
+    btn.className = "btn btn-danger action-btn-mini";
+    populateCompareCyclesSelects().catch(()=>{});
+  } else {
+    box.classList.add("hidden");
+    btn.textContent = "تفعيل المقارنة ➕";
+    btn.className = "btn btn-soft action-btn-mini";
+  }
+}
+
+async function populateCompareCyclesSelects(){
+  const txs = await allTransactions();
+  allCyclesCache = getAllSalaryCycles(txs);
+  const sel1 = $("filter-cycle-1");
+  const sel2 = $("filter-cycle-2");
+  if(!sel1 || !sel2) return;
+  
+  const opts = '<option value="">اختر الدورة...</option>' + allCyclesCache.map((c, idx) => `<option value="${idx}">${escapeHTML(c.label)} (${fmtDate(c.start)} إلى ${fmtDate(c.end)})</option>`).join("");
+  sel1.innerHTML = opts;
+  sel2.innerHTML = opts;
+}
+
+function applyCycleSelection(which){
+  const sel1 = $("filter-cycle-1");
+  const sel2 = $("filter-cycle-2");
+  if(!sel1 || !sel2) return;
+  const idx1 = sel1.value;
+  const idx2 = sel2.value;
+  
+  if(which === 2 && idx2 !== "" && allCyclesCache[idx2]){
+    const c = allCyclesCache[idx2];
+    writeDateParts("date-from", c.start);
+    writeDateParts("date-to", c.end);
+    showToast(`تم ضبط نطاق التاريخ على: ${c.label}`);
+  } else if(which === 1 && idx1 !== "" && allCyclesCache[idx1]){
+    const c = allCyclesCache[idx1];
+    if(!sel2.value){
+      writeDateParts("date-from", c.start);
+      writeDateParts("date-to", c.end);
+    }
+  }
 }
 
 async function onReportTypeChange(){
@@ -451,8 +601,427 @@ function calculatePeriodDuration(dateFromStr, dateToStr){
   return `${parts.join(' و ')} (${diffDays} يوم)`;
 }
 
+/* ==========================================================
+   NEW: Health Score Calculation
+   ========================================================== */
+function calculateHealthScore(allTxs, periodTxs, periodIncome, periodExpense, fixedExpense, daysCount) {
+  // 1) Savings Score (35%) — 30%+ savings rate = full points
+  let savingsScore = 0;
+  if (periodIncome > 0) {
+    const savingsRate = Math.max(0, (periodIncome - periodExpense) / periodIncome);
+    savingsScore = Math.min(100, (savingsRate / 0.30) * 100);
+  } else {
+    return null; // No income → hide score entirely
+  }
+
+  // 2) Fixed Ratio Score (25%) — <50% fixed = full, >80% = 0
+  let fixedScore = 100;
+  if (periodExpense > 0) {
+    const fixedRatio = fixedExpense / periodExpense;
+    if (fixedRatio <= 0.5) fixedScore = 100;
+    else if (fixedRatio >= 0.8) fixedScore = 0;
+    else fixedScore = ((0.8 - fixedRatio) / 0.3) * 100;
+  }
+
+  // 3) Stability Score (20%) — based on coefficient of variation of daily expenses
+  let stabilityScore = 50;
+  const dailyExp = {};
+  periodTxs.forEach(x => {
+    if (x.type === "expense") {
+      dailyExp[x.date] = (dailyExp[x.date] || 0) + realAmount(x);
+    }
+  });
+  const dailyVals = Object.values(dailyExp);
+  if (dailyVals.length >= 3) {
+    const mean = dailyVals.reduce((a, b) => a + b, 0) / dailyVals.length;
+    if (mean > 0) {
+      const variance = dailyVals.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / dailyVals.length;
+      const cv = Math.sqrt(variance) / mean;
+      if (cv <= 0.5) stabilityScore = 100;
+      else if (cv >= 2) stabilityScore = 0;
+      else stabilityScore = ((2 - cv) / 1.5) * 100;
+    }
+  }
+
+  // 4) Debt Aging Score (20%) — % of creditor debt older than 90 days
+  let debtScore = 100;
+  const today = new Date();
+  const personDebt = {};
+  allTxs.filter(x => x.type === "debt").forEach(x => {
+    const p = x.person || "غير محدد";
+    if (!personDebt[p]) personDebt[p] = { amount: 0, oldestDate: x.date };
+    if (isCreditorEntry(x) || isOpeningEntry(x)) {
+      personDebt[p].amount += realAmount(x);
+      if (x.date < personDebt[p].oldestDate) personDebt[p].oldestDate = x.date;
+    } else if (isDebtorEntry(x)) {
+      personDebt[p].amount -= realAmount(x);
+    }
+  });
+  let totalActiveDebt = 0, oldDebt = 0;
+  for (const p in personDebt) {
+    if (personDebt[p].amount > 0) {
+      totalActiveDebt += personDebt[p].amount;
+      const ageDays = Math.floor((today - new Date(personDebt[p].oldestDate)) / (1000 * 60 * 60 * 24));
+      if (ageDays > 90) oldDebt += personDebt[p].amount;
+    }
+  }
+  if (totalActiveDebt > 0) {
+    const oldRatio = oldDebt / totalActiveDebt;
+    debtScore = Math.max(0, (1 - oldRatio * 2) * 100);
+  }
+
+  const total = savingsScore * 0.35 + fixedScore * 0.25 + stabilityScore * 0.20 + debtScore * 0.20;
+  return {
+    total: Math.round(total),
+    breakdown: {
+      savings: Math.round(savingsScore),
+      fixed: Math.round(fixedScore),
+      stability: Math.round(stabilityScore),
+      debt: Math.round(debtScore)
+    }
+  };
+}
+
+function renderHealthScore(health) {
+  const panel = $("health-score-panel");
+  if (!panel) return;
+  if (!health) { panel.classList.add("hidden"); return; }
+
+  const { total, breakdown } = health;
+  let color, label, icon;
+  if (total >= 85) { color = "#10b981"; label = "ممتاز"; icon = "🟢"; }
+  else if (total >= 70) { color = "#fbbf24"; label = "جيد"; icon = "🟡"; }
+  else if (total >= 50) { color = "#f97316"; label = "يحتاج تحسين"; icon = "🟠"; }
+  else { color = "#fb7185"; label = "خطر"; icon = "🔴"; }
+
+  const circumference = 100.53; // 2*π*16
+  const dashOffset = circumference - (total / 100) * circumference;
+
+  panel.innerHTML = `
+    <div style="font-weight:900;color:var(--emerald-neon);font-size:11.5px;margin-bottom:8px">🏥 مؤشر الصحة المالية</div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="position:relative;width:80px;height:80px;flex-shrink:0">
+        <svg viewBox="0 0 36 36" style="width:100%;height:100%;transform:rotate(-90deg)">
+          <circle cx="18" cy="18" r="16" fill="none" stroke="var(--border-subtle)" stroke-width="3"></circle>
+          <circle cx="18" cy="18" r="16" fill="none" stroke="${color}" stroke-width="3"
+                  stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}" stroke-linecap="round"></circle>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <span style="font-size:20px;font-weight:900;color:${color};line-height:1">${total}</span>
+          <span style="font-size:8px;color:var(--ink-muted)">من 100</span>
+        </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:3px">
+        <div style="font-weight:900;color:${color};font-size:13px">${icon} ${label}</div>
+        <div class="small" style="display:flex;flex-direction:column;gap:2px">
+          <div class="row-between"><span>💰 معدل الادخار (35%)</span><strong>${breakdown.savings}</strong></div>
+          <div class="row-between"><span>📌 نسبة الثابت (25%)</span><strong>${breakdown.fixed}</strong></div>
+          <div class="row-between"><span>📊 الاستقرار (20%)</span><strong>${breakdown.stability}</strong></div>
+          <div class="row-between"><span>⏰ تقادم الديون (20%)</span><strong>${breakdown.debt}</strong></div>
+        </div>
+      </div>
+    </div>
+  `;
+  panel.classList.remove("hidden");
+}
+
+/* ==========================================================
+   NEW: Budget vs Actual
+   ========================================================== */
+function calculateBudgetData(allTxs, fromDate, toDate, periodExpense) {
+  const salaryTxs = allTxs.filter(x =>
+    x.type === "income" && x.isSalaryBase === true &&
+    (!fromDate || x.date >= fromDate) && (!toDate || x.date <= toDate)
+  );
+  if (salaryTxs.length === 0) return null;
+
+  let budget = salaryTxs.reduce((sum, x) => sum + realAmount(x), 0);
+
+  // Pro-rata if period < 28 days AND single salary
+  if (fromDate && toDate && salaryTxs.length === 1) {
+    const days = Math.ceil((new Date(toDate) - new Date(fromDate)) / (1000 * 60 * 60 * 24)) + 1;
+    if (days < 28) budget = budget * days / 30;
+  }
+
+  return { budget, salaryCount: salaryTxs.length, consumed: periodExpense };
+}
+
+function renderBudgetPanel(budgetData, categoryBreakdown) {
+  const panel = $("budget-panel");
+  if (!panel) return;
+  if (!budgetData) { panel.classList.add("hidden"); return; }
+
+  const { budget, salaryCount, consumed } = budgetData;
+  const remaining = budget - consumed;
+  const percent = budget > 0 ? (consumed / budget) * 100 : 0;
+  const percentClamped = Math.min(100, percent);
+
+  let barColor = "#10b981";
+  if (percent >= 90) barColor = "#fb7185";
+  else if (percent >= 75) barColor = "#f97316";
+  else if (percent >= 50) barColor = "#fbbf24";
+
+  let html = `
+    <div style="font-weight:900;color:var(--emerald-neon);font-size:11.5px">💰 الميزانية مقابل الفعلي</div>
+    <div class="row-between" style="font-size:11.5px">
+      <span>الميزانية (راتب أساسي × ${salaryCount}):</span>
+      <strong>${money(budget)}</strong>
+    </div>
+    <div class="row-between" style="font-size:11.5px">
+      <span>المصروف الفعلي:</span>
+      <strong style="color:${barColor}">${money(consumed)}</strong>
+    </div>
+    <div class="budget-bar-wrap">
+      <div class="budget-bar-fill" style="width:${percentClamped}%;background:${barColor}">${percent.toFixed(1)}%</div>
+    </div>
+    <div class="row-between" style="font-size:11.5px;border-top:1px dashed var(--border-subtle);padding-top:4px">
+      <span>${remaining >= 0 ? "✅ المتبقي:" : "⚠️ التجاوز:"}</span>
+      <strong style="color:${remaining >= 0 ? "var(--green-val)" : "var(--red-val)"}">${money(Math.abs(remaining))}</strong>
+    </div>
+  `;
+
+  if (categoryBreakdown && Object.keys(categoryBreakdown).length > 0) {
+    html += '<div style="font-size:10.5px;font-weight:800;color:var(--ink-muted);margin-top:6px;border-top:1px dashed var(--border-subtle);padding-top:4px">📊 توزيع المصروفات على التصنيفات (نسبة من الراتب):</div>';
+    const sorted = Object.entries(categoryBreakdown).sort((a, b) => b[1] - a[1]);
+    sorted.forEach(([cat, amt]) => {
+      const pctOfSalary = budget > 0 ? (amt / budget) * 100 : 0;
+      html += `<div class="row-between" style="font-size:10.5px;padding-right:8px">
+        <span>${escapeHTML(cat)}</span>
+        <strong>${money(amt)} <small style="color:var(--ink-muted)">(${pctOfSalary.toFixed(1)}%)</small></strong>
+      </div>`;
+    });
+  }
+
+  panel.innerHTML = html;
+  panel.classList.remove("hidden");
+}
+
+/* ==========================================================
+   NEW: Anomaly Detection
+   ========================================================== */
+function detectAnomalies(periodTxs) {
+  const byCat = {};
+  periodTxs.filter(x => x.type === "expense").forEach(x => {
+    const cat = x.category || "مصروفات أخرى";
+    if (!byCat[cat]) byCat[cat] = [];
+    byCat[cat].push({ amount: realAmount(x), tx: x });
+  });
+
+  const anomalies = [];
+  for (const cat in byCat) {
+    const items = byCat[cat];
+    if (items.length < 3) continue;
+    const amounts = items.map(i => i.amount);
+    const mean = amounts.reduce((a, b) => a + b, 0) / amounts.length;
+    const variance = amounts.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / amounts.length;
+    const stdDev = Math.sqrt(variance);
+    items.forEach(item => {
+      if (item.amount > mean + 2 * stdDev && item.amount > 2 * mean) {
+        anomalies.push({ category: cat, amount: item.amount, mean, tx: item.tx });
+      }
+    });
+  }
+  return anomalies.sort((a, b) => b.amount - a.amount);
+}
+
+function renderAnomalyPanel(anomalies) {
+  const panel = $("anomaly-panel");
+  if (!panel) return;
+  if (!anomalies || anomalies.length === 0) { panel.classList.add("hidden"); return; }
+
+  let html = `<div style="font-weight:900;color:var(--red-val);font-size:11.5px">🚨 كشف الشذوذ — حركات غير معتادة</div>`;
+  anomalies.slice(0, 5).forEach(a => {
+    html += `<div class="anomaly-item">
+      <div class="row-between" style="font-weight:800">
+        <span>${escapeHTML(a.category)}</span>
+        <strong class="bad">${money(a.amount)}</strong>
+      </div>
+      <div class="small" style="margin-top:2px">
+        📅 ${fmtDate(a.tx.date)} — المتوسط: ${money(a.mean)} — ${a.tx.notes ? escapeHTML(a.tx.notes) : "بدون ملاحظات"}
+      </div>
+    </div>`;
+  });
+  if (anomalies.length > 5) {
+    html += `<div class="small" style="text-align:center;margin-top:4px">... و${anomalies.length - 5} حركة أخرى</div>`;
+  }
+  panel.innerHTML = html;
+  panel.classList.remove("hidden");
+}
+
+/* ==========================================================
+   NEW: Cash Flow Forecast
+   ========================================================== */
+function calculateForecast(allTxs, fromDate, toDate, accountFilter) {
+  // Starting balance = sum of all transactions BEFORE fromDate
+  let startingBalance = 0;
+  allTxs.forEach(x => {
+    if (fromDate && x.date >= fromDate) return;
+    if (accountFilter && accountFilter !== "all") {
+      const txAcc = x.account || "cash_default";
+      if (txAcc !== accountFilter && x.toAccount !== accountFilter) return;
+    }
+    if (x.type === "income" || isCreditorEntry(x) || isOpeningEntry(x)) {
+      startingBalance += realAmount(x);
+    } else if (x.type === "expense" || x.type === "transfer" || isDebtorEntry(x)) {
+      startingBalance -= realAmount(x);
+    }
+  });
+
+  // Average daily expense during period
+  const periodExpenses = allTxs.filter(x => {
+    if (fromDate && x.date < fromDate) return false;
+    if (toDate && x.date > toDate) return false;
+    if (x.type !== "expense") return false;
+    if (accountFilter && accountFilter !== "all") {
+      const txAcc = x.account || "cash_default";
+      if (txAcc !== accountFilter) return false;
+    }
+    return true;
+  });
+
+  if (periodExpenses.length === 0) return null;
+
+  const totalExpense = periodExpenses.reduce((sum, x) => sum + realAmount(x), 0);
+  const days = fromDate && toDate
+    ? Math.max(1, Math.ceil((new Date(toDate) - new Date(fromDate)) / (1000 * 60 * 60 * 24)) + 1)
+    : 30;
+  const dailyBurn = totalExpense / days;
+  if (dailyBurn <= 0) return null;
+
+  const daysRemaining = startingBalance / dailyBurn;
+  const endDate = new Date();
+  endDate.setDate(endDate.getDate() + Math.floor(daysRemaining));
+  const endISO = formatStrictISO(endDate.getFullYear(), endDate.getMonth() + 1, endDate.getDate());
+
+  return {
+    startingBalance,
+    dailyBurn,
+    daysRemaining: Math.floor(daysRemaining),
+    endDate: endISO,
+    isLowData: days < 7
+  };
+}
+
+function renderForecast(forecast) {
+  const el = $("forecast-line");
+  if (!el) return;
+  if (!forecast) { el.classList.add("hidden"); return; }
+
+  const { startingBalance, dailyBurn, daysRemaining, endDate, isLowData } = forecast;
+  el.className = "hint";
+  el.style.textAlign = "center";
+  el.style.fontWeight = "700";
+
+  if (startingBalance <= 0) {
+    el.style.background = "rgba(251,113,133,0.1)";
+    el.style.borderColor = "rgba(251,113,133,0.3)";
+    el.style.color = "var(--red-val)";
+    el.innerHTML = `⚠️ <strong>تحذير:</strong> رصيد البداية (${money(startingBalance)}) غير كافٍ — أنت في منطقة سالبة قبل بداية الفترة!`;
+  } else if (daysRemaining < 1) {
+    el.style.background = "rgba(251,113,133,0.1)";
+    el.style.borderColor = "rgba(251,113,133,0.3)";
+    el.style.color = "var(--red-val)";
+    el.innerHTML = `🚨 <strong>تحذير:</strong> بالوتيرة الحالية (${money(dailyBurn)}/يوم)، الرصيد سيُستنفد خلال أقل من يوم!`;
+  } else {
+    el.style.background = "rgba(56,189,248,0.08)";
+    el.style.borderColor = "rgba(56,189,248,0.3)";
+    el.style.color = "var(--sky-val)";
+    el.innerHTML = `📉 بالوتيرة الحالية (${money(dailyBurn)}/يوم)، رصيدك (${money(startingBalance)}) يكفي حتى <strong>${fmtDate(endDate)}</strong> (≈ ${daysRemaining} يوم).${isLowData ? ' <small style="color:var(--amber-val)">⚠️ بيانات أقل من 7 أيام — التوقع أقل دقة</small>' : ''}`;
+  }
+  el.classList.remove("hidden");
+}
+
+/* ==========================================================
+   NEW: Heatmap
+   ========================================================== */
+function renderHeatmap(periodTxs, fromDate, toDate) {
+  const container = $("heatmap-container");
+  const panel = $("heatmap-panel");
+  if (!container || !panel) return;
+
+  if (!fromDate || !toDate) { panel.classList.add("hidden"); return; }
+
+  const dailyExp = {};
+  periodTxs.filter(x => x.type === "expense").forEach(x => {
+    dailyExp[x.date] = (dailyExp[x.date] || 0) + realAmount(x);
+  });
+
+  const start = new Date(fromDate);
+  const end = new Date(toDate);
+  if (isNaN(start) || isNaN(end) || start > end) { panel.classList.add("hidden"); return; }
+
+  const days = [];
+  const cursor = new Date(start);
+  let guard = 0;
+  while (cursor <= end && guard++ < 800) {
+    const y = cursor.getFullYear(), m = cursor.getMonth() + 1, d = cursor.getDate();
+    const iso = formatStrictISO(y, m, d);
+    days.push({ date: iso, amount: dailyExp[iso] || 0, dayOfWeek: cursor.getDay(), dayNum: d });
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  if (days.length === 0) { panel.classList.add("hidden"); return; }
+
+  const maxAmt = Math.max(...days.map(d => d.amount), 1);
+
+  const dayNames = ["أحد", "اثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"];
+
+  let html = '<div class="heatmap-grid">';
+  dayNames.forEach(d => html += `<div class="heatmap-day-label">${d}</div>`);
+
+  const firstDOW = start.getDay();
+  for (let i = 0; i < firstDOW; i++) html += '<div class="heatmap-empty"></div>';
+
+  days.forEach(d => {
+    const intensity = d.amount / maxAmt;
+    let bg = "var(--bg-card)";
+    let color = "var(--ink-muted)";
+    if (intensity > 0) {
+      if (intensity < 0.25) bg = "rgba(251,191,36,0.15)";
+      else if (intensity < 0.5) bg = "rgba(251,191,36,0.4)";
+      else if (intensity < 0.75) bg = "rgba(251,191,36,0.7)";
+      else bg = "rgba(251,113,133,0.9)";
+      color = intensity >= 0.5 ? "#0f172a" : "var(--ink)";
+    }
+    const tip = `${fmtDate(d.date)} — ${money(d.amount)}`;
+    html += `<div class="heatmap-cell" style="background:${bg};color:${color}" title="${escapeHTML(tip)}">${d.dayNum}</div>`;
+  });
+
+  html += '</div>';
+  container.innerHTML = html;
+  panel.classList.remove("hidden");
+}
+
+/* ==========================================================
+   NEW: Notes Display
+   ========================================================== */
+function renderNotesDisplay(notesText) {
+  const panel = $("report-notes-display");
+  const textEl = $("report-notes-text");
+  if (!panel || !textEl) return;
+  if (!notesText || !notesText.trim()) {
+    panel.classList.add("hidden");
+    return;
+  }
+  textEl.textContent = notesText.trim();
+  panel.classList.remove("hidden");
+}
+
+/* ==========================================================
+   NEW: Apply Custom Title
+   ========================================================== */
+function applyCustomTitle(defaultTitle) {
+  const custom = $("report-custom-title") ? $("report-custom-title").value.trim() : "";
+  const finalTitle = custom || defaultTitle;
+  if ($("report-title")) $("report-title").textContent = finalTitle;
+  return finalTitle;
+}
+
+/* ==========================================================
+   Main: generateReport
+   ========================================================== */
 async function generateReport(isRestoring=false){
-  const e=await allTransactions(),
+  const allTxs=await allTransactions(),
         t=$("report-type").value,
         a=$("report-subtype").value,
         n=$("beneficiary-select").value,
@@ -470,11 +1039,16 @@ async function generateReport(isRestoring=false){
     dateFrom: { d: $("date-from-day")?.value, m: $("date-from-month")?.value, y: $("date-from-year")?.value },
     dateTo: { d: $("date-to-day")?.value, m: $("date-to-month")?.value, y: $("date-to-year")?.value },
     searchQuery: $("report-search") ? $("report-search").value : "",
-    sortOrder: $("report-sort-order") ? $("report-sort-order").value : "desc"
+    sortOrder: $("report-sort-order") ? $("report-sort-order").value : "desc",
+    isCompareActive: isCompareModeActive,
+    cycle1: $("filter-cycle-1")?.value,
+    cycle2: $("filter-cycle-2")?.value,
+    customTitle: $("report-custom-title")?.value || "",
+    notes: $("report-notes")?.value || ""
   };
   localStorage.setItem(REPORT_STATE_KEY, JSON.stringify(stateData));
 
-  const o=e.filter(x=>{
+  let o=allTxs.filter(x=>{
     const iso=formatStrictISO(...x.date.split("-"));
     if(t!=="all"&&x.type!==t)return false;
     if(t==="expense"&&a!=="all"){
@@ -484,7 +1058,7 @@ async function generateReport(isRestoring=false){
     }
     if(t==="income"&&a!=="all"&&x.category!==a)return false;
     if(t==="debt"&&a!=="all"&&x.debtType!==a)return false;
-    
+
     if(accFilter!=="all"){
       const txAcc = x.account || "cash_default";
       const matchAccount = (txAcc === accFilter) || (x.toAccount === accFilter);
@@ -496,31 +1070,32 @@ async function generateReport(isRestoring=false){
     if(r&&iso>r)return false;
     return true;
   });
-  
+
   cachedReportRecords=o;
   visibleReportRecords=o.slice();
   cachedReportRange={from:s,to:r};
   $("filter-section").classList.add("hidden");
   $("report-section").classList.remove("hidden");
   reportGenerated=true;
-  
+
   const durationText = calculatePeriodDuration(s, r);
   $("display-date-range").innerHTML = `${(s?fmtDate(s):"البداية")} إلى ${(r?fmtDate(r):"النهاية")} <br><small style="color:var(--emerald-neon)">⏱️ المدة: ${durationText}</small>`;
-  
+
   $("display-target").textContent=n==="all"?"الكل":n;
   $("display-count").textContent=o.length+" حركة";
-  
-  if(t==="transfer")$("report-title").textContent="كشف حساب المعاملات الخارجية (الحوالات)";
-  else if(t==="debt")$("report-title").textContent="كشف حساب الديون والعلاقات المالية (التفصيلي والحالة)";
-  else if(t==="internal_transfer")$("report-title").textContent="كشف التحويلات بين الحسابات";
-  else if(t==="expense")$("report-title").textContent="تقرير المصروفات المصنف";
-  else if(t==="income")$("report-title").textContent="تقرير الدخل والإيرادات";
-  else $("report-title").textContent="كشف حساب مالي — سجل المعاملات (شامل)";
-  
+
+  let defaultTitle = "كشف حساب مالي — سجل المعاملات (شامل)";
+  if(t==="transfer") defaultTitle="كشف حساب المعاملات الخارجية (الحوالات)";
+  else if(t==="debt") defaultTitle="كشف حساب الديون والعلاقات المالية (التفصيلي والحالة)";
+  else if(t==="internal_transfer") defaultTitle="كشف التحويلات بين الحسابات";
+  else if(t==="expense") defaultTitle="تقرير المصروفات المصنف (معزل الثابت)";
+  else if(t==="income") defaultTitle="تقرير الدخل والإيرادات";
+  applyCustomTitle(defaultTitle);
+
   $("capture-area").querySelector(".table-wrap").innerHTML='<table><thead id="report-table-head"></thead><tbody id="report-table-body"></tbody></table>';
   renderReportTableRows(o);
-  updateReportSummaries(o);
-  
+  updateReportSummaries(o, allTxs);
+
   if(isRestoring && $("report-search") && $("report-search").value){
     filterReportTable();
   }
@@ -533,17 +1108,17 @@ function renderReportTableRows(e){
   const typeVal=$("report-type").value;
   const beneficiarySelectVal=$("beneficiary-select")?$("beneficiary-select").value:"all";
   const sortOrder=$("report-sort-order")?$("report-sort-order").value:"desc";
-  
+
   if(typeVal==="debt" && beneficiarySelectVal==="all"){
     a.innerHTML='<tr><th style="width:12%">التاريخ</th><th style="width:18%">الطرف / الشخص</th><th style="width:22%">البيان / الوصف</th><th class="amount" style="width:14%">المبلغ</th><th class="amount" style="width:14%">رصيد الدين</th><th style="width:20%">الحالة</th></tr>';
-    
+
     if(!e.length)return void(t.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:15px">لا توجد ديون مسجلة.</td></tr>`);
 
     const sorted=[...e].sort((x,y)=>{
       const cmp=x.date.localeCompare(y.date)||(x.time||"").localeCompare(y.time||"")||x.id.localeCompare(y.id);
       return sortOrder==="asc"?cmp:-cmp;
     });
-    
+
     let debtRunning={};
     sorted.forEach(x=>{
       const p=x.person||"غير محدد";
@@ -558,7 +1133,7 @@ function renderReportTableRows(e){
       const debtLbl=debtTypeLabel(x.debtType);
       const amt=realAmount(x);
       const bal=x._currentBalance!==undefined?x._currentBalance:0;
-      
+
       let statusText="خالص ✔️";
       let statusClass="";
       if(bal>0){
@@ -586,13 +1161,13 @@ function renderReportTableRows(e){
   const isDebt=typeVal==="debt";
   const isExpense=typeVal==="expense";
   const s=beneficiarySelectVal;
-  
+
   if(isTransfer){
     a.innerHTML='<tr><th style="width:12%">التاريخ</th><th style="width:18%">التفاصيل</th><th style="width:14%">المستفيد</th><th style="width:10%">السعر</th><th class="amount" style="width:11%">المصري</th><th class="amount" style="width:11%">الكويتي</th><th class="amount" style="width:14%">الرصيد</th><th class="no-print" style="width:10%">إجراء</th></tr>';
   }else if(isDebt){
     a.innerHTML='<tr><th style="width:14%">التاريخ</th><th style="width:20%">نوع الحركة</th><th style="width:20%">الطرف / الجهة</th><th class="amount" style="width:14%">المبلغ</th><th class="amount" style="width:14%">رصيد الدين</th><th class="no-print" style="width:18%">إجراء</th></tr>';
   }else if(isExpense){
-    a.innerHTML='<tr><th style="width:15%">التاريخ</th><th style="width:22%">التصنيف</th><th style="width:18%">البند</th><th style="width:15%">الحساب</th><th class="amount" style="width:15%">المبلغ</th><th class="no-print" style="width:15%">إجراء</th></tr>';
+    a.innerHTML='<tr><th style="width:15%">التاريخ</th><th style="width:22%">التصنيف</th><th style="width:18%">نوع المصروف</th><th style="width:15%">الحساب</th><th class="amount" style="width:15%">المبلغ</th><th class="no-print" style="width:15%">إجراء</th></tr>';
   }else{
     a.innerHTML='<tr><th style="width:12%">التاريخ</th><th style="width:20%">النوع / البيان</th><th style="width:14%">الطرف</th><th style="width:12%">الحساب</th><th class="amount" style="width:13%">المبلغ</th><th class="amount" style="width:13%">الرصيد</th><th class="no-print" style="width:14%">إجراء</th></tr>';
   }
@@ -604,7 +1179,7 @@ function renderReportTableRows(e){
     return sortOrder==="asc"?cmp:-cmp;
   });
   const running={};
-  
+
   if(isDebt){
     let debtRunning={};
     sorted.forEach(x=>{
@@ -646,7 +1221,7 @@ function renderReportTableRows(e){
       html+=`<tr data-id="${x.id}"><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(debtLbl)}</strong><br><small>${escapeHTML(x.notes||"")}</small></td><td>${escapeHTML(x.person||"—")}</td><td class="amount">${money(amt)}</td><td class="amount"><strong>${money(balance)}</strong></td>${actionBtns}</tr>`;
     }else if(isExpense){
       const amt=realAmount(x);
-      const bLabel = (x.budgetId==="fixed" || x.isFixed) ? "📌 مصروفات ثابتة" : "🛍️ نثريات وعادية";
+      const bLabel = (x.budgetId==="fixed" || x.isFixed) ? '<span style="color:var(--amber-val);font-weight:bold">📌 ثابتة</span>' : '<span style="color:var(--sky-val)">🛍️ نثريات وعادية</span>';
       html+=`<tr data-id="${x.id}"><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(x.category)}</strong><br><small>${escapeHTML(x.notes||"")}</small></td><td>${bLabel}</td><td><small>${escapeHTML(accFromName)}</small></td><td class="amount">${money(amt)}</td>${actionBtns}</tr>`;
     }else{
       const amt=realAmount(x);
@@ -664,7 +1239,7 @@ function renderReportTableRows(e){
   t.innerHTML=html;
 }
 
-function updateReportSummaries(e){
+async function updateReportSummaries(e, allTxsData=[]){
   const n=$("report-type").value,
         s=$("beneficiary-select")?$("beneficiary-select").value:"all",
         r=e.reduce((a,x)=>(x.type==="income"||isCreditorEntry(x))?a+realAmount(x):a,0),
@@ -675,11 +1250,59 @@ function updateReportSummaries(e){
         d=r-o,
         m=n==="debt"?c:d;
 
+  let fixedExpensesTotal = 0;
+  let regularExpensesTotal = 0;
+  const categoryExpBreakdown = {};
+  e.forEach(x => {
+    if(x.type === "expense") {
+      const amt = realAmount(x);
+      if(x.budgetId === "fixed" || x.isFixed) fixedExpensesTotal += amt;
+      else regularExpensesTotal += amt;
+      const cat = x.category || "مصروفات أخرى";
+      categoryExpBreakdown[cat] = (categoryExpBreakdown[cat] || 0) + amt;
+    }
+  });
+
+  const savingsRate = r > 0 ? Math.max(0, ((r - o) / r) * 100) : 0;
+  const daysCount = cachedReportRange.from && cachedReportRange.to
+    ? Math.max(1, Math.ceil(Math.abs(new Date(cachedReportRange.to) - new Date(cachedReportRange.from)) / (1000 * 60 * 60 * 24)) + 1)
+    : 30;
+  const dailyBurnRate = o / daysCount;
+
+  // ===== NEW: Budget Data =====
+  cachedBudgetData = calculateBudgetData(allTxsData, cachedReportRange.from, cachedReportRange.to, o);
+  renderBudgetPanel(cachedBudgetData, categoryExpBreakdown);
+
+  // ===== NEW: Health Score =====
+  const periodForHealth = allTxsData.filter(x => {
+    if (cachedReportRange.from && x.date < cachedReportRange.from) return false;
+    if (cachedReportRange.to && x.date > cachedReportRange.to) return false;
+    return true;
+  });
+  cachedHealthScore = calculateHealthScore(allTxsData, periodForHealth, r, o, fixedExpensesTotal, daysCount);
+  renderHealthScore(cachedHealthScore);
+
+  // ===== NEW: Anomalies =====
+  cachedAnomalies = detectAnomalies(periodForHealth);
+  renderAnomalyPanel(cachedAnomalies);
+
+  // ===== NEW: Forecast =====
+  const accFilter = $("report-account-filter") ? $("report-account-filter").value : "all";
+  cachedForecast = calculateForecast(allTxsData, cachedReportRange.from, cachedReportRange.to, accFilter);
+  renderForecast(cachedForecast);
+
+  // ===== NEW: Heatmap =====
+  renderHeatmap(periodForHealth, cachedReportRange.from, cachedReportRange.to);
+
+  // ===== NEW: Notes =====
+  const notesVal = $("report-notes") ? $("report-notes").value : "";
+  renderNotesDisplay(notesVal);
+
   const subBox=$("sub-breakdowns-box");
   if(subBox){
     if(n==="all" || n==="debt" || n==="expense" || n==="income"){
       let expCats={}, incCats={}, debtTypes={}, personNet={};
-      
+
       e.forEach(x=>{
         const amt=realAmount(x);
         if(x.type==="expense"){
@@ -691,7 +1314,7 @@ function updateReportSummaries(e){
         }else if(x.type==="debt"){
           const lbl=debtTypeLabel(x.debtType);
           debtTypes[lbl]=(debtTypes[lbl]||0)+amt;
-          
+
           const p=x.person||"غير محدد";
           if(!personNet[p]) personNet[p]={creditor:0, debtor:0, opening:0};
           if(isCreditorEntry(x)) personNet[p].creditor+=amt;
@@ -700,10 +1323,32 @@ function updateReportSummaries(e){
         }
       });
 
-      let boxHtml='<div style="font-weight:900;color:var(--emerald-neon);margin-bottom:6px;border-bottom:1px solid var(--border-subtle);padding-bottom:4px">📊 الملخص التفصيلي (مدين | دائن | الصافي):</div>';
-      
+      let boxHtml='<div style="font-weight:900;color:var(--emerald-neon);margin-bottom:6px;border-bottom:1px solid var(--border-subtle);padding-bottom:4px">📊 مؤشرات الصحة المالية وتحليل المصروفات:</div>';
+
+      boxHtml+=`
+      <div class="grid2" style="margin-bottom:6px">
+        <div style="background:rgba(16,185,129,0.06);border:1px solid var(--border-neon);border-radius:10px;padding:6px;text-align:center">
+          <div class="small" style="color:var(--ink-muted)">معدل الادخار</div>
+          <strong style="color:var(--emerald-neon);font-size:13px">${savingsRate.toFixed(1)}%</strong>
+        </div>
+        <div style="background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.3);border-radius:10px;padding:6px;text-align:center">
+          <div class="small" style="color:var(--ink-muted)">متوسط الصرف اليومي</div>
+          <strong style="color:var(--sky-val);font-size:13px">${money(dailyBurnRate)}</strong>
+        </div>
+      </div>
+      <div class="grid2" style="margin-bottom:6px">
+        <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.3);border-radius:10px;padding:6px;text-align:center">
+          <div class="small" style="color:var(--ink-muted)">📌 المصروفات الثابتة</div>
+          <strong style="color:var(--amber-val);font-size:13px">${money(fixedExpensesTotal)}</strong>
+        </div>
+        <div style="background:rgba(251,113,133,0.06);border:1px solid rgba(251,113,133,0.3);border-radius:10px;padding:6px;text-align:center">
+          <div class="small" style="color:var(--ink-muted)">🛍️ النثريات والمتغيرة</div>
+          <strong style="color:var(--red-val);font-size:13px">${money(regularExpensesTotal)}</strong>
+        </div>
+      </div>`;
+
       if(Object.keys(expCats).length>0 && (n==="all" || n==="expense")){
-        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--red-val);margin-top:4px">💸 تصنيفات المصروفات:</div>';
+        boxHtml+='<div style="font-size:11px;font-weight:800;color:var(--red-val);margin-top:4px">💸 تفصيل تصنيفات المصروفات:</div>';
         for(let k in expCats){
           boxHtml+=`<div class="row-between" style="padding-right:8px"><span>- ${escapeHTML(k)}:</span><strong class="amount bad">${money(expCats[k])}</strong></div>`;
         }
@@ -730,7 +1375,7 @@ function updateReportSummaries(e){
           const totalCreditor = data.creditor + data.opening;
           const totalDebtor = data.debtor;
           const net = totalCreditor - totalDebtor;
-          
+
           let stClass="";
           let stTxt="(خالص ✔️)";
           if(net>0){
@@ -740,7 +1385,7 @@ function updateReportSummaries(e){
             stClass="good";
             stTxt="(ذمم مدينة — لك لدى الغير ✅)";
           }
-          
+
           boxHtml+=`
           <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border-subtle);border-radius:8px;padding:6px;margin-top:4px">
             <div class="row-between" style="font-weight:800">
@@ -750,6 +1395,41 @@ function updateReportSummaries(e){
             <div class="row-between small" style="margin-top:2px;color:var(--ink-muted)">
               <span>ذمم دائنة عليك: ${money(totalCreditor)}</span>
               <span>ذمم مدينة لك: ${money(totalDebtor)}</span>
+            </div>
+          </div>`;
+        }
+      }
+
+      if(isCompareModeActive && allTxsData.length > 0){
+        const sel1Id = $("filter-cycle-1")?.value;
+        const sel2Id = $("filter-cycle-2")?.value;
+        if(sel1Id !== "" && sel2Id !== "" && allCyclesCache[sel1Id] && allCyclesCache[sel2Id]){
+          const c1 = allCyclesCache[sel1Id];
+          const c2 = allCyclesCache[sel2Id];
+
+          const txsC1 = allTxsData.filter(x => x.date >= c1.start && x.date <= c1.end);
+          const txsC2 = allTxsData.filter(x => x.date >= c2.start && x.date <= c2.end);
+
+          const inc1 = txsC1.reduce((acc, x) => (x.type==="income"||isCreditorEntry(x))?acc+realAmount(x):acc, 0);
+          const inc2 = txsC2.reduce((acc, x) => (x.type==="income"||isCreditorEntry(x))?acc+realAmount(x):acc, 0);
+
+          const exp1 = txsC1.reduce((acc, x) => (x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))?acc+realAmount(x):acc, 0);
+          const exp2 = txsC2.reduce((acc, x) => (x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))?acc+realAmount(x):acc, 0);
+
+          const fix1 = txsC1.reduce((acc, x) => (x.type==="expense" && (x.budgetId==="fixed"||x.isFixed))?acc+realAmount(x):acc, 0);
+          const fix2 = txsC2.reduce((acc, x) => (x.type==="expense" && (x.budgetId==="fixed"||x.isFixed))?acc+realAmount(x):acc, 0);
+
+          const diffInc = inc2 - inc1;
+          const diffExp = exp2 - exp1;
+
+          boxHtml+=`
+          <div style="background:rgba(16,185,129,0.04);border:1px solid var(--border-neon);border-radius:10px;padding:8px;margin-top:8px">
+            <div style="font-weight:900;color:var(--emerald-neon);margin-bottom:4px">⚖️ مقارنة مباشرة: (${escapeHTML(c1.label)}) مقابل (${escapeHTML(c2.label)})</div>
+            <div class="row-between" style="font-size:11px"><span>دخل الدورة الأولى: <strong>${money(inc1)}</strong></span><span>دخل الدورة الثانية: <strong>${money(inc2)}</strong></span></div>
+            <div class="row-between" style="font-size:11px;margin-top:2px"><span>مصروفات الأولى: <strong>${money(exp1)}</strong> (ثابتة: ${money(fix1)})</span><span>مصروفات الثانية: <strong>${money(exp2)}</strong> (ثابتة: ${money(fix2)})</span></div>
+            <div class="row-between small" style="margin-top:4px;border-top:1px dashed var(--border-subtle);padding-top:2px">
+              <span>التغير في الدخل: <strong class="${diffInc>=0?'good':'bad'}">${diffInc>=0?'+':''}${money(diffInc)}</strong></span>
+              <span>التغير في المصروفات: <strong class="${diffExp<=0?'good':'bad'}">${diffExp>=0?'+':''}${money(diffExp)}</strong></span>
             </div>
           </div>`;
         }
@@ -776,7 +1456,7 @@ function updateReportSummaries(e){
       y+=Number(b.egp)||0;
     });
   });
-  
+
   if(n==="debt"){
     if(c>0)p=`<div class="hint" style="background:rgba(251,113,133,0.1);border-color:rgba(251,113,133,0.3);color:var(--red-val);font-weight:700">⚠️ <strong>صافي الذمم:</strong> عليك للغير <strong>${money(u)}</strong> (ذمم دائنة) — ${g}.</div>`;
     else if(c<0)p=`<div class="hint" style="background:rgba(16,185,129,0.1);border-color:var(--border-neon);color:var(--green-val);font-weight:700">✅ <strong>صافي الذمم:</strong> لك لدى الغير <strong>${money(u)}</strong> (ذمم مدينة) — ${g}.</div>`;
@@ -784,11 +1464,11 @@ function updateReportSummaries(e){
   }else if(n==="transfer"){
     p=`<div class="hint" style="background:rgba(16,185,129,0.1);border-color:var(--border-neon);color:var(--green-val);font-weight:700">✈️ <strong>إجمالي التحويلات:</strong> ${money(h)} | ${moneyEGP(y)}.</div>`;
   }
-  
+
   $("report-summary").innerHTML=`
     <div style="display:flex;flex-direction:column;gap:6px">
       <div class="row-between"><span>${n==="debt"?"📥 إجمالي ما سدّدته (تخفيض ذمم دائنة):":n==="transfer"?"✈️ إجمالي التحويلات (د.ك):":"📥 إجمالي الواردات:"}</span><strong class="amount good" style="font-size:13px">${money(n==="debt"?l:n==="transfer"?h:r)}</strong></div>
-      ${n!=="transfer"?`<div class="row-between"><span>${n==="debt"?"💸 إجمالي الذمم الدائنة عليك:":"💸 إجمالي المصروفات:"}</span><strong class="amount bad" style="font-size:13px">${money(n==="debt"?i:o)}</strong></div>`:""}
+      ${n!=="transfer"?`<div class="row-between"><span>${n==="debt"?"💸 إجمالي الذمم الدائنة عليك:":"💸 إجمالي المصروفات (ثابتة: "+money(fixedExpensesTotal)+" | متغيرة: "+money(regularExpensesTotal)+"):"}</span><strong class="amount bad" style="font-size:13px">${money(n==="debt"?i:o)}</strong></div>`:""}
       ${n!=="transfer"?`<div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px"><span>⚖️ صافي الحساب الختامي:</span><strong class="amount ${m>=0?"bad":"good"}" style="font-size:14px">${m>=0?"+":""}${money(m)}</strong></div>`:""}
     </div>${p}`;
   $("tafqit-box").textContent="التفقيط المالي الرسمي: "+numberToArabicWords(Math.abs(m));
@@ -804,7 +1484,7 @@ function backToFilters(){
 function filterReportTable(){
   const searchTxt = $("report-search") ? $("report-search").value.toLowerCase().trim() : "";
   const savedStateRaw = localStorage.getItem(REPORT_STATE_KEY);
-  
+
   if(savedStateRaw){
     try{
       let st = JSON.parse(savedStateRaw);
@@ -813,13 +1493,11 @@ function filterReportTable(){
       localStorage.setItem(REPORT_STATE_KEY, JSON.stringify(st));
     }catch(e){}
   }
-  
+
   if(!cachedReportRecords.length) return;
-  
-  // 1. إعادة رسم الجدول بالبيانات الأصلية كاملة عشان نضمن إن كل الخلايا موجودة
+
   renderReportTableRows(cachedReportRecords);
 
-  // 2. لو مفيش نص للبحث، نرجع كل البيانات ونحدث الملخصات
   if(!searchTxt) {
     visibleReportRecords = cachedReportRecords.slice();
     updateReportSummaries(visibleReportRecords);
@@ -827,15 +1505,14 @@ function filterReportTable(){
     return;
   }
 
-  // 3. فلترة الصفوف بناءً على النص اللي ظاهر جوه كل صف (بحث شامل)
   const rows = $("report-table-body").querySelectorAll("tr");
   let visibleCount = 0;
   let visibleTxs = [];
 
   rows.forEach(row => {
-    const rowText = row.textContent.toLowerCase().trim(); // بيجيب كل النص اللي في الصف
+    const rowText = row.textContent.toLowerCase().trim();
     if(rowText.includes(searchTxt)) {
-      row.style.display = ""; // إظهار
+      row.style.display = "";
       visibleCount++;
       const txId = row.getAttribute("data-id");
       if(txId && !visibleTxs.some(t => t.id === txId)) {
@@ -843,11 +1520,10 @@ function filterReportTable(){
         if(tx) visibleTxs.push(tx);
       }
     } else {
-      row.style.display = "none"; // إخفاء
+      row.style.display = "none";
     }
   });
 
-  // 4. تحديث الملخصات بناءً على المعاملات اللي ظهرت بس
   visibleReportRecords = visibleTxs;
   updateReportSummaries(visibleReportRecords);
   $("display-count").textContent = visibleCount + " حركة (مفلترة)";
@@ -873,14 +1549,23 @@ function getSmartFilename(e,t="json"){
         n=$("report-type")?$("report-type").value:"general",
         s=todayISO();
   if(e==="backup")return`نسخة_احتياطية_${s}.${t}`;
+
+  const customTitle = $("report-custom-title") ? $("report-custom-title").value.trim() : "";
+  const sanitized = customTitle
+    ? customTitle.replace(/[\\\/:*?"<>|]/g, "_").replace(/\s+/g, "_")
+    : "";
+
+  let baseName = sanitized || e;
   let r="";
-  if(a&&a!=="all")r=`_${a}`;
-  else if(n==="expense")r="_مصروفات";
-  else if(n==="income")r="_دخل";
-  else if(n==="debt")r="_ديون_وعلاقات";
-  else if(n==="transfer")r="_حوالات_خارجية";
-  else if(n==="internal_transfer")r="_تحويلات_داخلية";
-  return `${e}${r}_${s}.${t}`;
+  if (!sanitized) {
+    if(a&&a!=="all")r=`_${a.replace(/[\\\/:*?"<>|]/g, "_")}`;
+    else if(n==="expense")r="_مصروفات";
+    else if(n==="income")r="_دخل";
+    else if(n==="debt")r="_ديون_وعلاقات";
+    else if(n==="transfer")r="_حوالات_خارجية";
+    else if(n==="internal_transfer")r="_تحويلات_داخلية";
+  }
+  return `${baseName}${r}_${s}.${t}`;
 }
 
 function exportReportExcel(){
@@ -898,6 +1583,27 @@ function exportReportExcel(){
     const isDebt=typeVal==="debt";
     const o=$("beneficiary-select")?$("beneficiary-select").value:"all";
     let rows=[[t],["الفترة",a],["الطرف / التصنيف",n],["عدد الحركات",s],[]];
+
+    // NEW: Health Score / Budget summary
+    if (cachedHealthScore) {
+      rows.push(["مؤشر الصحة المالية", `${cachedHealthScore.total}/100`]);
+    }
+    if (cachedBudgetData) {
+      rows.push(["الميزانية (راتب أساسي)", Number(cachedBudgetData.budget.toFixed(3))]);
+      rows.push(["المصروف الفعلي", Number(cachedBudgetData.consumed.toFixed(3))]);
+    }
+    if (cachedForecast) {
+      rows.push(["توقع استنفاد الرصيد", cachedForecast.endDate, `~${cachedForecast.daysRemaining} يوم`]);
+    }
+    if (cachedAnomalies.length > 0) {
+      rows.push(["عدد الحركات الشاذة", String(cachedAnomalies.length)]);
+    }
+    const notesVal = $("report-notes") ? $("report-notes").value.trim() : "";
+    if (notesVal) {
+      rows.push(["ملاحظات", notesVal]);
+    }
+    rows.push([]);
+
     if(r){
       rows.push(["التاريخ","التفاصيل","المستفيد","السعر","المصري","الكويتي","الرصيد"]);
       let run=0;
@@ -961,7 +1667,7 @@ function exportReportExcel(){
     }
     const wb=XLSX.utils.book_new();
     const ws=XLSX.utils.aoa_to_sheet(rows);
-    ws["!cols"]=[{wch:15},{wch:25},{wch:20},{wch:20},{wch:20},{wch:18},{wch:18}];
+    ws["!cols"]=[{wch:20},{wch:25},{wch:20},{wch:20},{wch:20},{wch:18},{wch:18}];
     XLSX.utils.book_append_sheet(wb,ws,"Report");
     wb.Workbook={Views:[{RTL:true}]};
     XLSX.writeFile(wb,getSmartFilename("كشف_حساب","xlsx"));
@@ -977,7 +1683,7 @@ function applyPrintStyles() {
   style.textContent = `
     #capture-area .report-head { background: #ffffff !important; color: #0f172a !important; border: 1px solid #cbd5e1 !important; }
     #capture-area .report-head h2, #capture-area .report-head div, #capture-area .report-head span { color: #0f172a !important; }
-    #capture-area .report-meta, #capture-area .report-summary, #capture-area .panel { background: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+    #capture-area .report-meta, #capture-area .report-summary, #capture-area .panel, #capture-area .health-score-panel { background: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
     #capture-area th { background: #f1f5f9 !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
     #capture-area td { background: #ffffff !important; color: #0f172a !important; border-color: #e2e8f0 !important; }
     #capture-area .table-wrap { background: #ffffff !important; border-color: #cbd5e1 !important; }
@@ -985,6 +1691,10 @@ function applyPrintStyles() {
     #capture-area .good { color: #047857 !important; }
     #capture-area .bad { color: #b91c1c !important; }
     #capture-area { background: #ffffff !important; }
+    #capture-area .heatmap-cell { border-color: #e2e8f0 !important; }
+    #capture-area .heatmap-day-label { color: #475569 !important; }
+    #capture-area .anomaly-item { background: #fef2f2 !important; border-color: #fecaca !important; }
+    #capture-area .budget-bar-wrap { background: #e2e8f0 !important; }
   `;
   document.head.appendChild(style);
   return style;
@@ -996,7 +1706,7 @@ function getSafeCutPoints(container, canvas) {
   if (rect.height <= 0) return [0, canvas.height];
   const scaleY = canvas.height / rect.height;
   const points = new Set([0, canvas.height]);
-  container.querySelectorAll("tr,.report-head,.report-meta,.report-summary,.table-wrap,.panel").forEach(el => {
+  container.querySelectorAll("tr,.report-head,.report-meta,.report-summary,.table-wrap,.panel,.health-score-panel").forEach(el => {
     const r = el.getBoundingClientRect();
     if (r.height <= 0) return;
     const top = Math.round((r.top - rect.top) * scaleY);
@@ -1169,7 +1879,10 @@ function shareReport(){
         t=$("display-date-range")?$("display-date-range").textContent.trim():"—",
         a=$("display-target")?$("display-target").textContent.trim():"الكل",
         n=$("display-count")?$("display-count").textContent.trim():"0";
-  let o=`📄 *${e}*\n━━━━━━━━━━━━━━━━━━━━━\n📅 *الفترة:* ${t}\n👤 *الطرف:* ${a}\n🔢 *عدد الحركات:* ${n}\n━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  let o=`📄 *${e}*\n━━━━━━━━━━━━━━━━━━━━━\n📅 *الفترة:* ${t}\n👤 *الطرف:* ${a}\n🔢 *عدد الحركات:* ${n}\n`;
+  if (cachedHealthScore) o += `🏥 *مؤشر الصحة:* ${cachedHealthScore.total}/100\n`;
+  if (cachedBudgetData) o += `💰 *الميزانية:* ${money(cachedBudgetData.budget)} | *المصروف:* ${money(cachedBudgetData.consumed)}\n`;
+  o += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
   const l=visibleReportRecords;
   if(l&&l.length>0){
     l.forEach((x, idx)=>{
@@ -1178,13 +1891,13 @@ function shareReport(){
       o+=`${idx+1}. *${fmtDate(x.date)}* | ${lbl}\n المبلغ: *${money(amt)}*\n\n`;
     });
   }
+  const notesVal = $("report-notes") ? $("report-notes").value.trim() : "";
+  if (notesVal) o += `\n📝 *ملاحظات:* ${notesVal}\n`;
   window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(o)}`,"_blank");
 }
 
 function getAllSalaryCycles(txs){
   const today = todayISO();
-  
-  // 1. تنظيف وترتيب البيانات
   const arr = (txs || []).map(x => {
     if (x && x.date) {
       const p = x.date.split("-");
@@ -1193,14 +1906,12 @@ function getAllSalaryCycles(txs){
     return x;
   }).filter(x => x && x.date).sort((a, b) => a.date.localeCompare(b.date));
 
-  // 2. استخراج تواريخ الرواتب الأساسية فقط بدون تكرار
   const salaryDates = [...new Set(
     arr.filter(x => x.type === "income" && x.isSalaryBase).map(x => x.date)
   )].sort();
 
   const cycles = [];
 
-  // 3. لو مفيش رواتب أساسية متسجلة، نعمل دورة افتراضية من أول معاملة لحد اليوم
   if (salaryDates.length === 0) {
     const start = arr.length > 0 ? arr[0].date : firstOfMonthISO();
     cycles.push({ 
@@ -1214,7 +1925,6 @@ function getAllSalaryCycles(txs){
     return cycles;
   }
 
-  // 4. لو فيه معاملات قديمة قبل أول راتب، نعملها دورة منفصلة اسمها "الأرصدة القديمة"
   const firstSalary = salaryDates[0];
   const earlierTxs = arr.filter(x => x.date < firstSalary);
   if (earlierTxs.length > 0) {
@@ -1230,12 +1940,9 @@ function getAllSalaryCycles(txs){
     });
   }
 
-  // 5. بناء الدورات بناءً على تواريخ الرواتب
   for (let i = 0; i < salaryDates.length; i++) {
     const start = salaryDates[i];
     const isLast = i === salaryDates.length - 1;
-    
-    // نهاية الدورة: اليوم اللي قبل الراتب اللي بعده، أو اليوم الحالي لو دي آخر دورة
     const end = isLast ? today : dayBefore(salaryDates[i + 1]);
 
     cycles.push({
@@ -1325,7 +2032,13 @@ window.addEventListener("DOMContentLoaded",async()=>{
           if(st.reportSubtype) $("report-subtype").value = st.reportSubtype;
           if(st.accountFilter && $("report-account-filter")) $("report-account-filter").value = st.accountFilter;
           if(st.beneficiary && $("beneficiary-select")) $("beneficiary-select").value = st.beneficiary;
-          
+
+          if(st.isCompareActive){
+            toggleCompareMode();
+            if(st.cycle1 && $("filter-cycle-1")) $("filter-cycle-1").value = st.cycle1;
+            if(st.cycle2 && $("filter-cycle-2")) $("filter-cycle-2").value = st.cycle2;
+          }
+
           if(st.dateFrom){
             if($("date-from-day")) $("date-from-day").value = st.dateFrom.d || "";
             if($("date-from-month")) $("date-from-month").value = st.dateFrom.m || "";
@@ -1338,6 +2051,8 @@ window.addEventListener("DOMContentLoaded",async()=>{
           }
           if(st.searchQuery && $("report-search")) $("report-search").value = st.searchQuery;
           if(st.sortOrder && $("report-sort-order")) $("report-sort-order").value = st.sortOrder;
+          if(st.customTitle && $("report-custom-title")) $("report-custom-title").value = st.customTitle;
+          if(st.notes && $("report-notes")) $("report-notes").value = st.notes;
 
           await generateReport(true);
         }
