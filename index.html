@@ -105,8 +105,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 #view-input .tab{border:0;background:transparent;color:var(--ink-muted);border-radius:8px;padding:6px 2px;font-size:10px;font-weight:800}
 #view-input .tab.active{background:linear-gradient(135deg,#10b981,#047857);color:#fff;box-shadow:0 3px 10px rgba(16,185,129,.3)}
 #expense-amount,#income-amount,#total-kwd,#debt-amount,#int-amount{font-size:20px!important;text-align:center;font-weight:900;color:var(--emerald-neon)!important;background:rgba(16,185,129,.05)!important;border:1px solid var(--border-neon)!important;border-radius:12px;padding:8px!important}
-.nav-bottom{position:fixed;bottom:4px;left:50%;transform:translateX(-50%);width:calc(100% - 10px);max-width:440px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:3px;border:1px solid var(--border-neon);background:var(--nav-bg);backdrop-filter:blur(16px);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:30}
-.nav-bottom .nav-btn{background:transparent;border:0;color:var(--ink-muted);padding:4px 2px;font-size:9.5px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:1px;border-radius:12px;text-decoration:none}
+.nav-bottom{position:fixed;bottom:4px;left:50%;transform:translateX(-50%);width:calc(100% - 10px);max-width:440px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding:3px;border:1px solid var(--border-neon);background:var(--nav-bg);backdrop-filter:blur(16px);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:30}
+.nav-bottom .nav-btn{background:transparent;border:0;color:var(--ink-muted);padding:4px 2px;font-size:10px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:1px;border-radius:12px;text-decoration:none}
 .nav-bottom .nav-btn span:first-child{font-size:14px}
 .nav-bottom .nav-btn.active{background:rgba(16,185,129,.15);color:var(--emerald-neon);box-shadow:0 0 8px var(--emerald-glow)}
 .small{font-size:10px;color:var(--ink-muted)}
@@ -135,17 +135,17 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .field-note{font-size:10px;color:var(--ink-muted);line-height:1.3;margin-top:2px}
 .field-note.warn{color:var(--amber-val);background:rgba(251,191,36,.1);padding:4px 6px;border-radius:6px;border:1px solid rgba(251,191,36,.3);font-weight:700}
 .row-between{display:flex;justify-content:space-between;align-items:center;gap:4px}
-.bud-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
-.bud-mini-card{border:1px solid var(--border-subtle);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;background:var(--bg-card);min-width:0}
+.bud-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.bud-mini-card{border:1px solid var(--border-subtle);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;background:var(--bg-card);min-width:0;cursor:pointer}
+.bud-mini-card:hover{border-color:var(--emerald-neon);background:var(--bg-card-hover)}
 .bud-mini-card[data-bkey="emergency"]{border-color:var(--border-neon);background:rgba(16,185,129,.03)}
 .bud-mini-head{display:flex;justify-content:space-between;align-items:center;gap:4px}
-.bud-mini-name{font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bud-mini-pct{font-size:9.5px;font-weight:900;font-variant-numeric:tabular-nums}
-.bud-mini-meta{display:flex;flex-direction:column;gap:1px;font-size:9.5px;color:var(--ink-muted);font-weight:700}
+.bud-mini-name{font-size:11px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bud-mini-pct{font-size:10px;font-weight:900;font-variant-numeric:tabular-nums}
+.bud-mini-meta{display:flex;flex-direction:column;gap:2px;font-size:10px;color:var(--ink-muted);font-weight:700}
 .bud-mini-meta strong{font-variant-numeric:tabular-nums;font-weight:900;color:var(--ink)}
 .cap-track{height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
 .cap-bar{height:100%;width:0;transition:width .3s,background .3s}
-.living-details-box{border-top:1px dashed var(--border-subtle);margin-top:4px;padding-top:4px;display:flex;flex-direction:column;gap:2px;font-size:9px}
 .tc-card{border:1px solid var(--border-subtle);border-radius:10px;background:var(--bg-card);overflow:hidden}
 .tc-card.current{border-color:var(--border-neon);background:rgba(16,185,129,.04)}
 .tc-card summary{cursor:pointer;padding:8px 10px;font-size:11px;font-weight:800;list-style:none;display:flex;flex-direction:column;gap:2px}
@@ -187,7 +187,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 
 <main class="content">
 <section id="view-dashboard" class="view">
-  <div id="dash-alert-strip" class="alert-strip hidden" onclick="window.location.href='reports.html'"></div>
+  <div id="dash-alert-strip" class="alert-strip hidden" onclick="switchMainView('backup')"></div>
   
   <div class="top-dash-grid">
     <div class="balance-card">
@@ -229,7 +229,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
         <small class="today-note" id="dash-today-note">من الحد اليومي المحدد 0.000 د.ك</small>
       </div>
     </div>
-    <div class="donut-card" onclick="window.location.href='analytics.html'">
+    <div class="donut-card" onclick="window.location.href='reports.html'">
       <div class="donut-graphic">
         <svg class="donut-svg" viewBox="0 0 36 36">
           <path stroke="rgba(255,255,255,.08)" stroke-width="3.5" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
@@ -260,10 +260,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
       </div>
       <div class="panel stack" style="gap:6px">
         <div class="row-between">
-          <strong style="font-size:12px">🎯 الميزانية وصندوق المعالجة</strong>
-          <span class="small" style="color:var(--emerald-neon);cursor:pointer" onclick="switchMainView('backup')">تعديل المستهدفات ›</span>
+          <strong style="font-size:12px">🎯 الصناديق الأساسية (اضغط أي صندوق للتفاصيل)</strong>
+          <span class="small" style="color:var(--emerald-neon);cursor:pointer" onclick="switchMainView('backup')">الإعدادات ›</span>
         </div>
-        <div id="dash-budget-summary" class="bud-grid"><span class="small" style="grid-column:span 2">جاري تحميل الصناديق والميزانية...</span></div>
+        <div id="dash-budget-summary" class="bud-grid"><span class="small" style="grid-column:span 2">جاري تحميل الصناديق...</span></div>
       </div>
     </div>
     <div class="dash-col">
@@ -278,6 +278,17 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
     </div>
   </div>
 </section>
+
+<!-- نافذة منبثقة لتفاصيل الصندوق عند الضغط عليه -->
+<div id="fund-detail-modal" class="modal-overlay hidden">
+  <div class="modal-box" style="max-width:380px;max-height:85vh;overflow-y:auto">
+    <div class="row-between">
+      <strong id="fund-modal-title" style="font-size:13px;color:var(--emerald-neon)">تفاصيل الصندوق</strong>
+      <button type="button" class="btn btn-muted" style="padding:2px 8px;font-size:10px;min-height:24px" onclick="closeFundModal()">إغلاق ✕</button>
+    </div>
+    <div id="fund-modal-content" class="stack" style="font-size:11px"></div>
+  </div>
+</div>
 
 <div id="view-input" class="modal-sheet-overlay hidden">
   <div class="modal-sheet stack">
@@ -361,18 +372,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 </div>
 
 <section id="view-backup" class="view stack hidden">
-  <div class="row-between"><strong style="font-size:14px;color:var(--ink)">الإعدادات ⚙️</strong><span class="small">تصميم مدمج</span></div>
+  <div class="row-between"><strong style="font-size:14px;color:var(--ink)">الإعدادات والصيانة ⚙️</strong><span class="small">تصميم مدمج</span></div>
   <div class="stack" style="gap:6px">
-    <div class="acc-item open" id="acc-financial-analysis">
-      <div class="acc-header" onclick="toggleAccordion('acc-financial-analysis')"><span>📊 التحليل المالي والتقارير المتقدمة</span><span class="acc-icon">▼</span></div>
-      <div class="acc-body stack">
-        <div class="field-note" style="color:var(--emerald-neon);font-weight:700">بوابة دخول مباشرة للتقارير الشاملة وتحليل المصروفات.</div>
-        <div class="grid2" style="margin-top:4px">
-          <a href="reports.html" class="btn btn-soft" style="text-decoration:none;justify-content:center">📜 الكشوفات والتقارير</a>
-          <a href="analytics.html" class="btn btn-primary" style="text-decoration:none;justify-content:center">🚀 التحليل المالي</a>
-        </div>
-      </div>
-    </div>
     <div class="acc-item" id="acc-reconciliation">
       <div class="acc-header" onclick="toggleAccordion('acc-reconciliation')"><span>⚖️ تسوية الأرصدة الفورية</span><span class="acc-icon">▼</span></div>
       <div class="acc-body stack">
@@ -458,7 +459,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 <nav class="nav-bottom">
   <button type="button" id="nav-dashboard" class="nav-btn active" onclick="switchMainView('dashboard')"><span>🏠</span><span>الرئيسية</span></button>
   <a href="reports.html" id="nav-reports" class="nav-btn"><span>📜</span><span>التقارير</span></a>
-  <a href="analytics.html" id="nav-analytics" class="nav-btn"><span>📊</span><span>التحليل</span></a>
   <button type="button" id="nav-backup" class="nav-btn" onclick="switchMainView('backup')"><span>⚙️</span><span>الإعدادات</span></button>
 </nav>
 </div>
@@ -468,6 +468,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 
 <script>
 // @ts-nocheck
+let cachedGlobalTxs = [];
 const DB_NAME="PersonalFinanceDB",DB_VER=1,STORE="transactions";
 const K_PEOPLE="pf_people_list",K_CATS="pf_expense_cats_list",K_TARGET="pf_target_percentages";
 const K_THEME="pf_theme_pref",K_PRIVACY="pf_privacy_hidden";
@@ -480,10 +481,10 @@ const SUB_ITEMS=[
 ];
 const SUB_LABEL={fixed:"ثابتة",regular:"عادية",personal:"شخصية ونثريات"};
 const BUDGETS=[
-  {key:"living",icon:"🏠",short:"معيشة",isMerged:true},
-  {key:"transfer",icon:"✈️",short:"تحويلات"},
-  {key:"debt",icon:"🤝",short:"ديون"},
-  {key:"emergency",icon:"🛡️",short:"معالجة",isDynamic:true}
+  {key:"living",icon:"🏠",short:"المعيشة"},
+  {key:"transfer",icon:"✈️",short:"التحويلات"},
+  {key:"debt",icon:"🤝",short:"الديون"},
+  {key:"emergency",icon:"🛡️",short:"المعالجة"}
 ];
 const BUDGET_MAP=Object.fromEntries(BUDGETS.map(b=>[b.key,b]));
 
@@ -595,13 +596,6 @@ function totalIncome(txs,cyc){
   },0);
 }
 
-function totalExpense(txs,cyc){
-  return (txs||[]).filter(x=>inPeriod(x,cyc)).reduce((s,x)=>{
-    if(x.type==="expense"||x.type==="transfer"||isDebtKind(x,"debtor"))return s+realAmt(x);
-    return s;
-  },0);
-}
-
 function getAllCycles(txs){
   const today=todayISO();
   const arr=(txs||[]).map(x=>{
@@ -614,38 +608,22 @@ function getAllCycles(txs){
     return [{id:`c_${start}_${today}`,start,end:today,isCurrent:true,cycleIndex:1}];
   }
 
-  const salaryDates = arr
-    .filter(x => x.type === "income" && x.isSalaryBase)
-    .map(x => x.date);
-
+  const salaryDates = arr.filter(x => x.type === "income" && x.isSalaryBase).map(x => x.date);
   const firstStart = salaryDates.length ? salaryDates[0] : arr[0].date;
   const allStarts = [...new Set([firstStart, ...salaryDates])].sort();
 
   const cycles = [];
-  
   for (let i = 0; i < allStarts.length; i++) {
     const start = allStarts[i];
     const nextStart = allStarts[i + 1];
     let end = nextStart ? dayBefore(nextStart) : today;
-
-    // تجنب إنشاء دورة بتاريخ مستقبلي لو معاملة مسجلة بالغلط
     if (start > today) continue;
-
-    cycles.push({
-      id: `c_${start}_${end}`,
-      start: start,
-      end: end,
-      isCurrent: i === allStarts.length - 1,
-      cycleIndex: i + 1
-    });
+    cycles.push({id:`c_${start}_${end}`,start,end,isCurrent:i===allStarts.length-1,cycleIndex:i+1});
   }
-
-  // لو مفيش دورات اتبنت (كل التواريخ مستقبلية)، نرجع دورة افتراضية
   if (!cycles.length) {
     const start=firstOfMonthISO();
     return [{id:`c_${start}_${today}`,start,end:today,isCurrent:true,cycleIndex:1}];
   }
-
   return cycles;
 }
 
@@ -763,7 +741,8 @@ const allTx=async()=>{
         if(e&&e.date){const p=e.date.split("-");if(p.length===3)e.date=isoDate(p[0],p[1],p[2])}
         return e;
       });
-      res(arr.sort((a,b)=>b.date.localeCompare(a.date)||(b.time||"").localeCompare(a.time||"")||b.id.localeCompare(a.id)));
+      cachedGlobalTxs=arr.sort((a,b)=>b.date.localeCompare(a.date)||(b.time||"").localeCompare(b.time||"")||b.id.localeCompare(a.id));
+      res(cachedGlobalTxs);
     };
     r.onerror=()=>rej(r.error);
   });
@@ -925,8 +904,6 @@ function renderRecentTx(txs){
   }).join("");
 }
 
-function toggleLivingSub(el){const b=el.querySelector(".living-details-box");if(b)b.classList.toggle("hidden")}
-
 function renderBudgetRow(d){
   const b=BUDGET_MAP[d.budgetId];
   const noLimit=d.max<=0;
@@ -937,25 +914,140 @@ function renderBudgetRow(d){
   const pctTxt=noLimit?(d.spent>0?"—":"0%"):st.pct.toFixed(0)+"%";
   const barColor=level==="bad"?"var(--red-val)":level==="warning"?"var(--amber-val)":"var(--emerald-neon)";
   const cls=level==="bad"?"bad":level==="warning"?"warning":"good";
-  let dailyTxt="—",dailyCls="";
-  if(d.daysRemaining>0){dailyTxt=money(d.dailyRaw);if(d.dailyRaw<0)dailyCls="bad"}
-  let subHTML="";
-  if(d.isMerged&&d.subItems){
-    subHTML=`<div class="living-details-box hidden"><div style="font-weight:800;color:var(--emerald-neon)">🔻 التفاصيل الفرعية:</div>${
-      d.subItems.map(s=>`<div>• ${s.label}: <strong>${money(s.max)}</strong> | مصروف: <strong>${money(s.spent)}</strong> | متبقي: <strong class="${s.remaining<0?"bad":"good"}">${money(s.remaining)}</strong></div>`).join("")
-    }</div>`;
-  }
-  return`<div class="bud-mini-card" data-bkey="${d.budgetId}" ${d.isMerged?'style="cursor:pointer" onclick="toggleLivingSub(this)"':""}>
+  
+  return`<div class="bud-mini-card" data-bkey="${d.budgetId}" onclick="openFundDetailModal('${d.budgetId}')">
     <div class="bud-mini-head"><span class="bud-mini-name">${b.icon} ${b.short}</span><span class="bud-mini-pct ${cls}">${pctTxt}</span></div>
     <div class="cap-track"><div class="cap-bar" style="width:${pctW}%;background:${barColor}"></div></div>
     <div class="bud-mini-meta">
-      <div>المصروف: <strong>${money(d.spent)}</strong> (${pctTxt})</div>
-      <div>المستهدف: <strong>${money(d.max)}</strong></div>
-      <div>متبقي: <strong class="${cls}">${money(d.remaining)}</strong></div>
-      ${d.isDynamic?`<div>يكفي: <strong>${d.daysRemaining} يوماً</strong></div>`:""}
-      <div>⚡ يوميًا: <strong class="${dailyCls}">${dailyTxt}</strong></div>
-    </div>${subHTML}
+      <div>صرف: <strong>${money(d.spent)}</strong> | متبقي: <strong class="${cls}">${money(d.remaining)}</strong></div>
+      <div style="font-size:9px;color:var(--emerald-neon)">انقر للتفاصيل الكاملة ›</div>
+    </div>
   </div>`;
+}
+
+function openFundDetailModal(budgetId){
+  const modal=$("fund-detail-modal");
+  const title=$("fund-modal-title");
+  const content=$("fund-modal-content");
+  if(!modal||!title||!content)return;
+  
+  const cyc=currentCycle(cachedGlobalTxs);
+  if(!cyc)return;
+  const {income,items}=calcAllBudgets(cachedGlobalTxs,cyc);
+  const d=items.find(i=>i.budgetId===budgetId);
+  if(!d)return;
+  
+  const b=BUDGET_MAP[budgetId];
+  title.textContent=`${b.icon} تفاصيل صندوق ${b.short}`;
+  
+  let html=`
+    <div class="row-between"><span>المستهدف الإجمالي:</span><strong>${money(d.max)}</strong></div>
+    <div class="row-between"><span>المصروف الفعلي:</span><strong class="bad">${money(d.spent)}</strong></div>
+    <div class="row-between"><span>المتبقي:</span><strong class="${d.remaining<0?"bad":"good"}">${money(d.remaining)}</strong></div>
+    <hr style="border:0;border-top:1px dashed var(--border-subtle);margin:4px 0">
+  `;
+
+  if(budgetId==="living"){
+    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-bottom:2px">📌 بنود المعيشة الفرعية:</div>`;
+    (d.subItems||[]).forEach(s=>{
+      html+=`<div class="row-between small"><span>${s.label}:</span><span>مستهدف ${money(s.max)} | صرف ${money(s.spent)} | متبقي <strong class="${s.remaining<0?"bad":"good"}">${money(s.remaining)}</strong></span></div>`;
+    });
+    html+=`<div class="row-between" style="margin-top:4px;border-top:1px dashed var(--border-subtle);padding-top:4px"><span>⚡ الحد المتاح للصرف اليوم:</span><strong class="good">${money(d.remainingToday)}</strong></div>`;
+  }
+  else if(budgetId==="transfer"){
+    const transfers=cachedGlobalTxs.filter(t=>inPeriod(t,cyc)&&t.type==="transfer");
+    let totalEgpAll=0, totalTransKwd=0;
+    const beneficiaryMap={};
+    transfers.forEach(t=>{
+      totalTransKwd+=realAmt(t);
+      (t.beneficiaries||[]).forEach(b=>{
+        totalEgpAll+=toNum(b.egp);
+        if(!beneficiaryMap[b.name])beneficiaryMap[b.name]={egp:0,kwd:0};
+        beneficiaryMap[b.name].egp+=toNum(b.egp);
+        beneficiaryMap[b.name].kwd+=toNum(b.shareKwd||(totalEgpAll>0?b.egp/totalEgpAll*t.totalKwd:0));
+      });
+    });
+    const avgRate=totalEgpAll>0?(totalTransKwd/totalEgpAll*1000).toFixed(3):"0.000";
+    html+=`<div class="row-between"><span>إجمالي التحويلات بالدينار:</span><strong>${money(totalTransKwd)}</strong></div>`;
+    html+=`<div class="row-between"><span>متوسط سعر الصرف:</span><strong>${avgRate} د.ك / 1000 ج.م</strong></div>`;
+    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-top:6px;margin-bottom:2px">👥 المستفيدون والنسب:</div>`;
+    if(!Object.keys(beneficiaryMap).length){
+      html+=`<span class="small">لا توجد تحويلات مسجلة بهذه الدورة.</span>`;
+    } else {
+      Object.entries(beneficiaryMap).forEach(([name,vals])=>{
+        const pct=totalEgpAll>0?((vals.egp/totalEgpAll)*100).toFixed(1):0;
+        html+=`<div class="row-between small" style="background:rgba(255,255,255,.02);padding:4px;border-radius:6px;margin-bottom:2px"><span>• ${esc(name)}:</span><span>${vals.egp.toLocaleString()} ج.م (${money(vals.kwd)}) — معدل الصرف: <strong>${pct}%</strong></span></div>`;
+      });
+    }
+  }
+  else if(budgetId==="debt"){
+    const debts=cachedGlobalTxs.filter(t=>t.type==="debt");
+    const personMap={};
+    debts.forEach(d=>{
+      const p=d.person||"غير محدد";
+      if(!personMap[p])personMap[p]={open:0,creditor:0,debtor:0};
+      if(d.debtType==="opening_balance")personMap[p].open+=realAmt(d);
+      else if(d.debtType==="creditor")personMap[p].creditor+=realAmt(d);
+      else if(d.debtType==="debtor")personMap[p].debtor+=realAmt(d);
+    });
+    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-bottom:2px">🤝 تفاصيل الديون والمستفيدين:</div>`;
+    if(!Object.keys(personMap).length){
+      html+=`<span class="small">لا توجد ديون مسجلة.</span>`;
+    } else {
+      const daysLeft=d.daysRemaining||1;
+      Object.entries(personMap).forEach(([name,vals])=>{
+        // الدين الكلي = الرصيد الافتتاحي + ما أخذنا منه (كريديتور)
+        const totalDebt=vals.open+vals.creditor;
+        // خد كم (ما تم سداده = أدّينا له / دبتور)
+        const paid=vals.debtor;
+        // باقي كم
+        const remaining=totalDebt-paid;
+        // هيصرف / يسداد كام في اليوم خلال الأيام المتبقية
+        const dailyRate=daysLeft>0?Math.max(0,remaining/daysLeft):0;
+
+        html+=`<div class="stack" style="background:rgba(255,255,255,.02);padding:6px;border-radius:8px;margin-bottom:4px;gap:2px">
+          <div style="font-weight:900;color:var(--ink)">• ${esc(name)}</div>
+          <div class="row-between small"><span>إجمالي الدين:</span><strong>${money(totalDebt)}</strong></div>
+          <div class="row-between small"><span>خد كم (السداد):</span><strong class="good">${money(paid)}</strong></div>
+          <div class="row-between small"><span>باقي كم:</span><strong class="bad">${money(remaining)}</strong></div>
+          <div class="row-between small"><span>معدل السداد/الصرف اليومي:</span><strong>${money(dailyRate)} / يوم</strong></div>
+        </div>`;
+      });
+    }
+  }
+  else if(budgetId==="emergency"){
+    const daysInCycle=Math.max(1,dateDiff(cyc.start,cyc.end)+1);
+    const activeDaysSet=new Set(cachedGlobalTxs.filter(t=>inPeriod(t,cyc)&&t.type==="expense").map(t=>t.date));
+    
+    // حساب الأيام التي لم يسجل فيها مصاريف ضمن نطاق الدورة وحتى اليوم
+    const missingDates=[];
+    let curr=cyc.start;
+    const today=todayISO();
+    while(curr<=cyc.end&&curr<=today){
+      if(!activeDaysSet.has(curr))missingDates.push(curr);
+      curr=dateAdd(curr,1);
+    }
+
+    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-bottom:2px">🛡️ صندوق المعالجة وفجوة التسجيل:</div>`;
+    html+=`<div class="row-between"><span>أيام الدورة:</span><strong>${daysInCycle} يوم</strong></div>`;
+    html+=`<div class="row-between"><span>عدد الأيام بدون تسجيل:</span><strong class="warning">${missingDates.length} يوم</strong></div>`;
+    html+=`<div style="margin-top:4px;font-weight:800;color:var(--ink-muted)">📅 تواريخ الأيام التي لم يُسجل فيها مصاريف:</div>`;
+    if(!missingDates.length){
+      html+=`<span class="small good">ممتاز! تم تسجيل مصروفات في كل أيام الدورة السابقة حتى اليوم ✅</span>`;
+    } else {
+      html+=`<div class="stack" style="background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.2);padding:6px;border-radius:8px;max-height:120px;overflow-y:auto">`+
+        missingDates.map(dt=>`<div class="small" style="font-weight:700">• يوم ${fmtDate(dt)}</div>`).join("")+
+      `</div>`;
+    }
+  }
+
+  content.innerHTML=html;
+  modal.classList.remove("hidden");
+}
+
+function closeFundModal(){
+  const modal=$("fund-detail-modal");
+  if(modal)modal.classList.add("hidden");
 }
 
 function renderTodayCard(items){
@@ -1028,7 +1120,7 @@ function renderDonut(items,income){
     <div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>${pct(getSpent("living"))}%</strong></div>
     <div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>${pct(getSpent("transfer"))}%</strong></div>
     <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون</span><strong>${pct(getSpent("debt"))}%</strong></div>
-    <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>الادخار والمعالجة</span><strong>${pct(getSpent("emergency"))}%</strong></div>
+    <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>المعالجة</span><strong>${pct(getSpent("emergency"))}%</strong></div>
     <div class="donut-legend-item"><span><i class="dot" style="background:#94a3b8"></i>أخرى</span><strong>0%</strong></div>
   `;
 }
@@ -1040,7 +1132,7 @@ async function renderDashBudget(txs){
     const data=txs||await allTx();
     const cyc=currentCycle(data);
     if(!cyc){
-      el.innerHTML='<span class="small" style="grid-column:span 2">لا توجد بيانات كافية لعرض الميزانية.</span>';
+      el.innerHTML='<span class="small" style="grid-column:span 2">لا توجد بيانات كافية لعرض الصناديق.</span>';
       renderTodayCard(null);
       renderAlertStrip(null);
       renderCyclePill(null);
@@ -1303,12 +1395,10 @@ function renderCyclesList(txs,s){
   const cycles=getAllCycles(txs).slice().reverse();
   const rows=[["fixed","📌 الثابتة"],["regular","📊 العادية"],["personal","🛍️ الشخصية"],["transfer","✈️ التحويلات"],["debt","🤝 الديون"],["savings","💰 المدخرات"]];
   const totalPct=Object.values(s).reduce((a,b)=>a+b,0);
-  const remPct=Math.max(0,100-totalPct);
   let html='<div class="small" style="color:var(--emerald-neon);font-weight:800">📅 النسب المستهدفة</div>';
   html+=cycles.map((c,i)=>{
     const income=totalIncome(txs,c);
     const allocated=income*totalPct/100;
-    const left=income-allocated;
     const days=Math.max(1,dateDiff(c.start,c.end)+1);
     const endTxt=c.isCurrent?"حتى اليوم":fmtDate(c.end);
     const title=c.isCurrent?`🟢 الدورة الحالية`:`دورة ${i+1}`;
@@ -1579,6 +1669,7 @@ $("beneficiaries-list")?.addEventListener("click",e=>{
 
 $("view-input").addEventListener("click",e=>{if(e.target===$("view-input"))cancelEdit()});
 $("person-modal")?.addEventListener("click",e=>{if(e.target===$("person-modal"))closePersonModal()});
+$("fund-detail-modal")?.addEventListener("click",e=>{if(e.target===$("fund-detail-modal"))closeFundModal()});
 
 document.addEventListener("focusin",e=>{if(e.target.tagName==="INPUT"&&e.target.type==="number")e.target.select()});
 
@@ -1586,6 +1677,7 @@ document.addEventListener("keydown",e=>{
   if(e.key==="Escape"){
     if(!$("person-modal").classList.contains("hidden"))closePersonModal();
     if(!$("view-input").classList.contains("hidden"))cancelEdit();
+    if(!$("fund-detail-modal").classList.contains("hidden"))closeFundModal();
   }
 });
 
