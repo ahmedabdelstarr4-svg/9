@@ -55,6 +55,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .privacy-btn{background:transparent;border:0;color:#a7f3d0;padding:2px;font-size:13px;display:flex;align-items:center}
 .balance-main-val{font-size:22px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-.5px;text-shadow:0 0 10px rgba(255,255,255,.2);margin:4px 0}
 .monthly-trend{display:inline-flex;align-items:center;gap:3px;font-size:9px;color:#34d399;background:rgba(52,211,153,.15);padding:2px 6px;border-radius:6px;font-weight:700}
+.monthly-trend.down{color:#fb7185;background:rgba(251,113,133,.15)}
 .accounts-stack-side{display:flex;flex-direction:column;gap:6px}
 .acc-mini-box{background:var(--bg-card);border:1px solid var(--border-neon);border-radius:14px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;color:var(--ink)}
 .acc-mini-left{display:flex;align-items:center;gap:8px}
@@ -147,7 +148,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .cap-track{height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
 .cap-bar{height:100%;width:0;transition:width .3s,background .3s}
 .tc-card{border:1px solid var(--border-subtle);border-radius:10px;background:var(--bg-card);overflow:hidden}
-.tc-card.current{border-color:var(--border-neon);background:rgba(16,185,129,.04)}
 .tc-card summary{cursor:pointer;padding:8px 10px;font-size:11px;font-weight:800;list-style:none;display:flex;flex-direction:column;gap:2px}
 .tc-card summary::-webkit-details-marker{display:none}
 .tc-body{padding:6px 10px 8px;border-top:1px dashed var(--border-subtle);display:flex;flex-direction:column;gap:3px;font-size:10.5px}
@@ -196,7 +196,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
         <button type="button" class="privacy-btn" onclick="togglePrivacy()" id="privacy-toggle-btn" title="إظهار/إخفاء الأرقام">👁️</button>
       </div>
       <strong class="balance-main-val" id="dash-total-wealth">0.000 د.ك</strong>
-      <div><span class="monthly-trend">📈 +0.0% من الشهر الماضي</span></div>
+      <div><span class="monthly-trend" id="monthly-trend-badge">📈 +0.0% من الدورة السابقة</span></div>
     </div>
     <div class="accounts-stack-side">
       <div class="acc-mini-box">
@@ -472,7 +472,7 @@ let cachedGlobalTxs = [];
 const DB_NAME="PersonalFinanceDB",DB_VER=1,STORE="transactions";
 const K_PEOPLE="pf_people_list",K_CATS="pf_expense_cats_list",K_TARGET="pf_target_percentages";
 const K_THEME="pf_theme_pref",K_PRIVACY="pf_privacy_hidden";
-const OUTSIDE="outside",DUMMY="dummy_account",CYCLE_DAYS=30;
+const OUTSIDE="outside",DUMMY="dummy_account",CYCLE_DAYS=35;
 const DEFAULT_PILL="الكويت · د.ك";
 const SUB_ITEMS=[
   {key:"fixed",label:"📌 المصروفات الثابتة",short:"ثابت"},
@@ -679,7 +679,8 @@ function calcBudgetItem(txs,cyc,income,budgetId){
   }
 
   if(budgetId==="emergency"){
-    const baseKeys=["fixed","regular","personal","transfer","debt"];
+    // تم إضافة "savings" هنا لتعمل بشكل صحيح ولا تذهب المبالغ والنسب هدراً
+    const baseKeys=["fixed","regular","personal","transfer","debt","savings"];
     let surplus=0,totalBase=0;
     baseKeys.forEach(k=>{
       const kmax=income*((tg[k]||0)/100);
@@ -741,7 +742,7 @@ const allTx=async()=>{
         if(e&&e.date){const p=e.date.split("-");if(p.length===3)e.date=isoDate(p[0],p[1],p[2])}
         return e;
       });
-      cachedGlobalTxs=arr.sort((a,b)=>b.date.localeCompare(a.date)||(b.time||"").localeCompare(b.time||"")||b.id.localeCompare(a.id));
+      cachedGlobalTxs=arr.sort((a,b)=>b.date.localeCompare(a.date)||(b.time||"").localeCompare(a.time||"")||b.id.localeCompare(a.id));
       res(cachedGlobalTxs);
     };
     r.onerror=()=>rej(r.error);
@@ -751,6 +752,13 @@ const allTx=async()=>{
 const putTx=tx=>new Promise((res,rej)=>{
   const t=db.transaction(STORE,"readwrite");
   t.objectStore(STORE).put(tx);
+  t.oncomplete=res;
+  t.onerror=()=>rej(t.error);
+});
+
+const deleteTxById=id=>new Promise((res,rej)=>{
+  const t=db.transaction(STORE,"readwrite");
+  t.objectStore(STORE).delete(id);
   t.oncomplete=res;
   t.onerror=()=>rej(t.error);
 });
@@ -880,6 +888,30 @@ function renderAccountsBalance(txs){
   if(c)c.textContent=money(cash);
 }
 
+function renderMonthlyTrend(txs){
+  const badge=$("monthly-trend-badge");
+  if(!badge)return;
+  const cycles=getAllCycles(txs);
+  if(cycles.length<2){
+    badge.className="monthly-trend";
+    badge.textContent="📈 +0.0% من الدورة السابقة";
+    return;
+  }
+  const curCyc=cycles[cycles.length-1];
+  const prevCyc=cycles[cycles.length-2];
+  const curInc=totalIncome(txs,curCyc);
+  const prevInc=totalIncome(txs,prevCyc);
+  if(prevInc<=0){
+    badge.className="monthly-trend";
+    badge.textContent="📈 +0.0% من الدورة السابقة";
+    return;
+  }
+  const diff=((curInc-prevInc)/prevInc)*100;
+  const sign=diff>=0?"+":"";
+  badge.className="monthly-trend"+(diff<0?" down":"");
+  badge.textContent=`${diff>=0?"📈":"📉"} ${sign}${diff.toFixed(1)}% من الدورة السابقة`;
+}
+
 function renderRecentTx(txs){
   const box=$("dash-recent-transactions");
   if(!box)return;
@@ -899,9 +931,27 @@ function renderRecentTx(txs){
     const sign=isIn?"+":isOut?"−":"";
     return`<div class="tx-item">
       <div style="min-width:0"><strong>${esc(label)}</strong>${accName?` <span class="small">(${esc(accName)})</span>`:""}<br><small class="small">${tx.date===today?"اليوم":fmtDate(tx.date)}</small></div>
-      <span class="amount" style="color:${color}">${sign}${money(realAmt(tx))}</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span class="amount" style="color:${color}">${sign}${money(realAmt(tx))}</span>
+        <button type="button" class="btn btn-muted" style="padding:2px 6px;font-size:10px;min-height:22px" onclick="editTransaction('${tx.id}')" title="تعديل">✏️</button>
+        <button type="button" class="btn btn-danger" style="padding:2px 6px;font-size:10px;min-height:22px" onclick="deleteTransaction('${tx.id}')" title="حذف">🗑️</button>
+      </div>
     </div>`;
   }).join("");
+}
+
+function editTransaction(id){
+  window.location.href=`?edit=${id}`;
+}
+
+async function deleteTransaction(id){
+  if(!confirm("هل أنت متأكد من حذف هذه المعاملة؟"))return;
+  try{
+    if(!db)await openDB();
+    await deleteTxById(id);
+    toast("تم الحذف بنجاح ✅");
+    await refreshAllViews();
+  }catch(e){console.error(e);toast("تعذر حذف المعاملة ❌")}
 }
 
 function renderBudgetRow(d){
@@ -970,13 +1020,14 @@ function openFundDetailModal(budgetId){
     const avgRate=totalEgpAll>0?(totalTransKwd/totalEgpAll*1000).toFixed(3):"0.000";
     html+=`<div class="row-between"><span>إجمالي التحويلات بالدينار:</span><strong>${money(totalTransKwd)}</strong></div>`;
     html+=`<div class="row-between"><span>متوسط سعر الصرف:</span><strong>${avgRate} د.ك / 1000 ج.م</strong></div>`;
-    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-top:6px;margin-bottom:2px">👥 المستفيدون والنسب:</div>`;
+    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-top:6px;margin-bottom:2px">👥 المستفيدون ومعدل الصرف (بالجنيه):</div>`;
     if(!Object.keys(beneficiaryMap).length){
       html+=`<span class="small">لا توجد تحويلات مسجلة بهذه الدورة.</span>`;
     } else {
       Object.entries(beneficiaryMap).forEach(([name,vals])=>{
-        const pct=totalEgpAll>0?((vals.egp/totalEgpAll)*100).toFixed(1):0;
-        html+=`<div class="row-between small" style="background:rgba(255,255,255,.02);padding:4px;border-radius:6px;margin-bottom:2px"><span>• ${esc(name)}:</span><span>${vals.egp.toLocaleString()} ج.م (${money(vals.kwd)}) — معدل الصرف: <strong>${pct}%</strong></span></div>`;
+        const egpPerCycle = vals.egp;
+        const dailyEgp = (egpPerCycle / CYCLE_DAYS).toFixed(1);
+        html+=`<div class="row-between small" style="background:rgba(255,255,255,.02);padding:4px;border-radius:6px;margin-bottom:2px"><span>• ${esc(name)}:</span><span>إجمالي <strong>${vals.egp.toLocaleString()} ج.م</strong> (${money(vals.kwd)})<br><small style="color:var(--emerald-neon)">معدل الصرف: <strong>${dailyEgp} ج.م / يوم</strong></small></span></div>`;
       });
     }
   }
@@ -996,13 +1047,9 @@ function openFundDetailModal(budgetId){
     } else {
       const daysLeft=d.daysRemaining||1;
       Object.entries(personMap).forEach(([name,vals])=>{
-        // الدين الكلي = الرصيد الافتتاحي + ما أخذنا منه (كريديتور)
         const totalDebt=vals.open+vals.creditor;
-        // خد كم (ما تم سداده = أدّينا له / دبتور)
         const paid=vals.debtor;
-        // باقي كم
         const remaining=totalDebt-paid;
-        // هيصرف / يسداد كام في اليوم خلال الأيام المتبقية
         const dailyRate=daysLeft>0?Math.max(0,remaining/daysLeft):0;
 
         html+=`<div class="stack" style="background:rgba(255,255,255,.02);padding:6px;border-radius:8px;margin-bottom:4px;gap:2px">
@@ -1019,7 +1066,6 @@ function openFundDetailModal(budgetId){
     const daysInCycle=Math.max(1,dateDiff(cyc.start,cyc.end)+1);
     const activeDaysSet=new Set(cachedGlobalTxs.filter(t=>inPeriod(t,cyc)&&t.type==="expense").map(t=>t.date));
     
-    // حساب الأيام التي لم يسجل فيها مصاريف ضمن نطاق الدورة وحتى اليوم
     const missingDates=[];
     let curr=cyc.start;
     const today=todayISO();
@@ -1151,6 +1197,7 @@ async function renderDashBudget(txs){
 async function refreshDashboard(txs){
   const t=txs||await allTx();
   renderAccountsBalance(t);
+  renderMonthlyTrend(t);
   renderRecentTx(t);
   await renderDashBudget(t);
 }
