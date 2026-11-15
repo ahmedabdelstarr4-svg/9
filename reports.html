@@ -55,7 +55,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .nav-bottom .nav-btn span:first-child{font-size:14px}
 .nav-bottom .nav-btn.active{background:rgba(16,185,129,0.15);color:var(--emerald-neon);box-shadow:0 0 8px var(--emerald-glow)}
 .small{font-size:10.5px;color:var(--ink-muted)}
-.hint{font-size:11px;line-height:1.4;color:var(--amber-val);background:rgba(251, 191, 36, 0.1);border:1px solid rgba(251, 191, 36, 0.3);border-radius:10px;padding:8px}
 .table-wrap{overflow-x:auto;border:1px solid var(--border-subtle);border-radius:10px;width:100%;background:var(--bg-card)}
 table{border-collapse:separate;border-spacing:0;width:100%;min-width:420px;font-size:10.5px;text-align:right;table-layout:auto}
 th,td{padding:6px 4px;border-bottom:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle);vertical-align:middle;word-break:keep-all;white-space:nowrap}
@@ -141,7 +140,7 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
       </div>
 
       <div id="debt-filters-box" class="stack hidden panel" style="background:rgba(251,191,36,0.04);border-color:rgba(251,191,36,0.3)">
-        <div style="font-weight:900;color:var(--amber-val);font-size:11.5px">⚖️ خيارات الوعي العام للديون</div>
+        <div style="font-weight:900;color:var(--amber-val);font-size:11.5px">⚖️ خيارات الوعي العام للديون (مرتبطة بفترة التقرير)</div>
         <div class="grid2">
           <div>
             <label>طبيعة الحق</label>
@@ -715,16 +714,20 @@ function renderExpenseInsightsPanel(insights, reportType) {
   panel.classList.remove("hidden");
 }
 
+// دالة حساب الوعي المالي والديون مع الالتزام التام بفترة التقرير واستقلالية رصيد أول المدة
 function processDebtAwareness(allTxs, targetPerson, natureFilter, activityFilter, fromDate, toDate) {
   const personMap = {};
+
   allTxs.filter(x => x.type === "debt").forEach(x => {
     const p = x.person || "غير محدد";
     if(!personMap[p]) {
       personMap[p] = {
         name: p,
-        totalCreditor: 0,
-        totalDebtor: 0,
-        openingBalance: 0,
+        openingBalance: 0,       // رصيد افتتاحي مستقل لا يدخل في المصروفات أو الإيرادات الجارية
+        periodCreditor: 0,       // استلاف جديد خلال الفترة
+        periodDebtor: 0,         // سداد جديد خلال الفترة
+        cumulativeCreditor: 0,   // إجمالي تراكمي قبل الفترة
+        cumulativeDebtor: 0,     // إجمالي سداد تراكمي قبل الفترة
         firstDate: x.date,
         lastDate: x.date,
         transactionsCount: 0,
@@ -739,18 +742,26 @@ function processDebtAwareness(allTxs, targetPerson, natureFilter, activityFilter
     if(x.date > item.lastDate) item.lastDate = x.date;
 
     const amt = realAmount(x);
-    if(isCreditorEntry(x)) item.totalCreditor += amt;
-    else if(isOpeningEntry(x)) item.openingBalance += amt;
-    else if(isDebtorEntry(x)) item.totalDebtor += amt;
+    const isInPeriod = (!fromDate || x.date >= fromDate) && (!toDate || x.date <= toDate);
 
-    if((!fromDate || x.date >= fromDate) && (!toDate || x.date <= toDate)) {
-      item.hasActivityInPeriod = true;
+    if(isInPeriod) item.hasActivityInPeriod = true;
+
+    if(isOpeningEntry(x)) {
+      // رصيد أول المدة المحاسبي المستقل تماماً
+      item.openingBalance += amt;
+    } else if(isCreditorEntry(x)) {
+      if(isInPeriod) item.periodCreditor += amt;
+      item.cumulativeCreditor += amt;
+    } else if(isDebtorEntry(x)) {
+      if(isInPeriod) item.periodDebtor += amt;
+      item.cumulativeDebtor += amt;
     }
   });
 
   let personsArray = Object.values(personMap).map(item => {
-    const totalCreditCalc = item.totalCreditor + item.openingBalance;
-    const netBalance = totalCreditCalc - item.totalDebtor;
+    // إجمالي الدين الكلي للفترة = رصيد أول المدة + ما تم استلافه تراكمياً أو خلال الفترة
+    const totalCreditCalc = item.openingBalance + item.cumulativeCreditor;
+    const netBalance = totalCreditCalc - item.cumulativeDebtor;
     const isClosed = Math.abs(netBalance) < 0.001;
     const today = new Date();
     const ageDays = netBalance !== 0 ? Math.floor((today - new Date(item.firstDate)) / (1000 * 60 * 60 * 24)) : 0;
@@ -788,7 +799,7 @@ function renderDebtAwarenessPanel(debtData, targetPerson) {
   if(targetPerson && targetPerson !== "all") {
     titleEl.textContent = `👤 بطاقة موقف تفصيلية للشخص: ${targetPerson}`;
   } else {
-    titleEl.textContent = `⚖️ الوعي العام للديون والذمم`;
+    titleEl.textContent = `⚖️ الوعي العام للديون والذمم (ضمن فترة التقرير)`;
   }
 
   panel.innerHTML = `
@@ -890,7 +901,7 @@ function renderAllSummaryDashboard(filteredTxs, allTxs) {
     const acc = x.account || "cash_default";
     const toAcc = x.toAccount || "cash_default";
 
-    if(x.type === "income" || isCreditorEntry(x)) {
+    if(x.type === "income" || isCreditorEntry(x) || isOpeningEntry(x)) {
       if(acc === "bank_default") bankBal += amt;
       else if(acc === "cash_default") cashBal += amt;
     } else if(x.type === "expense" || x.type === "transfer" || isDebtorEntry(x)) {
@@ -1069,7 +1080,13 @@ function renderGeneralDebtTable(persons) {
   if(!persons.length) return void(body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:15px">لا توجد حسابات ديون مطابقة للمعايير.</td></tr>');
 
   let html = "";
+  let totCred = 0, totDeb = 0, totNet = 0;
+
   persons.forEach(p => {
+    totCred += p.totalCreditCalc;
+    totDeb += p.totalDebtor;
+    totNet += Math.abs(p.netBalance);
+
     let stText = "قائم ⚠️", stClass = "bad";
     if(p.isClosed) { stText = "خالص ومغلق ✔️"; stClass = "good"; }
     else if(p.netBalance < 0) { stText = "لك مبلغ (مدينة) ✅"; stClass = "good"; }
@@ -1083,6 +1100,16 @@ function renderGeneralDebtTable(persons) {
       <td><span class="${stClass}" style="font-weight:bold">${stText}</span></td>
     </tr>`;
   });
+
+  // إضافة سطر الختام والإجماليات النهائية لجدول الديون العام
+  html += `<tr style="background:rgba(16,185,129,0.08);font-weight:900;border-top:2px solid var(--emerald-neon)">
+    <td>الإجمالي الختامي</td>
+    <td class="amount">${money(totCred)}</td>
+    <td class="amount">${money(totDeb)}</td>
+    <td class="amount" style="color:var(--emerald-neon)">${money(totNet)}</td>
+    <td colspan="2"></td>
+  </tr>`;
+
   body.innerHTML = html;
 }
 
@@ -1103,9 +1130,12 @@ function renderPersonCardTable(txs) {
   });
 
   let html = "";
+  let totalPeriodAmount = 0;
+
   sorted.reverse().forEach(x => {
     const lbl = debtTypeLabel(x.debtType);
     const amt = realAmount(x);
+    totalPeriodAmount += amt;
     const actionBtns = `<td class="no-print" style="text-align:center"><div class="action-group"><button type="button" class="btn btn-muted action-btn-mini" data-action="edit-report" data-id="${escapeHTML(x.id)}" title="تعديل">✏️</button><button type="button" class="btn btn-danger action-btn-mini" data-action="delete-report" data-id="${escapeHTML(x.id)}" title="حذف">🗑️</button></div></td>`;
 
     html += `<tr>
@@ -1116,6 +1146,15 @@ function renderPersonCardTable(txs) {
       ${actionBtns}
     </tr>`;
   });
+
+  // إضافة سطر الختام والإجماليات النهائية لبطاقة الشخص
+  html += `<tr style="background:rgba(16,185,129,0.08);font-weight:900;border-top:2px solid var(--emerald-neon)">
+    <td>إجمالي الفترة</td>
+    <td></td>
+    <td class="amount">${money(totalPeriodAmount)}</td>
+    <td colspan="2" class="amount">الرصيد الختامي: ${money(running)}</td>
+  </tr>`;
+
   body.innerHTML = html;
 }
 
@@ -1176,6 +1215,17 @@ function renderReportTableRows(e){
       html+=`<tr data-id="${x.id}"><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(labelTitle)}</strong><br><small>${escapeHTML(x.notes||"")}</small></td><td>${escapeHTML(x.person || (x.beneficiaries||[]).map(b=>b.name).join(" ")||"—")}</td><td><small>${escapeHTML(accName)}</small></td><td class="amount">${money(amt)}</td>${actionBtns}</tr>`;
     }
   });
+
+  // إضافة صف الإجمالي الختامي العام للجدول
+  if(e.length > 0) {
+    html += `<tr style="background:rgba(16,185,129,0.08);font-weight:900;border-top:2px solid var(--emerald-neon)">
+      <td>الإجمالي الكلي</td>
+      <td colspan="${typeVal==='expense'||typeVal==='income'?3:(typeVal==='internal_transfer'?2:3)}"></td>
+      <td class="amount" style="color:var(--emerald-neon)">${money(totalSumForPercent)}</td>
+      <td colspan="2"></td>
+    </tr>`;
+  }
+
   t.innerHTML=html;
 }
 
@@ -1301,7 +1351,7 @@ function backToFilters(){
   reportGenerated = false;
 }
 
-// دالة البحث الذكي الشامل والمطور لتعمل عبر كافة التقارير
+// البحث الذكي الشامل والمطور ليعمل بكفاءة عبر كافة أنواع التقارير
 function filterReportTable(){
   const searchTxt = $("report-search") ? $("report-search").value.toLowerCase().trim() : "";
   if(!cachedReportRecords.length) return;
@@ -1316,7 +1366,6 @@ function filterReportTable(){
   }
 
   visibleReportRecords = cachedReportRecords.filter(item => {
-    // البحث العميق الشامل في كافة الحقول الممكنة (الاسم، التاريخ، المبلغ، الملاحظات، الحساب، المستفيدون)
     const textBlob = [
       item.date || "",
       item.category || "",
@@ -1327,7 +1376,7 @@ function filterReportTable(){
       item.toAccount || "",
       String(item.amount || ""),
       String(item.totalKwd || ""),
-      item.name || "", // لعرض الديون العامة
+      item.name || "",
       ...(Array.isArray(item.beneficiaries) ? item.beneficiaries.map(b => `${b.name || ""} ${b.egp || ""}`) : [])
     ].join(" ").toLowerCase();
 
