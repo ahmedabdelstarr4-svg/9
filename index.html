@@ -240,8 +240,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
       <div class="donut-legend">
         <div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>0%</strong></div>
         <div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>0%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون</span><strong>0%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>الادخار</span><strong>0%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون والادخار</span><strong>0%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>المعالجة</span><strong>0%</strong></div>
         <div class="donut-legend-item"><span><i class="dot" style="background:#94a3b8"></i>أخرى</span><strong>0%</strong></div>
       </div>
     </div>
@@ -403,14 +403,14 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
           <div><label style="font-size:10.5px">تسديد الديون (%) 🤝</label><input id="target-debt-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="debt" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
         </div>
         <div>
-          <label style="font-size:10.5px">المدخرات (%) 💰</label>
+          <label style="font-size:10.5px">المدخرات (ضمن صندوق الديون والادخار) (%) 💰</label>
           <input id="target-savings-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()">
           <small class="small target-value-hint" data-target-hint="savings" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small>
         </div>
         <div id="target-values-summary" class="panel stack" style="background:rgba(16,185,129,.05);border-color:var(--border-neon);font-size:10.5px;gap:3px;margin-top:4px"></div>
         <div id="target-cycles-list" class="stack" style="gap:4px"></div>
         <button type="button" class="btn btn-primary" onclick="saveTargetPercentages()" style="padding:6px">حفظ المستهدفات 🎯</button>
-        <div class="field-note">تحدد هذه النسب الخطة المالية للصناديق الأساسية. وأي نسبة متبقية تذهب تلقائيًا لصندوق المعالجة والعجز.</div>
+        <div class="field-note">تحدد هذه النسب الخطة المالية للصناديق الأساسية (وتُدمج نسبة المدخرات مع صندوق الديون والادخار). وأي نسبة متبقية تذهب تلقائيًا لصندوق المعالجة.</div>
       </div>
     </div>
     <div class="acc-item" id="acc-categories">
@@ -476,14 +476,14 @@ const OUTSIDE="outside",DUMMY="dummy_account",CYCLE_DAYS=35;
 const DEFAULT_PILL="الكويت · د.ك";
 const SUB_ITEMS=[
   {key:"fixed",label:"📌 المصروفات الثابتة",short:"ثابت"},
-  {key:"regular",label:"📊 المصروفات العادية",short:"عادي"},
+  {key:"regular",label:"📊 بنود المعيشة العامة",short:"عام"},
   {key:"personal",label:"🛍️ المشتريات والنثريات",short:"شخصي"}
 ];
-const SUB_LABEL={fixed:"ثابتة",regular:"عادية",personal:"شخصية ونثريات"};
+const SUB_LABEL={fixed:"ثابتة",regular:"عامة",personal:"شخصية ونثريات"};
 const BUDGETS=[
   {key:"living",icon:"🏠",short:"المعيشة"},
   {key:"transfer",icon:"✈️",short:"التحويلات"},
-  {key:"debt",icon:"🤝",short:"الديون"},
+  {key:"debt",icon:"🤝",short:"الديون والادخار"},
   {key:"emergency",icon:"🛡️",short:"المعالجة"}
 ];
 const BUDGET_MAP=Object.fromEntries(BUDGETS.map(b=>[b.key,b]));
@@ -575,7 +575,6 @@ function getTxBudgetId(tx){
     if(tx.budgetId&&["fixed","regular","personal"].includes(tx.budgetId))return tx.budgetId;
     if(tx.isFixed)return "fixed";
     if(tx.isPersonalPurchase)return "personal";
-    if(tx.category==="أدوات ومشتريات شخصية"||tx.category==="نثريات ومتفرقات")return "personal";
     return "regular";
   }
   if(tx.type==="transfer")return "transfer";
@@ -671,15 +670,32 @@ function calcBudgetItem(txs,cyc,income,budgetId){
       const sspent=spentInCycle(txs,cyc,s.key);
       return {key:s.key,label:SUB_LABEL[s.key],max:smax,spent:sspent,remaining:smax-sspent};
     });
-    const dailyActual=remainDays>0?Math.max(0,remaining/remainDays):0;
     const spentT=spentToday(txs,cyc,"living",today);
+    const remBeforeToday=remaining+spentT;
+    const dailyAllowance=remainDays>0?Math.max(0,remBeforeToday/remainDays):0;
+    const remainingToday=dailyAllowance-spentT;
     return {...base,budgetId,max,spent,remaining,pct,isMerged:true,subItems,
-      dailyActual,dailyReference:max/CYCLE_DAYS,dailyRaw:remainDays>0?remaining/remainDays:0,
-      spentToday:spentT,remainingToday:dailyActual-spentT};
+      dailyActual:dailyAllowance,dailyReference:max/CYCLE_DAYS,dailyRaw:remainDays>0?remBeforeToday/remainDays:0,
+      spentToday:spentT,remainingToday};
+  }
+
+  if(budgetId==="debt"){
+    const debtPct=tg.debt||0;
+    const savingsPct=tg.savings||0;
+    const pct=debtPct+savingsPct;
+    const max=income*pct/100;
+    const debtMax=income*debtPct/100;
+    const savingsMax=income*savingsPct/100;
+    const spent=spentInCycle(txs,cyc,"debt");
+    const remaining=max-spent;
+    const dailyAllowance=remainDays>0?Math.max(0,remaining/remainDays):0;
+    const spentT=spentToday(txs,cyc,"debt",today);
+    return {...base,budgetId,max,debtMax,savingsMax,debtPct,savingsPct,spent,remaining,pct,isMergedDebtSavings:true,
+      dailyActual:dailyAllowance,dailyReference:max/CYCLE_DAYS,dailyRaw:remainDays>0?remaining/remainDays:0,
+      spentToday:spentT,remainingToday:dailyAllowance-spentT};
   }
 
   if(budgetId==="emergency"){
-    // تم إضافة "savings" هنا لتعمل بشكل صحيح ولا تذهب المبالغ والنسب هدراً
     const baseKeys=["fixed","regular","personal","transfer","debt","savings"];
     let surplus=0,totalBase=0;
     baseKeys.forEach(k=>{
@@ -691,22 +707,22 @@ function calcBudgetItem(txs,cyc,income,budgetId){
     const max=Math.max(0,income-totalBase);
     const spent=spentInCycle(txs,cyc,"emergency");
     const remaining=surplus-spent;
-    const dailyActual=remainDays>0?Math.max(0,remaining/remainDays):0;
+    const dailyAllowance=remainDays>0?Math.max(0,remaining/remainDays):0;
     const spentT=spentToday(txs,cyc,"emergency",today);
     return {...base,budgetId,max,spent,remaining,pct:income>0?(max/income)*100:0,isDynamic:true,
-      dailyActual,dailyReference:max/CYCLE_DAYS,dailyRaw:remainDays>0?remaining/remainDays:0,
-      spentToday:spentT,remainingToday:dailyActual-spentT};
+      dailyActual:dailyAllowance,dailyReference:max/CYCLE_DAYS,dailyRaw:remainDays>0?remaining/remainDays:0,
+      spentToday:spentT,remainingToday:dailyAllowance-spentT};
   }
 
   const pct=tg[budgetId]||0;
   const max=income*pct/100;
   const spent=spentInCycle(txs,cyc,budgetId);
   const remaining=max-spent;
-  const dailyActual=remainDays>0?Math.max(0,remaining/remainDays):0;
+  const dailyAllowance=remainDays>0?Math.max(0,remaining/remainDays):0;
   const spentT=spentToday(txs,cyc,budgetId,today);
   return {...base,budgetId,max,spent,remaining,pct,
-    dailyActual,dailyReference:max/CYCLE_DAYS,dailyRaw:remainDays>0?remaining/remainDays:0,
-    spentToday:spentT,remainingToday:dailyActual-spentT};
+    dailyActual:dailyAllowance,dailyReference:max/CYCLE_DAYS,dailyRaw:remainDays>0?remaining/remainDays:0,
+    spentToday:spentT,remainingToday:dailyAllowance-spentT};
 }
 
 function calcAllBudgets(txs,cyc){
@@ -856,10 +872,10 @@ function renderCatsList(){
   if(!el)return;
   const cats=getCats();
   if(!cats.length)return void(el.innerHTML='<span class="small">لا توجد تصنيفات بعد. أضف تصنيفًا من الأعلى.</span>');
-  const subMap={fixed:"📌 ثابتة",regular:"📊 عادية",personal:"🛍️ شخصية ونثريات"};
+  const subMap={fixed:"📌 ثابتة",regular:"📊 عامة",personal:"🛍️ شخصية ونثريات"};
   el.innerHTML=cats.map(c=>`<div class="person-item" style="flex-direction:column;align-items:stretch;gap:4px">
     <div class="row-between"><span>${esc(c.name)}</span><button type="button" class="btn btn-danger" style="padding:2px 8px;font-size:10px;min-height:26px" data-action="del-cat" data-cat="${esc(c.name)}">حذف</button></div>
-    <div class="small">البند التابع: <strong>${subMap[c.budgetId]||"📊 عادية"}</strong></div>
+    <div class="small">البند التابع: <strong>${subMap[c.budgetId]||"📊 عامة"}</strong></div>
   </div>`).join("");
 }
 
@@ -869,7 +885,7 @@ function updateExpenseBudgetHint(){
   const cat=$("expense-category")?.value;
   if(!cat)return void(hint.textContent="");
   const bid=budgetIdForCat(cat);
-  const lbl={fixed:"📌 المصروفات الثابتة",regular:"📊 المصروفات العادية",personal:"🛍️ المشتريات والنثريات"}[bid]||"مصروفات عادية";
+  const lbl={fixed:"📌 المصروفات الثابتة",regular:"📊 بنود المعيشة العامة",personal:"🛍️ المشتريات والنثريات"}[bid]||"بنود المعيشة العامة";
   hint.innerHTML=`سيتم احتساب هذا المصروف تحت بند المعيشة (<strong style="color:var(--green-val)">${lbl}</strong>)`;
 }
 
@@ -1002,7 +1018,7 @@ function openFundDetailModal(budgetId){
     (d.subItems||[]).forEach(s=>{
       html+=`<div class="row-between small"><span>${s.label}:</span><span>مستهدف ${money(s.max)} | صرف ${money(s.spent)} | متبقي <strong class="${s.remaining<0?"bad":"good"}">${money(s.remaining)}</strong></span></div>`;
     });
-    html+=`<div class="row-between" style="margin-top:4px;border-top:1px dashed var(--border-subtle);padding-top:4px"><span>⚡ الحد المتاح للصرف اليوم:</span><strong class="good">${money(d.remainingToday)}</strong></div>`;
+    html+=`<div class="row-between" style="margin-top:4px;border-top:1px dashed var(--border-subtle);padding-top:4px"><span>⚡ المتاح للصرف اليوم:</span><strong class="good">${money(d.remainingToday)}</strong></div>`;
   }
   else if(budgetId==="transfer"){
     const transfers=cachedGlobalTxs.filter(t=>inPeriod(t,cyc)&&t.type==="transfer");
@@ -1019,19 +1035,25 @@ function openFundDetailModal(budgetId){
     });
     const avgRate=totalEgpAll>0?(totalTransKwd/totalEgpAll*1000).toFixed(3):"0.000";
     html+=`<div class="row-between"><span>إجمالي التحويلات بالدينار:</span><strong>${money(totalTransKwd)}</strong></div>`;
-    html+=`<div class="row-between"><span>متوسط سعر الصرف:</span><strong>${avgRate} د.ك / 1000 ج.م</strong></div>`;
-    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-top:6px;margin-bottom:2px">👥 المستفيدون ومعدل الصرف (بالجنيه):</div>`;
+    html+=`<div class="row-between"><span>متوسط تكلفة الألف جنيه:</span><strong>${avgRate} د.ك / 1000 ج.م</strong></div>`;
+    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-top:6px;margin-bottom:2px">👥 المستفيدون ومعدل الصرف اليومي (بالجنيه):</div>`;
     if(!Object.keys(beneficiaryMap).length){
       html+=`<span class="small">لا توجد تحويلات مسجلة بهذه الدورة.</span>`;
     } else {
       Object.entries(beneficiaryMap).forEach(([name,vals])=>{
         const egpPerCycle = vals.egp;
         const dailyEgp = (egpPerCycle / CYCLE_DAYS).toFixed(1);
-        html+=`<div class="row-between small" style="background:rgba(255,255,255,.02);padding:4px;border-radius:6px;margin-bottom:2px"><span>• ${esc(name)}:</span><span>إجمالي <strong>${vals.egp.toLocaleString()} ج.م</strong> (${money(vals.kwd)})<br><small style="color:var(--emerald-neon)">معدل الصرف: <strong>${dailyEgp} ج.م / يوم</strong></small></span></div>`;
+        html+=`<div class="row-between small" style="background:rgba(255,255,255,.02);padding:4px;border-radius:6px;margin-bottom:2px"><span>• ${esc(name)}:</span><span>إجمالي <strong>${vals.egp.toLocaleString()} ج.م</strong> (${money(vals.kwd)})<br><small style="color:var(--emerald-neon)">المتوسط اليومي: <strong>${dailyEgp} ج.م / يوم</strong></small></span></div>`;
       });
     }
   }
   else if(budgetId==="debt"){
+    html+=`<div class="stack" style="background:rgba(16,185,129,.05);border:1px solid var(--border-neon);padding:6px;border-radius:8px;margin-bottom:4px;gap:2px">
+      <div style="font-weight:900;color:var(--emerald-neon)">💰 مخصص الادخار المدمج في الصندوق:</div>
+      <div class="row-between small"><span>نسبة الادخار المحددة:</span><strong>${d.savingsPct||0}%</strong></div>
+      <div class="row-between small"><span>مبلغ الادخار المستهدف بالدورة:</span><strong class="good">${money(d.savingsMax||0)}</strong></div>
+      <div class="row-between small"><span>مخصص سداد الديون (${d.debtPct||0}%):</span><strong>${money(d.debtMax||0)}</strong></div>
+    </div>`;
     const debts=cachedGlobalTxs.filter(t=>t.type==="debt");
     const personMap={};
     debts.forEach(d=>{
@@ -1041,7 +1063,7 @@ function openFundDetailModal(budgetId){
       else if(d.debtType==="creditor")personMap[p].creditor+=realAmt(d);
       else if(d.debtType==="debtor")personMap[p].debtor+=realAmt(d);
     });
-    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-bottom:2px">🤝 تفاصيل الديون والمستفيدين:</div>`;
+    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-bottom:2px">🤝 تفاصيل الديون والسداد:</div>`;
     if(!Object.keys(personMap).length){
       html+=`<span class="small">لا توجد ديون مسجلة.</span>`;
     } else {
@@ -1055,14 +1077,33 @@ function openFundDetailModal(budgetId){
         html+=`<div class="stack" style="background:rgba(255,255,255,.02);padding:6px;border-radius:8px;margin-bottom:4px;gap:2px">
           <div style="font-weight:900;color:var(--ink)">• ${esc(name)}</div>
           <div class="row-between small"><span>إجمالي الدين:</span><strong>${money(totalDebt)}</strong></div>
-          <div class="row-between small"><span>خد كم (السداد):</span><strong class="good">${money(paid)}</strong></div>
-          <div class="row-between small"><span>باقي كم:</span><strong class="bad">${money(remaining)}</strong></div>
-          <div class="row-between small"><span>معدل السداد/الصرف اليومي:</span><strong>${money(dailyRate)} / يوم</strong></div>
+          <div class="row-between small"><span>المسدد:</span><strong class="good">${money(paid)}</strong></div>
+          <div class="row-between small"><span>المتبقي:</span><strong class="bad">${money(remaining)}</strong></div>
+          <div class="row-between small"><span>المعدل اليومي المتبقي:</span><strong>${money(dailyRate)} / يوم</strong></div>
         </div>`;
       });
     }
   }
   else if(budgetId==="emergency"){
+    const bankBal=getAccountBalance(cachedGlobalTxs,"bank_default");
+    const cashBal=getAccountBalance(cachedGlobalTxs,"cash_default");
+    const totalLiquid=bankBal+cashBal;
+    const cycleSpendTotal=items.reduce((s,it)=>s+Math.max(0,it.spent),0);
+
+    html+=`<div class="stack" style="background:rgba(16,185,129,.05);border:1px solid var(--border-neon);padding:6px;border-radius:8px;margin-bottom:6px;gap:3px">
+      <div style="font-weight:900;color:var(--emerald-neon)">💳 تفسير أرصدة الكاش والبنك:</div>
+      <div class="row-between small"><span>رصيد الحساب البنكي:</span><strong class="good">${money(bankBal)}</strong></div>
+      <div class="row-between small"><span>رصيد الكاش:</span><strong class="good">${money(cashBal)}</strong></div>
+      <div class="row-between small"><span>إجمالي السيولة الحالية:</span><strong>${money(totalLiquid)}</strong></div>
+      <div class="row-between small"><span>إجمالي المصروف بالصناديق في الدورة:</span><strong>${money(cycleSpendTotal)}</strong></div>
+      <div class="field-note" style="margin-top:3px">
+        لماذا قد يظهر رصيد في الكاش أو البنك رغم استهلاك الصناديق؟<br>
+        • السيولة الفعلية تمثل تراكم كافة الحركات السابقة، بينما الصناديق تقاس على دخل الدورة الحالية.<br>
+        • تسجيل "أخذنا منه" (زيادة دين) يرفع رصيد الحساب فوراً، والتحويلات الداخلية تغيّر مكان الرصيد دون استهلاك الصناديق.<br>
+        • وجود فوائض من دورات سابقة أو فروق تسوية أو عدم تسجيل بعض المصروفات يجعل رصيد الحساب أعلى من المتبقي في الصناديق.
+      </div>
+    </div>`;
+
     const daysInCycle=Math.max(1,dateDiff(cyc.start,cyc.end)+1);
     const activeDaysSet=new Set(cachedGlobalTxs.filter(t=>inPeriod(t,cyc)&&t.type==="expense").map(t=>t.date));
     
@@ -1074,9 +1115,9 @@ function openFundDetailModal(budgetId){
       curr=dateAdd(curr,1);
     }
 
-    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-bottom:2px">🛡️ صندوق المعالجة وفجوة التسجيل:</div>`;
+    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-bottom:2px">🛡️ فجوة تسجيل المصروفات:</div>`;
     html+=`<div class="row-between"><span>أيام الدورة:</span><strong>${daysInCycle} يوم</strong></div>`;
-    html+=`<div class="row-between"><span>عدد الأيام بدون تسجيل:</span><strong class="warning">${missingDates.length} يوم</strong></div>`;
+    html+=`<div class="row-between"><span>عدد الأيام بدون مصروفات مسجلة:</span><strong class="warning">${missingDates.length} يوم</strong></div>`;
     html+=`<div style="margin-top:4px;font-weight:800;color:var(--ink-muted)">📅 تواريخ الأيام التي لم يُسجل فيها مصاريف:</div>`;
     if(!missingDates.length){
       html+=`<span class="small good">ممتاز! تم تسجيل مصروفات في كل أيام الدورة السابقة حتى اليوم ✅</span>`;
@@ -1165,7 +1206,7 @@ function renderDonut(items,income){
   legend.innerHTML=`
     <div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>${pct(getSpent("living"))}%</strong></div>
     <div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>${pct(getSpent("transfer"))}%</strong></div>
-    <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون</span><strong>${pct(getSpent("debt"))}%</strong></div>
+    <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون والادخار</span><strong>${pct(getSpent("debt"))}%</strong></div>
     <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>المعالجة</span><strong>${pct(getSpent("emergency"))}%</strong></div>
     <div class="donut-legend-item"><span><i class="dot" style="background:#94a3b8"></i>أخرى</span><strong>0%</strong></div>
   `;
@@ -1440,7 +1481,7 @@ function renderCyclesList(txs,s){
   const box=$("target-cycles-list");
   if(!box)return;
   const cycles=getAllCycles(txs).slice().reverse();
-  const rows=[["fixed","📌 الثابتة"],["regular","📊 العادية"],["personal","🛍️ الشخصية"],["transfer","✈️ التحويلات"],["debt","🤝 الديون"],["savings","💰 المدخرات"]];
+  const rows=[["fixed","📌 الثابتة"],["regular","📊 العامة"],["personal","🛍️ الشخصية"],["transfer","✈️ التحويلات"],["debt","🤝 الديون"],["savings","💰 المدخرات (ضمن الديون والادخار)"]];
   const totalPct=Object.values(s).reduce((a,b)=>a+b,0);
   let html='<div class="small" style="color:var(--emerald-neon);font-weight:800">📅 النسب المستهدفة</div>';
   html+=cycles.map((c,i)=>{
@@ -1547,7 +1588,7 @@ async function executeReconciliation(){
   const now=new Date();
   const tx={id:`tx_recon_${Date.now()}`,date:todayISO(),time:`${pad2(now.getHours())}:${pad2(now.getMinutes())}`,account:sel.value};
   if(diff>0){tx.type="income";tx.category="أخرى";tx.amount=diff;tx.notes="تسوية رصيد (زيادة / فائض)"}
-  else{tx.type="expense";tx.category="نثريات ومتفرقات";tx.amount=Math.abs(diff);tx.budgetId="regular";tx.notes="تسوية رصيد (عجز / نقص)"}
+  else{tx.type="expense";tx.category="تسوية عجز";tx.amount=Math.abs(diff);tx.budgetId="regular";tx.notes="تسوية رصيد (عجز / نقص)"}
   if(!db)await openDB();
   await putTx(tx);
   toast(`تمت التسوية بنجاح! الفرق: ${money(diff)} ✅`);
