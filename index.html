@@ -22,7 +22,7 @@
   --header-bg:#1e293b;--nav-bg:rgba(255,255,255,.92);--modal-overlay:rgba(15,23,42,.5);
   --app-max:480px;--shadow-neon:0 10px 25px rgba(5,150,105,.1)
 }
-*{box-sizing:border-box;transition:background-color .25s,border-color .25s,color .25s,box-shadow .25s}
+*{box-sizing:border-box;transition:background-color .2s,border-color .2s,color .2s,box-shadow .2s}
 html,body{margin:0;padding:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg-main);color:var(--ink);overflow-x:hidden}
 body{padding:4px;padding-bottom:calc(65px + env(safe-area-inset-bottom,8px));display:flex;justify-content:center;align-items:flex-start}
 button,input,select,textarea{font:inherit}
@@ -30,15 +30,13 @@ button{cursor:pointer;touch-action:manipulation;min-height:36px}
 .app{width:100%;max-width:var(--app-max);background:var(--bg-app);border:1px solid var(--border-neon);border-radius:24px;box-shadow:var(--shadow-neon);display:flex;flex-direction:column;overflow:hidden;position:relative}
 .header{background:var(--header-bg);color:#f8fafc;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:800;gap:8px;border-bottom:1px solid var(--border-subtle)}
 .header-brand{display:flex;align-items:center;gap:6px}
-.header-brand svg{width:16px;height:16px;fill:#d4af37}
+.header-brand svg{width:16px;height:16px;fill:#d4af37;flex-shrink:0}
 .header-actions{display:flex;align-items:center;gap:6px}
 .theme-toggle-btn{background:rgba(255,255,255,.1);border:1px solid var(--border-subtle);color:#f8fafc;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;min-height:26px;display:inline-flex;align-items:center;gap:4px}
 .pill{font-size:10px;background:rgba(16,185,129,.15);color:var(--emerald-neon);padding:2px 8px;border-radius:10px;white-space:nowrap;font-weight:700;border:1px solid var(--border-neon)}
-.pill.warn{color:var(--amber-val);border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.1)}
 .content{padding:6px;flex:1;display:flex;flex-direction:column;gap:6px}
-.view{display:flex;flex-direction:column;gap:6px}
+.view,.stack{display:flex;flex-direction:column;gap:6px}
 .hidden{display:none!important}
-.stack{display:flex;flex-direction:column;gap:6px}
 label{display:block;color:var(--ink-muted);font-size:11px;font-weight:800;margin-bottom:4px}
 input,select,textarea{width:100%;min-width:0;padding:8px 10px;border:1px solid var(--border-subtle);border-radius:12px;background:var(--bg-input);color:var(--ink);outline:none;font-size:12px}
 input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-shadow:0 0 8px var(--emerald-glow)}
@@ -50,10 +48,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .alert-strip.warning{background:rgba(251,191,36,.1);border-color:var(--amber-val);color:var(--amber-val)}
 .top-dash-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:6px;align-items:stretch}
 .balance-card{background:linear-gradient(145deg,#0f241a,#08140e);color:#fff;border-radius:16px;padding:10px;text-align:center;display:flex;flex-direction:column;justify-content:space-between;border:1px solid var(--border-neon);box-shadow:0 6px 20px rgba(0,0,0,.4),inset 0 0 10px rgba(16,185,129,.15);position:relative;overflow:hidden}
-.balance-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center,rgba(16,185,129,.08) 0,transparent 60%);pointer-events:none}
 .balance-top-row{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#a7f3d0;font-weight:700}
-.privacy-btn{background:transparent;border:0;color:#a7f3d0;padding:2px;font-size:13px;display:flex;align-items:center}
-.balance-main-val{font-size:22px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-.5px;text-shadow:0 0 10px rgba(255,255,255,.2);margin:4px 0}
+.privacy-btn{background:transparent;border:0;color:#a7f3d0;padding:2px;font-size:13px;display:flex;align-items:center;min-height:24px}
+.balance-main-val{font-size:22px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-.5px;margin:4px 0}
 .monthly-trend{display:inline-flex;align-items:center;gap:3px;font-size:9px;color:#34d399;background:rgba(52,211,153,.15);padding:2px 6px;border-radius:6px;font-weight:700}
 .monthly-trend.down{color:#fb7185;background:rgba(251,113,133,.15)}
 .accounts-stack-side{display:flex;flex-direction:column;gap:6px}
@@ -71,15 +68,17 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .today-val.warning{color:var(--amber-val)}
 .today-val.bad{color:var(--red-val)}
 .today-note{font-size:9px;color:var(--ink-muted);font-weight:700}
-.donut-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:8px 10px;display:flex;align-items:center;gap:6px;cursor:pointer}
-.donut-graphic{position:relative;width:72px;height:72px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.donut-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:8px 10px;display:flex;align-items:center;gap:6px;cursor:pointer;min-width:0}
+.donut-graphic{position:relative;width:68px;height:68px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .donut-svg{width:100%;height:100%;transform:rotate(-90deg)}
-.donut-center-text{position:absolute;text-align:center;font-size:8px;font-weight:800;color:var(--ink);line-height:1.2}
-.donut-center-text strong{display:block;font-size:10.5px;color:var(--emerald-neon)}
-.donut-legend{display:flex;flex-direction:column;gap:2px;flex:1;font-size:8.5px}
-.donut-legend-item{display:flex;align-items:center;justify-content:space-between;color:var(--ink-muted);font-weight:700}
-.donut-legend-item span:first-child{display:flex;align-items:center;gap:3px}
-.dot{width:5px;height:5px;border-radius:50%;display:inline-block}
+.donut-center-text{position:absolute;text-align:center;font-size:7.5px;font-weight:800;color:var(--ink);line-height:1.15}
+.donut-center-text strong{display:block;font-size:10px;color:var(--emerald-neon)}
+.donut-legend{display:flex;flex-direction:column;gap:2px;flex:1;font-size:8.5px;min-width:0}
+.donut-legend-head{display:flex;justify-content:space-between;color:var(--emerald-neon);font-size:7.5px;font-weight:800;border-bottom:1px dashed var(--border-subtle);padding-bottom:1px}
+.donut-legend-item{display:flex;align-items:center;justify-content:space-between;gap:4px;color:var(--ink-muted);font-weight:700}
+.donut-legend-item span:first-child{display:flex;align-items:center;gap:3px;white-space:nowrap}
+.donut-legend-item strong{font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap;font-size:8px}
+.dot{width:5px;height:5px;border-radius:50%;display:inline-block;flex-shrink:0}
 .quick-actions{display:flex;flex-direction:column;gap:4px}
 .qa-main{border:0;width:100%;min-height:38px;padding:6px;border-radius:14px;font-size:12px;font-weight:900;color:#fff;background:linear-gradient(135deg,#10b981,#047857);box-shadow:0 4px 14px rgba(16,185,129,.3);display:flex;justify-content:center;align-items:center;gap:4px}
 .qa-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
@@ -93,11 +92,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .tx-item:hover{background:var(--bg-card-hover)}
 .tx-item .amount{font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
 .modal-sheet-overlay{position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(6px);z-index:100;display:flex;align-items:flex-end;justify-content:center}
-.modal-sheet{background:var(--bg-app);width:100%;max-width:480px;border-top-left-radius:20px;border-top-right-radius:20px;border:1px solid var(--border-neon);padding:12px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:10px;box-shadow:0 -10px 40px rgba(0,0,0,.5);animation:slideUp .3s cubic-bezier(.16,1,.3,1)}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-sheet{background:var(--bg-app);width:100%;max-width:480px;border-top-left-radius:20px;border-top-right-radius:20px;border:1px solid var(--border-neon);padding:12px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:10px;box-shadow:0 -10px 40px rgba(0,0,0,.5)}
 .btn{border:0;border-radius:10px;padding:8px 10px;font-weight:800;font-size:11px;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:32px}
 .btn-primary{background:linear-gradient(135deg,#10b981,#047857);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,.3)}
-.btn-dark{background:var(--header-bg);color:#fff;border:1px solid var(--border-subtle)}
 .btn-soft{background:rgba(16,185,129,.1);color:var(--emerald-neon);border:1px solid var(--border-neon)}
 .btn-green{background:#10b981;color:#fff}
 .btn-muted{background:rgba(255,255,255,.05);color:var(--ink);border:1px solid var(--border-subtle)}
@@ -133,13 +130,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 .checkline input{width:16px;height:16px;accent-color:var(--emerald-neon)}
 .date-parts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
 .date-parts input{text-align:center;padding:6px 2px}
-.field-note{font-size:10px;color:var(--ink-muted);line-height:1.3;margin-top:2px}
+.field-note{font-size:10px;color:var(--ink-muted);line-height:1.35;margin-top:2px}
 .field-note.warn{color:var(--amber-val);background:rgba(251,191,36,.1);padding:4px 6px;border-radius:6px;border:1px solid rgba(251,191,36,.3);font-weight:700}
 .row-between{display:flex;justify-content:space-between;align-items:center;gap:4px}
 .bud-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
 .bud-mini-card{border:1px solid var(--border-subtle);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;background:var(--bg-card);min-width:0;cursor:pointer}
 .bud-mini-card:hover{border-color:var(--emerald-neon);background:var(--bg-card-hover)}
-.bud-mini-card[data-bkey="emergency"]{border-color:var(--border-neon);background:rgba(16,185,129,.03)}
+.bud-mini-card[data-bkey="emergency"]{border-color:rgba(56,189,248,.35);background:rgba(56,189,248,.04)}
 .bud-mini-head{display:flex;justify-content:space-between;align-items:center;gap:4px}
 .bud-mini-name{font-size:11px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bud-mini-pct{font-size:10px;font-weight:900;font-variant-numeric:tabular-nums}
@@ -155,7 +152,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 @media (min-width:600px){:root{--app-max:720px}}
 @media (min-width:900px){
   :root{--app-max:1100px}
-  body{padding:16px;padding-bottom:16px}
+  body{padding:16px;padding-bottom:calc(90px + env(safe-area-inset-bottom,16px))}
   .app{border-radius:28px}
   .content{padding:20px}
   #view-dashboard{gap:16px}
@@ -165,7 +162,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
   .dash-col{gap:16px}
   .nav-bottom{max-width:750px;bottom:16px}
   .nav-bottom .nav-btn{padding:10px 6px;font-size:12px}
-  body{padding-bottom:calc(90px + env(safe-area-inset-bottom,16px))}
   #toast{bottom:90px;font-size:13px;padding:12px 20px}
 }
 </style>
@@ -188,7 +184,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 <main class="content">
 <section id="view-dashboard" class="view">
   <div id="dash-alert-strip" class="alert-strip hidden" onclick="switchMainView('backup')"></div>
-  
+
   <div class="top-dash-grid">
     <div class="balance-card">
       <div class="balance-top-row">
@@ -235,14 +231,14 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
           <path stroke="rgba(255,255,255,.08)" stroke-width="3.5" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
           <path class="donut-segment" stroke="#10b981" stroke-width="3.5" stroke-dasharray="0, 100" stroke-dashoffset="25" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
         </svg>
-        <div class="donut-center-text">الدورة الحالية<strong style="color:var(--emerald-neon)">0.0%</strong>من الراتب</div>
+        <div class="donut-center-text">الدورة الحالية<strong style="color:var(--emerald-neon)">0.0%</strong>من إجمالي الدخل</div>
       </div>
       <div class="donut-legend">
-        <div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>0%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>0%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون والادخار</span><strong>0%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>الملخص</span><strong>0%</strong></div>
-        <div class="donut-legend-item"><span><i class="dot" style="background:#94a3b8"></i>أخرى</span><strong>0%</strong></div>
+        <div class="donut-legend-head"><span>البند</span><span>أساسي / إجمالي</span></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>0% / 0%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>0% / 0%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون</span><strong>0% / 0%</strong></div>
+        <div class="donut-legend-item"><span><i class="dot" style="background:#38bdf8"></i>الادخار</span><strong>0% / 0%</strong></div>
       </div>
     </div>
   </div>
@@ -279,7 +275,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
   </div>
 </section>
 
-<!-- نافذة منبثقة لتفاصيل الصندوق عند الضغط عليه -->
 <div id="fund-detail-modal" class="modal-overlay hidden">
   <div class="modal-box" style="max-width:380px;max-height:85vh;overflow-y:auto">
     <div class="row-between">
@@ -372,7 +367,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 </div>
 
 <section id="view-backup" class="view stack hidden">
-  <div class="row-between"><strong style="font-size:14px;color:var(--ink)">الإعدادات والصيانة ⚙️</strong><span class="small">تصميم مدمج</span></div>
+  <div class="row-between"><strong style="font-size:14px;color:var(--ink)">الإعدادات والصيانة ⚙️</strong><span class="small">نسخة منظمة</span></div>
   <div class="stack" style="gap:6px">
     <div class="acc-item" id="acc-reconciliation">
       <div class="acc-header" onclick="toggleAccordion('acc-reconciliation')"><span>⚖️ تسوية الأرصدة الفورية</span><span class="acc-icon">▼</span></div>
@@ -387,7 +382,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
     <div class="acc-item" id="acc-targets">
       <div class="acc-header" onclick="toggleAccordion('acc-targets')"><span>🎯 النسب المستهدفة للميزانية (%)</span><span class="acc-icon">▼</span></div>
       <div class="acc-body stack">
-        <div style="font-size:11px;font-weight:900;color:var(--emerald-neon);margin-bottom:2px">🏠 بنود صندوق المعيشة:</div>
+        <div style="font-size:11px;font-weight:900;color:var(--emerald-neon)">🏠 بنود صندوق المعيشة:</div>
         <div class="grid2">
           <div><label style="font-size:10.5px">المصروفات الثابتة (%)</label><input id="target-fixed-pct" type="number" min="0" max="100" placeholder="مثال: 30" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="fixed" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
           <div><label style="font-size:10.5px">المصروفات العادية (%)</label><input id="target-regular-pct" type="number" min="0" max="100" placeholder="مثال: 30" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="regular" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
@@ -397,20 +392,20 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
           <input id="target-personal-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()">
           <small class="small target-value-hint" data-target-hint="personal" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small>
         </div>
-        <div style="font-size:11px;font-weight:900;color:var(--emerald-neon);margin:6px 0 2px 0;border-top:1px dashed var(--border-subtle);padding-top:4px">✈️ باقي الصناديق الأساسية:</div>
+        <div style="font-size:11px;font-weight:900;color:var(--emerald-neon);margin-top:4px;border-top:1px dashed var(--border-subtle);padding-top:4px">✈️ باقي الصناديق الأساسية:</div>
         <div class="grid2">
           <div><label style="font-size:10.5px">التحويلات الخارجية (%)</label><input id="target-transfer-pct" type="number" min="0" max="100" placeholder="مثال: 20" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="transfer" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
           <div><label style="font-size:10.5px">تسديد الديون (%) 🤝</label><input id="target-debt-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()"><small class="small target-value-hint" data-target-hint="debt" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small></div>
         </div>
         <div>
-          <label style="font-size:10.5px">المدخرات (ضمن الديون والادخار) (%) 💰</label>
+          <label style="font-size:10.5px">الادخار المستهدف (ضمن الديون والادخار) (%) 🎯</label>
           <input id="target-savings-pct" type="number" min="0" max="100" placeholder="مثال: 10" oninput="renderTargetValuesPreview()">
           <small class="small target-value-hint" data-target-hint="savings" style="display:block;margin-top:2px;color:var(--green-val);font-weight:700"></small>
         </div>
-        <div id="target-values-summary" class="panel stack" style="background:rgba(16,185,129,.05);border-color:var(--border-neon);font-size:10.5px;gap:3px;margin-top:4px"></div>
+        <div id="target-values-summary" class="panel stack" style="background:rgba(16,185,129,.05);border-color:var(--border-neon);font-size:10.5px;gap:3px"></div>
         <div id="target-cycles-list" class="stack" style="gap:4px"></div>
         <button type="button" class="btn btn-primary" onclick="saveTargetPercentages()" style="padding:6px">حفظ المستهدفات 🎯</button>
-        <div class="field-note">تُحسب هذه النسب على الراتب الأساسي فقط. كل الفلوس المتبقية من الصناديق مع أي دخل ثانوي تُحتسب تلقائياً ضمن الادخار، ويعرض صندوق الملخص الصورة الشاملة للدورة.</div>
+        <div class="field-note">تُحسب هذه النسب على الراتب الأساسي فقط. الادخار المستهدف يمثل الخطة من الراتب الأساسي، بينما الادخار الفعلي يمثل السيولة الفعلية الموجودة (الكاش + البنك).</div>
       </div>
     </div>
     <div class="acc-item" id="acc-categories">
@@ -422,7 +417,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
         </div>
         <div><label style="font-size:10.5px">البند التابع للتصنيف الجديد (ضمن صندوق المعيشة)</label><select id="new-expense-cat-budget"></select></div>
         <div id="expense-cats-manage-list" class="persons-manage-list"><span class="small">لا توجد تصنيفات بعد.</span></div>
-        <div class="field-note">كل تصنيف مصروف يتبع بندًا فرعيًا داخل صندوق المعيشة. اختياره يحدد البند المباشر للتصنيف.</div>
       </div>
     </div>
     <div class="acc-item" id="acc-people">
@@ -464,20 +458,26 @@ input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-sha
 </div>
 
 <div id="toast" role="status" aria-live="polite"></div>
-<div id="person-modal" class="modal-overlay hidden"><div class="modal-box"><h3 id="person-modal-title" style="margin:0;font-size:14px">إضافة اسم جديد</h3><input id="person-modal-input" placeholder="اسم الشخص / الجهة" maxlength="80"><div class="modal-actions"><button type="button" class="btn btn-primary" onclick="confirmAddPerson()">حفظ</button><button type="button" class="btn btn-muted" onclick="closePersonModal()">إلغاء</button></div></div></div>
+<div id="person-modal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <h3 style="margin:0;font-size:14px">إضافة اسم جديد</h3>
+    <input id="person-modal-input" placeholder="اسم الشخص / الجهة" maxlength="80">
+    <div class="modal-actions">
+      <button type="button" class="btn btn-primary" onclick="confirmAddPerson()">حفظ</button>
+      <button type="button" class="btn btn-muted" onclick="closePersonModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
 
 <script>
-// @ts-nocheck
-let cachedGlobalTxs = [];
 const DB_NAME="PersonalFinanceDB",DB_VER=1,STORE="transactions";
 const K_PEOPLE="pf_people_list",K_CATS="pf_expense_cats_list",K_TARGET="pf_target_percentages";
 const K_THEME="pf_theme_pref",K_PRIVACY="pf_privacy_hidden";
-const OUTSIDE="outside",DUMMY="dummy_account",CYCLE_DAYS=35;
-const DEFAULT_PILL="الكويت · د.ك";
+const OUTSIDE="outside",DUMMY="dummy_account",CYCLE_DAYS=35,DEFAULT_PILL="الكويت · د.ك";
 const SUB_ITEMS=[
-  {key:"fixed",label:"📌 المصروفات الثابتة",short:"ثابت"},
-  {key:"regular",label:"📊 المصروفات العادية",short:"عادي"},
-  {key:"personal",label:"🛍️ المشتريات والنثريات",short:"شخصي"}
+  {key:"fixed",label:"📌 المصروفات الثابتة"},
+  {key:"regular",label:"📊 المصروفات العادية"},
+  {key:"personal",label:"🛍️ المشتريات والنثريات"}
 ];
 const SUB_LABEL={fixed:"ثابتة",regular:"عادية",personal:"شخصية ونثريات"};
 const BUDGETS=[
@@ -491,39 +491,30 @@ const BUDGET_MAP=Object.fromEntries(BUDGETS.map(b=>[b.key,b]));
 let db=null,inputTab="expense",editId=null,personCb=null,toastT=null,privacyHidden=false;
 
 const $=id=>document.getElementById(id);
-const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-const toast=(msg,dur=5000)=>{const t=$("toast");t.textContent=msg;t.style.display="block";clearTimeout(toastT);toastT=setTimeout(()=>t.style.display="none",dur)};
+const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+const toast=(msg,dur=4000)=>{const t=$("toast");if(!t)return;t.textContent=msg;t.style.display="block";clearTimeout(toastT);toastT=setTimeout(()=>t.style.display="none",dur)};
 const toNum=v=>Number(v)||0;
 const pad2=n=>String(n).padStart(2,"0");
+const money=v=>privacyHidden?"•••••• د.ك":toNum(v).toFixed(3)+" د.ك";
 
-function money(v,cur="د.ك"){
-  if(privacyHidden)return "•••••• "+cur;
-  return toNum(v).toFixed(3)+" "+cur;
-}
-
-const isoDate=(y,m,d)=>`${String(y).padStart(4,"0")}-${pad2(m)}-${pad2(d)}`;
-const todayISO=()=>{const d=new Date;return isoDate(d.getFullYear(),d.getMonth()+1,d.getDate())};
-const firstOfMonthISO=()=>{const d=new Date;return isoDate(d.getFullYear(),d.getMonth()+1,1)};
+const isoDate=(y,m,d)=>`${String(Number(y)).padStart(4,"0")}-${pad2(Number(m))}-${pad2(Number(d))}`;
+const normIso=iso=>{if(!iso)return"";const p=String(iso).split("-");return p.length===3?isoDate(p[0],p[1],p[2]):""};
+const todayISO=()=>{const d=new Date();return isoDate(d.getFullYear(),d.getMonth()+1,d.getDate())};
+const firstOfMonthISO=()=>{const d=new Date();return isoDate(d.getFullYear(),d.getMonth()+1,1)};
 const fmtDate=iso=>{if(!iso)return"";const[y,m,d]=iso.split("-");return`${d}/${m}/${y}`};
 const dateAdd=(iso,days)=>{const[y,m,d]=iso.split("-").map(Number);const dt=new Date(Date.UTC(y,m-1,d));dt.setUTCDate(dt.getUTCDate()+days);return isoDate(dt.getUTCFullYear(),dt.getUTCMonth()+1,dt.getUTCDate())};
 const dateDiff=(a,b)=>{const[a1,b1,c1]=a.split("-").map(Number),[a2,b2,c2]=b.split("-").map(Number);return Math.floor((Date.UTC(a2,b2-1,c2)-Date.UTC(a1,b1-1,c1))/864e5)};
-const dayBefore=iso=>dateAdd(iso,-1);
 
 function initTheme(){
   const t=localStorage.getItem(K_THEME)||"dark";
   document.documentElement.setAttribute("data-theme",t);
-  updateThemeUI(t);
-}
-function toggleTheme(){
-  const cur=document.documentElement.getAttribute("data-theme")||"dark";
-  const next=cur==="dark"?"light":"dark";
-  document.documentElement.setAttribute("data-theme",next);
-  localStorage.setItem(K_THEME,next);
-  updateThemeUI(next);
-}
-function updateThemeUI(t){
   const i=$("theme-toggle-icon"),x=$("theme-toggle-text");
   if(i&&x){i.textContent=t==="dark"?"🌙":"☀️";x.textContent=t==="dark"?"داكن":"فاتح"}
+}
+function toggleTheme(){
+  const next=(document.documentElement.getAttribute("data-theme")||"dark")==="dark"?"light":"dark";
+  localStorage.setItem(K_THEME,next);
+  initTheme();
 }
 function togglePrivacy(){
   privacyHidden=!privacyHidden;
@@ -533,14 +524,12 @@ function togglePrivacy(){
   refreshDashboard();
 }
 
-function getAccounts(){
-  return [
-    {id:"cash_default",name:"الكاش",type:"cash",icon:"💵"},
-    {id:"bank_default",name:"الحساب البنكي",type:"bank",icon:"🏦"},
-    {id:DUMMY,name:"حساب وهمي (ديون أول المدة)",type:"dummy",icon:"🌐"},
-    {id:OUTSIDE,name:"خارج النظام (بداية)",type:"outside",icon:"🌐",hidden:true}
-  ];
-}
+const getAccounts=()=>[
+  {id:"cash_default",name:"الكاش",icon:"💵"},
+  {id:"bank_default",name:"الحساب البنكي",icon:"🏦"},
+  {id:DUMMY,name:"حساب وهمي (ديون أول المدة)",icon:"🌐"},
+  {id:OUTSIDE,name:"خارج النظام (بداية)",icon:"🌐",hidden:true}
+];
 const accById=id=>getAccounts().find(a=>a.id===id)||getAccounts()[0];
 const visibleAccounts=()=>getAccounts().filter(a=>!a.hidden&&a.id!==OUTSIDE&&a.id!==DUMMY);
 const allAccounts=()=>getAccounts().filter(a=>a.id!==OUTSIDE);
@@ -557,25 +546,24 @@ function getAccountBalance(txs,accId){
       return;
     }
     if((tx.account||"cash_default")!==accId)return;
-    if(tx.type==="income")bal+=realAmt(tx);
-    else if(tx.type==="expense")bal-=realAmt(tx);
-    else if(tx.type==="transfer")bal-=realAmt(tx);
-    else if(tx.type==="debt"){
-      if(isDebtKind(tx,"creditor"))bal+=realAmt(tx);
-      else if(isDebtKind(tx,"debtor"))bal-=realAmt(tx);
-      else if(isDebtKind(tx,"opening_balance"))bal+=realAmt(tx);
-    }
+    if(tx.type==="income"||isDebtKind(tx,"creditor")||isDebtKind(tx,"opening_balance"))bal+=realAmt(tx);
+    else if(tx.type==="expense"||tx.type==="transfer"||isDebtKind(tx,"debtor"))bal-=realAmt(tx);
   });
   return bal;
+}
+
+function getActualLiquidSavings(txs){
+  const bankBal=getAccountBalance(txs,"bank_default");
+  const cashBal=getAccountBalance(txs,"cash_default");
+  return {bankBal,cashBal,totalLiquid:bankBal+cashBal};
 }
 
 function getTxBudgetId(tx){
   if(!tx)return null;
   if(tx.type==="expense"){
-    if(tx.budgetId&&["fixed","regular","personal"].includes(tx.budgetId))return tx.budgetId;
+    if(["fixed","regular","personal"].includes(tx.budgetId))return tx.budgetId;
     if(tx.isFixed)return "fixed";
-    if(tx.isPersonalPurchase)return "personal";
-    if(tx.category==="أدوات ومشتريات شخصية"||tx.category==="نثريات ومتفرقات")return "personal";
+    if(tx.isPersonalPurchase||tx.category==="أدوات ومشتريات شخصية"||tx.category==="نثريات ومتفرقات")return "personal";
     return "regular";
   }
   if(tx.type==="transfer")return "transfer";
@@ -583,62 +571,39 @@ function getTxBudgetId(tx){
   return null;
 }
 
-function inPeriod(tx,cyc){
-  if(!tx||!tx.date||!cyc)return false;
-  const iso=isoDate(...tx.date.split("-"));
-  return iso>=cyc.start&&iso<=cyc.end;
-}
-
-function totalIncome(txs,cyc){
-  return (txs||[]).filter(x=>inPeriod(x,cyc)).reduce((s,x)=>{
-    if(x.type==="income") return s + realAmt(x);
-    return s;
-  },0);
-}
+const inPeriod=(tx,cyc)=>{const iso=normIso(tx?.date);return Boolean(iso&&cyc&&iso>=cyc.start&&iso<=cyc.end)};
+const totalIncome=(txs,cyc)=>(txs||[]).filter(x=>inPeriod(x,cyc)&&x.type==="income").reduce((s,x)=>s+realAmt(x),0);
 
 function baseSalaryIncome(txs,cyc){
-  const cycTxs=(txs||[]).filter(x=>inPeriod(x,cyc)&&x.type==="income");
-  const baseTx=cycTxs.find(x=>x.isSalaryBase);
-  if(baseTx)return realAmt(baseTx);
-  return totalIncome(txs,cyc);
+  const incTxs=(txs||[]).filter(x=>inPeriod(x,cyc)&&x.type==="income");
+  const baseTx=incTxs.find(x=>x.isSalaryBase);
+  return baseTx?realAmt(baseTx):totalIncome(txs,cyc);
 }
 
 function secondaryIncome(txs,cyc){
-  const cycTxs=(txs||[]).filter(x=>inPeriod(x,cyc)&&x.type==="income");
-  const hasBase=cycTxs.some(x=>x.isSalaryBase);
-  if(!hasBase)return 0;
-  return cycTxs.filter(x=>!x.isSalaryBase).reduce((s,x)=>s+realAmt(x),0);
+  const incTxs=(txs||[]).filter(x=>inPeriod(x,cyc)&&x.type==="income");
+  if(!incTxs.some(x=>x.isSalaryBase))return 0;
+  return incTxs.filter(x=>!x.isSalaryBase).reduce((s,x)=>s+realAmt(x),0);
 }
 
 function getAllCycles(txs){
   const today=todayISO();
-  const arr=(txs||[]).map(x=>{
-    if(x&&x.date){const p=x.date.split("-");if(p.length===3)x.date=isoDate(p[0],p[1],p[2])}
-    return x;
-  }).filter(x=>x&&x.date).sort((a,b)=>a.date.localeCompare(b.date));
-
+  const arr=(txs||[]).map(x=>({...x,date:normIso(x?.date)})).filter(x=>x.date).sort((a,b)=>a.date.localeCompare(b.date));
   if(!arr.length){
     const start=firstOfMonthISO();
     return [{id:`c_${start}_${today}`,start,end:today,isCurrent:true,cycleIndex:1}];
   }
-
-  const salaryDates = arr.filter(x => x.type === "income" && x.isSalaryBase).map(x => x.date);
-  const firstStart = salaryDates.length ? salaryDates[0] : arr[0].date;
-  const allStarts = [...new Set([firstStart, ...salaryDates])].sort();
-
-  const cycles = [];
-  for (let i = 0; i < allStarts.length; i++) {
-    const start = allStarts[i];
-    const nextStart = allStarts[i + 1];
-    let end = nextStart ? dayBefore(nextStart) : today;
-    if (start > today) continue;
-    cycles.push({id:`c_${start}_${end}`,start,end,isCurrent:i===allStarts.length-1,cycleIndex:i+1});
-  }
-  if (!cycles.length) {
+  const salaryDates=arr.filter(x=>x.type==="income"&&x.isSalaryBase).map(x=>x.date);
+  const allStarts=[...new Set([salaryDates[0]||arr[0].date,...salaryDates])].sort().filter(d=>d<=today);
+  if(!allStarts.length){
     const start=firstOfMonthISO();
     return [{id:`c_${start}_${today}`,start,end:today,isCurrent:true,cycleIndex:1}];
   }
-  return cycles;
+  return allStarts.map((start,i)=>{
+    const nextStart=allStarts[i+1];
+    const end=nextStart?dateAdd(nextStart,-1):today;
+    return {id:`c_${start}_${end}`,start,end,isCurrent:i===allStarts.length-1,cycleIndex:i+1};
+  });
 }
 
 const currentCycle=txs=>{const c=getAllCycles(txs);return c.length?c[c.length-1]:null};
@@ -652,29 +617,26 @@ function spentInCycle(txs,cyc,budgetId){
   return (txs||[]).filter(tx=>{
     if(!inPeriod(tx,cyc))return false;
     const b=getTxBudgetId(tx);
-    if(budgetId==="living")return b==="fixed"||b==="regular"||b==="personal";
-    return b===budgetId;
+    return budgetId==="living"?["fixed","regular","personal"].includes(b):b===budgetId;
   }).reduce((s,tx)=>s+realAmt(tx),0);
 }
 
 function spentToday(txs,cyc,budgetId,today){
   return (txs||[]).filter(tx=>{
-    if(!inPeriod(tx,cyc))return false;
+    if(!inPeriod(tx,cyc)||normIso(tx.date)!==today)return false;
     const b=getTxBudgetId(tx);
-    if(budgetId==="living"){if(b!=="fixed"&&b!=="regular"&&b!=="personal")return false}
-    else if(b!==budgetId)return false;
-    return tx.date===today;
+    return budgetId==="living"?["fixed","regular","personal"].includes(b):b===budgetId;
   }).reduce((s,tx)=>s+realAmt(tx),0);
 }
 
 function calcBudgetItem(txs,cyc,income,budgetId){
   const tg=getTargets();
-  const elapsed=Math.max(0,Math.min(CYCLE_DAYS,dateDiff(cyc.start,todayISO())));
-  const remainDays=Math.max(0,CYCLE_DAYS-elapsed);
   const today=todayISO();
-  const cycEnd=dateAdd(cyc.start,CYCLE_DAYS-1);
-  const base={elapsed,daysRemaining:remainDays,cycleEndDate:cycEnd};
+  const elapsed=Math.max(0,Math.min(CYCLE_DAYS,dateDiff(cyc.start,today)));
+  const remainDays=Math.max(0,CYCLE_DAYS-elapsed);
+  const base={elapsed,daysRemaining:remainDays,cycleEndDate:dateAdd(cyc.start,CYCLE_DAYS-1)};
   const secInc=secondaryIncome(txs,cyc);
+  const {bankBal,cashBal,totalLiquid}=getActualLiquidSavings(txs);
 
   if(budgetId==="living"){
     const pct=(tg.fixed||0)+(tg.regular||0)+(tg.personal||0);
@@ -687,76 +649,36 @@ function calcBudgetItem(txs,cyc,income,budgetId){
       return {key:s.key,label:SUB_LABEL[s.key],max:smax,spent:sspent,remaining:smax-sspent};
     });
     const spentT=spentToday(txs,cyc,"living",today);
-    const remBeforeToday=remaining+spentT;
-    const dailyAllowance=remainDays>0?Math.max(0,remBeforeToday/remainDays):0;
-    const remainingToday=dailyAllowance-spentT;
-    return {...base,budgetId,max,spent,remaining,pct,isMerged:true,subItems,
-      dailyActual:dailyAllowance,dailyReference:max/CYCLE_DAYS,dailyRaw:remainDays>0?remBeforeToday/remainDays:0,
-      spentToday:spentT,remainingToday};
+    const dailyAllowance=remainDays>0?Math.max(0,(remaining+spentT)/remainDays):0;
+    return {...base,budgetId,max,spent,remaining,pct,subItems,dailyActual:dailyAllowance,spentToday:spentT,remainingToday:dailyAllowance-spentT};
   }
 
   if(budgetId==="debt"){
-    const debtPct=tg.debt||0;
-    const savingsPct=tg.savings||0;
-    const debtMax=income*debtPct/100;
-    const savingsTarget=income*savingsPct/100;
+    const debtPct=tg.debt||0,savingsPct=tg.savings||0;
+    const debtMax=income*debtPct/100,savingsTarget=income*savingsPct/100;
     const spent=spentInCycle(txs,cyc,"debt");
     const debtRemaining=debtMax-spent;
-
-    const livingPct=(tg.fixed||0)+(tg.regular||0)+(tg.personal||0);
-    const livingRem=(income*livingPct/100)-spentInCycle(txs,cyc,"living");
-    const transferRem=(income*(tg.transfer||0)/100)-spentInCycle(txs,cyc,"transfer");
-    const totalPctAll=livingPct+(tg.transfer||0)+debtPct+savingsPct;
-    const unallocatedBase=Math.max(0,income-(income*totalPctAll/100));
-
-    const totalSavings=savingsTarget+secInc+livingRem+transferRem+debtRemaining+unallocatedBase;
-    const max=debtMax+savingsTarget;
-    const remaining=debtRemaining+savingsTarget+secInc;
-    const dailyAllowance=remainDays>0?Math.max(0,debtRemaining/remainDays):0;
-    const spentT=spentToday(txs,cyc,"debt",today);
-
-    return {...base,budgetId,max,debtMax,savingsTarget,debtPct,savingsPct,secInc,
-      livingRem,transferRem,debtRemaining,unallocatedBase,totalSavings,
-      spent,remaining,pct:debtPct+savingsPct,isMergedDebtSavings:true,
-      dailyActual:dailyAllowance,dailyReference:debtMax/CYCLE_DAYS,dailyRaw:remainDays>0?debtRemaining/remainDays:0,
-      spentToday:spentT,remainingToday:dailyAllowance-spentT};
+    const dailyAllowance=remainDays>0?Math.max(0,(debtRemaining+spentToday(txs,cyc,"debt",today))/remainDays):0;
+    return {...base,budgetId,max:debtMax,debtMax,savingsTarget,debtPct,savingsPct,secInc,debtRemaining,actualSavings:totalLiquid,bankBal,cashBal,spent,remaining:debtRemaining,dailyActual:dailyAllowance};
   }
 
   if(budgetId==="emergency"){
-    const livingPct=(tg.fixed||0)+(tg.regular||0)+(tg.personal||0);
-    const livingMax=income*livingPct/100;
     const livingSpent=spentInCycle(txs,cyc,"living");
-    const transferMax=income*(tg.transfer||0)/100;
     const transferSpent=spentInCycle(txs,cyc,"transfer");
-    const debtMax=income*(tg.debt||0)/100;
     const debtSpent=spentInCycle(txs,cyc,"debt");
-    const savingsTarget=income*(tg.savings||0)/100;
-    const totalPctAll=livingPct+(tg.transfer||0)+(tg.debt||0)+(tg.savings||0);
-    const unallocated=Math.max(0,income-(income*totalPctAll/100));
-
-    const totalSpentAll=livingSpent+transferSpent+debtSpent+spentInCycle(txs,cyc,"emergency");
+    const savingsTarget=income*((tg.savings||0)/100);
+    const totalSpentAll=livingSpent+transferSpent+debtSpent;
     const totalAvailableCycle=income+secInc;
     const netRemainingAll=totalAvailableCycle-totalSpentAll;
-
-    const dailyAllowance=remainDays>0?Math.max(0,netRemainingAll/remainDays):0;
-    const spentT=spentToday(txs,cyc,"emergency",today);
-    return {...base,budgetId,max:totalAvailableCycle,spent:totalSpentAll,remaining:netRemainingAll,
-      pct:totalAvailableCycle>0?(totalSpentAll/totalAvailableCycle)*100:0,isSummary:true,
-      baseSalary:income,secInc,livingMax,livingSpent,transferMax,transferSpent,
-      debtMax,debtSpent,savingsTarget,unallocated,
-      dailyActual:dailyAllowance,dailyReference:totalAvailableCycle/CYCLE_DAYS,dailyRaw:remainDays>0?netRemainingAll/remainDays:0,
-      spentToday:spentT,remainingToday:dailyAllowance-spentT};
+    return {...base,budgetId,max:totalAvailableCycle,spent:totalSpentAll,remaining:netRemainingAll,pct:totalAvailableCycle>0?(totalSpentAll/totalAvailableCycle)*100:0,baseSalary:income,secInc,savingsTarget,actualSavings:totalLiquid,bankBal,cashBal};
   }
 
   const pct=tg[budgetId]||0;
   const max=income*pct/100;
   const spent=spentInCycle(txs,cyc,budgetId);
   const remaining=max-spent;
-  const dailyAllowance=remainDays>0?Math.max(0,remaining/remainDays):0;
-  const spentT=spentToday(txs,cyc,budgetId,today);
-  return {...base,budgetId,max,spent,remaining,pct,
-    dailyActual:dailyAllowance,dailyReference:max/CYCLE_DAYS,dailyRaw:remainDays>0?remaining/remainDays:0,
-    spentToday:spentT,remainingToday:dailyAllowance-spentT};
+  const dailyAllowance=remainDays>0?Math.max(0,(remaining+spentToday(txs,cyc,budgetId,today))/remainDays):0;
+  return {...base,budgetId,max,spent,remaining,pct,dailyActual:dailyAllowance};
 }
 
 function calcAllBudgets(txs,cyc){
@@ -775,87 +697,65 @@ const openDB=()=>db?Promise.resolve(db):new Promise((res,rej)=>{
   const req=indexedDB.open(DB_NAME,DB_VER);
   req.onupgradeneeded=e=>{
     const t=e.target.result;
-    if(!t.objectStoreNames.contains(STORE)){
-      t.createObjectStore(STORE,{keyPath:"id"}).createIndex("date","date");
-    }
+    if(!t.objectStoreNames.contains(STORE))t.createObjectStore(STORE,{keyPath:"id"}).createIndex("date","date");
   };
   req.onsuccess=e=>{db=e.target.result;res(db)};
   req.onerror=e=>rej(e.target.error);
 });
 
-const allTx=async()=>{
+async function allTx(){
   if(!db)await openDB();
   return new Promise((res,rej)=>{
     const r=db.transaction(STORE,"readonly").objectStore(STORE).getAll();
-    r.onsuccess=()=>{
-      const arr=r.result.map(e=>{
-        if(e&&e.date){const p=e.date.split("-");if(p.length===3)e.date=isoDate(p[0],p[1],p[2])}
-        return e;
-      });
-      cachedGlobalTxs=arr.sort((a,b)=>b.date.localeCompare(a.date)||(b.time||"").localeCompare(a.time||"")||b.id.localeCompare(a.id));
-      res(cachedGlobalTxs);
-    };
+    r.onsuccess=()=>res(r.result.map(e=>({...e,date:normIso(e?.date)||e.date})).sort((a,b)=>b.date.localeCompare(a.date)||(b.time||"").localeCompare(a.time||"")||String(b.id).localeCompare(String(a.id))));
     r.onerror=()=>rej(r.error);
   });
-};
+}
 
 const putTx=tx=>new Promise((res,rej)=>{
   const t=db.transaction(STORE,"readwrite");
   t.objectStore(STORE).put(tx);
-  t.oncomplete=res;
-  t.onerror=()=>rej(t.error);
+  t.oncomplete=res;t.onerror=()=>rej(t.error);
 });
 
 const deleteTxById=id=>new Promise((res,rej)=>{
   const t=db.transaction(STORE,"readwrite");
   t.objectStore(STORE).delete(id);
-  t.oncomplete=res;
-  t.onerror=()=>rej(t.error);
+  t.oncomplete=res;t.onerror=()=>rej(t.error);
 });
 
 const getPeople=()=>{try{const a=JSON.parse(localStorage.getItem(K_PEOPLE)||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}};
 const savePeople=arr=>{localStorage.setItem(K_PEOPLE,JSON.stringify([...new Set(arr)]));populatePeopleSelects();renderPeopleList()};
 
-const getCats=()=>{
-  try{const a=JSON.parse(localStorage.getItem(K_CATS)||"[]");if(Array.isArray(a))return a.map(normCat).filter(Boolean)}catch(e){}
-  return [];
-};
-const normCat=c=>typeof c==="string"?{name:c,budgetId:"regular"}:c&&c.name?{name:c.name,budgetId:c.budgetId||"regular"}:null;
+const normCat=c=>typeof c==="string"?{name:c,budgetId:"regular"}:c?.name?{name:c.name,budgetId:c.budgetId||"regular"}:null;
+const getCats=()=>{try{const a=JSON.parse(localStorage.getItem(K_CATS)||"[]");return Array.isArray(a)?a.map(normCat).filter(Boolean):[]}catch(e){return[]}};
 const saveCats=arr=>{
-  const clean=arr.map(normCat).filter(Boolean);
-  localStorage.setItem(K_CATS,JSON.stringify(clean));
-  populateCategorySelects();
-  renderCatsList();
+  localStorage.setItem(K_CATS,JSON.stringify(arr.map(normCat).filter(Boolean)));
+  populateCategorySelects();renderCatsList();
   fillSelect($("new-expense-cat-budget"),SUB_ITEMS,"key","label");
 };
-const budgetIdForCat=name=>{
-  const c=getCats().find(x=>x.name===name);
-  return c?c.budgetId:"regular";
-};
+const budgetIdForCat=name=>getCats().find(x=>x.name===name)?.budgetId||"regular";
 
 function fillSelect(el,items,valKey,labelKey,keepCurrent=true){
   if(!el)return;
   const cur=keepCurrent?el.value:null;
   el.innerHTML=items.map(it=>{
-    const val=valKey?it[valKey]:it;
-    const lbl=labelKey?it[labelKey]:it;
+    const val=valKey?it[valKey]:it,lbl=labelKey?it[labelKey]:it;
     return`<option value="${esc(val)}">${esc(lbl)}</option>`;
   }).join("");
   if(cur&&items.some(it=>(valKey?it[valKey]:it)===cur))el.value=cur;
 }
 
 function populateAccountSelects(){
-  const vis=visibleAccounts().map(a=>({id:a.id,label:`${a.icon||"💳"} ${a.name}`}));
-  fillSelect($("tx-account"),vis,"id","label");
-  const all=allAccounts().map(a=>({id:a.id,label:`${a.icon||"💳"} ${a.name}`}));
+  fillSelect($("tx-account"),visibleAccounts().map(a=>({id:a.id,label:`${a.icon} ${a.name}`})),"id","label");
+  const all=allAccounts().map(a=>({id:a.id,label:`${a.icon} ${a.name}`}));
   fillSelect($("int-from-account"),all,"id","label");
   fillSelect($("int-to-account"),all,"id","label");
   populateReconcileSelect();
 }
 
 function populatePeopleSelects(){
-  const ppl=getPeople();
-  const opts=ppl.map(p=>({v:p,l:p}));
+  const opts=getPeople().map(p=>({v:p,l:p}));
   fillSelect($("debt-person-select"),opts,"v","l");
   document.querySelectorAll(".beneficiary-name-select").forEach(s=>fillSelect(s,opts,"v","l"));
   renderPeopleHints();
@@ -867,8 +767,8 @@ function populateCategorySelects(){
   fillSelect($("income-category"),["راتب أساسي","عمل إضافي","أرباح / عوائد","أخرى"]);
   const hint=$("expense-cat-hint");
   if(hint){
-    if(!cats.length){hint.className="field-note warn";hint.textContent="لا توجد تصنيفات. أضف تصنيفًا من الإعدادات أولاً."}
-    else{hint.className="field-note";hint.textContent=""}
+    hint.className=cats.length?"field-note":"field-note warn";
+    hint.textContent=cats.length?"":"لا توجد تصنيفات. أضف تصنيفًا من الإعدادات أولاً.";
   }
   updateExpenseBudgetHint();
 }
@@ -876,122 +776,69 @@ function populateCategorySelects(){
 function populateReconcileSelect(){
   const sel=$("reconcile-account-select");
   if(!sel)return;
-  fillSelect(sel,visibleAccounts().map(a=>({id:a.id,label:`${a.icon||"💳"} ${a.name}`})),"id","label");
+  fillSelect(sel,visibleAccounts().map(a=>({id:a.id,label:`${a.icon} ${a.name}`})),"id","label");
   updateReconcileCurrentBalance();
 }
 
 function renderPeopleHints(){
-  const ppl=getPeople();
+  const has=getPeople().length>0;
   const dh=$("debt-people-hint"),th=$("transfer-people-hint");
-  if(dh){
-    if(!ppl.length){dh.className="field-note warn";dh.textContent="لسه مفيش أسماء. اضغط زر ➕ لإضافة أول اسم."}
-    else{dh.className="field-note";dh.textContent=""}
-  }
-  if(th){
-    if(!ppl.length){th.className="field-note warn";th.textContent="لسه مفيش أسماء. اضغط زر ➕ جنب الصف لإضافة أول مستفيد."}
-    else{th.className="field-note";th.textContent="لو الاسم مش موجود، دوس زر ➕ جنبه لإضافته للقائمة."}
-  }
+  if(dh){dh.className=has?"field-note":"field-note warn";dh.textContent=has?"":"لسه مفيش أسماء. اضغط زر ➕ لإضافة أول اسم."}
+  if(th){th.className=has?"field-note":"field-note warn";th.textContent=has?"لو الاسم مش موجود، دوس زر ➕ جنبه لإضافته للقائمة.":"لسه مفيش أسماء. اضغط زر ➕ جنب الصف لإضافة أول مستفيد."}
 }
 
 function renderPeopleList(){
-  const el=$("persons-manage-list");
-  if(!el)return;
+  const el=$("persons-manage-list");if(!el)return;
   const ppl=getPeople();
-  if(!ppl.length)return void(el.innerHTML='<span class="small">لا توجد أسماء محفوظة بعد.</span>');
-  el.innerHTML=ppl.map(p=>`<div class="person-item"><span>${esc(p)}</span><button type="button" class="btn btn-danger" style="padding:2px 8px;font-size:10px;min-height:26px" data-action="del-person" data-person="${esc(p)}">حذف</button></div>`).join("");
+  el.innerHTML=ppl.length?ppl.map(p=>`<div class="person-item"><span>${esc(p)}</span><button type="button" class="btn btn-danger" style="padding:2px 8px;font-size:10px;min-height:26px" data-action="del-person" data-person="${esc(p)}">حذف</button></div>`).join(""):`<span class="small">لا توجد أسماء محفوظة بعد.</span>`;
 }
 
 function renderCatsList(){
-  const el=$("expense-cats-manage-list");
-  if(!el)return;
+  const el=$("expense-cats-manage-list");if(!el)return;
   const cats=getCats();
-  if(!cats.length)return void(el.innerHTML='<span class="small">لا توجد تصنيفات بعد. أضف تصنيفًا من الأعلى.</span>');
   const subMap={fixed:"📌 ثابتة",regular:"📊 عادية",personal:"🛍️ شخصية ونثريات"};
-  el.innerHTML=cats.map(c=>`<div class="person-item" style="flex-direction:column;align-items:stretch;gap:4px">
-    <div class="row-between"><span>${esc(c.name)}</span><button type="button" class="btn btn-danger" style="padding:2px 8px;font-size:10px;min-height:26px" data-action="del-cat" data-cat="${esc(c.name)}">حذف</button></div>
-    <div class="small">البند التابع: <strong>${subMap[c.budgetId]||"📊 عادية"}</strong></div>
-  </div>`).join("");
+  el.innerHTML=cats.length?cats.map(c=>`<div class="person-item" style="flex-direction:column;align-items:stretch;gap:4px"><div class="row-between"><span>${esc(c.name)}</span><button type="button" class="btn btn-danger" style="padding:2px 8px;font-size:10px;min-height:26px" data-action="del-cat" data-cat="${esc(c.name)}">حذف</button></div><div class="small">البند التابع: <strong>${subMap[c.budgetId]||"📊 عادية"}</strong></div></div>`).join(""):`<span class="small">لا توجد تصنيفات بعد. أضف تصنيفًا من الأعلى.</span>`;
 }
 
 function updateExpenseBudgetHint(){
-  const hint=$("expense-budget-hint");
+  const hint=$("expense-budget-hint"),cat=$("expense-category")?.value;
   if(!hint)return;
-  const cat=$("expense-category")?.value;
   if(!cat)return void(hint.textContent="");
-  const bid=budgetIdForCat(cat);
-  const lbl={fixed:"📌 المصروفات الثابتة",regular:"📊 المصروفات العادية",personal:"🛍️ المشتريات والنثريات"}[bid]||"مصروفات عادية";
+  const lbl={fixed:"📌 المصروفات الثابتة",regular:"📊 المصروفات العادية",personal:"🛍️ المشتريات والنثريات"}[budgetIdForCat(cat)]||"مصروفات عادية";
   hint.innerHTML=`سيتم احتساب هذا المصروف تحت بند المعيشة (<strong style="color:var(--green-val)">${lbl}</strong>)`;
 }
 
 function renderAccountsBalance(txs){
-  let grand=0,bank=0,cash=0;
-  getAccounts().forEach(a=>{
-    if(a.hidden||a.id===DUMMY||a.type==="dummy")return;
-    const bal=getAccountBalance(txs,a.id);
-    grand+=bal;
-    if(a.type==="bank")bank+=bal;
-    if(a.type==="cash")cash+=bal;
-  });
-  const g=$("dash-total-wealth"),b=$("acc-bank-val"),c=$("acc-cash-val");
-  if(g)g.textContent=money(grand);
-  if(b)b.textContent=money(bank);
-  if(c)c.textContent=money(cash);
+  const {bankBal,cashBal,totalLiquid}=getActualLiquidSavings(txs);
+  if($("dash-total-wealth"))$("dash-total-wealth").textContent=money(totalLiquid);
+  if($("acc-bank-val"))$("acc-bank-val").textContent=money(bankBal);
+  if($("acc-cash-val"))$("acc-cash-val").textContent=money(cashBal);
 }
 
 function renderMonthlyTrend(txs){
-  const badge=$("monthly-trend-badge");
-  if(!badge)return;
+  const badge=$("monthly-trend-badge");if(!badge)return;
   const cycles=getAllCycles(txs);
-  if(cycles.length<2){
-    badge.className="monthly-trend";
-    badge.textContent="📈 +0.0% من الدورة السابقة";
-    return;
-  }
-  const curCyc=cycles[cycles.length-1];
-  const prevCyc=cycles[cycles.length-2];
-  const curInc=totalIncome(txs,curCyc);
-  const prevInc=totalIncome(txs,prevCyc);
-  if(prevInc<=0){
-    badge.className="monthly-trend";
-    badge.textContent="📈 +0.0% من الدورة السابقة";
-    return;
-  }
+  if(cycles.length<2){badge.className="monthly-trend";badge.textContent="📈 +0.0% من الدورة السابقة";return}
+  const curInc=totalIncome(txs,cycles[cycles.length-1]),prevInc=totalIncome(txs,cycles[cycles.length-2]);
+  if(prevInc<=0){badge.className="monthly-trend";badge.textContent="📈 +0.0% من الدورة السابقة";return}
   const diff=((curInc-prevInc)/prevInc)*100;
-  const sign=diff>=0?"+":"";
   badge.className="monthly-trend"+(diff<0?" down":"");
-  badge.textContent=`${diff>=0?"📈":"📉"} ${sign}${diff.toFixed(1)}% من الدورة السابقة`;
+  badge.textContent=`${diff>=0?"📈":"📉"} ${diff>=0?"+":""}${diff.toFixed(1)}% من الدورة السابقة`;
 }
 
 function renderRecentTx(txs){
-  const box=$("dash-recent-transactions");
-  if(!box)return;
+  const box=$("dash-recent-transactions");if(!box)return;
   if(!txs.length)return void(box.innerHTML='<span class="small">لا توجد معاملات محفوظة بعد.</span>');
   const today=todayISO();
   box.innerHTML=txs.slice(0,3).map(tx=>{
-    let label;
-    if(tx.type==="expense"||tx.type==="income")label=tx.category;
-    else if(tx.type==="transfer")label="حوالة";
-    else if(tx.type==="debt")label=`دين${tx.person?" — "+tx.person:""}`;
-    else if(tx.type==="internal_transfer")label=`${accById(tx.account).name} ← ${accById(tx.toAccount).name}`;
-    else label=tx.type;
+    const label=tx.type==="expense"||tx.type==="income"?tx.category:tx.type==="transfer"?"حوالة":tx.type==="debt"?`دين${tx.person?" — "+tx.person:""}`:tx.type==="internal_transfer"?`${accById(tx.account).name} ← ${accById(tx.toAccount).name}`:tx.type;
     const accName=tx.type==="internal_transfer"?"":accById(tx.account||"cash_default").name;
     const isIn=tx.type==="income"||isDebtKind(tx,"creditor")||isDebtKind(tx,"opening_balance");
     const isOut=tx.type==="expense"||tx.type==="transfer"||isDebtKind(tx,"debtor");
     const color=isIn?"var(--green-val)":isOut?"var(--red-val)":"var(--ink-muted)";
     const sign=isIn?"+":isOut?"−":"";
-    return`<div class="tx-item">
-      <div style="min-width:0"><strong>${esc(label)}</strong>${accName?` <span class="small">(${esc(accName)})</span>`:""}<br><small class="small">${tx.date===today?"اليوم":fmtDate(tx.date)}</small></div>
-      <div style="display:flex;align-items:center;gap:6px">
-        <span class="amount" style="color:${color}">${sign}${money(realAmt(tx))}</span>
-        <button type="button" class="btn btn-muted" style="padding:2px 6px;font-size:10px;min-height:22px" onclick="editTransaction('${tx.id}')" title="تعديل">✏️</button>
-        <button type="button" class="btn btn-danger" style="padding:2px 6px;font-size:10px;min-height:22px" onclick="deleteTransaction('${tx.id}')" title="حذف">🗑️</button>
-      </div>
-    </div>`;
+    return`<div class="tx-item"><div style="min-width:0"><strong>${esc(label)}</strong>${accName?` <span class="small">(${esc(accName)})</span>`:""}<br><small class="small">${tx.date===today?"اليوم":fmtDate(tx.date)}</small></div><div style="display:flex;align-items:center;gap:6px"><span class="amount" style="color:${color}">${sign}${money(realAmt(tx))}</span><button type="button" class="btn btn-muted" style="padding:2px 6px;font-size:10px;min-height:22px" data-edit-id="${esc(tx.id)}" title="تعديل">✏️</button><button type="button" class="btn btn-danger" style="padding:2px 6px;font-size:10px;min-height:22px" data-del-id="${esc(tx.id)}" title="حذف">🗑️</button></div></div>`;
   }).join("");
-}
-
-function editTransaction(id){
-  window.location.href=`?edit=${id}`;
 }
 
 async function deleteTransaction(id){
@@ -1005,228 +852,97 @@ async function deleteTransaction(id){
 }
 
 function renderBudgetRow(d){
-  const b=BUDGET_MAP[d.budgetId];
-  const noLimit=d.max<=0;
-  const st=budgetStatus(d.max,d.spent);
-  let level=st.level;
-  if(d.remaining<0)level="bad";
+  const b=BUDGET_MAP[d.budgetId],noLimit=d.max<=0,st=budgetStatus(d.max,d.spent);
+  const level=d.remaining<0?"bad":st.level;
   const pctW=noLimit?(d.spent>0?100:0):Math.min(100,Math.max(0,st.pct));
   const pctTxt=noLimit?(d.spent>0?"—":"0%"):st.pct.toFixed(0)+"%";
   const barColor=level==="bad"?"var(--red-val)":level==="warning"?"var(--amber-val)":"var(--emerald-neon)";
   const cls=level==="bad"?"bad":level==="warning"?"warning":"good";
 
   if(d.budgetId==="debt"){
-    return`<div class="bud-mini-card" data-bkey="${d.budgetId}" onclick="openFundDetailModal('${d.budgetId}')">
-      <div class="bud-mini-head"><span class="bud-mini-name">${b.icon} ${b.short}</span><span class="bud-mini-pct good">${money(d.totalSavings)}</span></div>
-      <div class="cap-track"><div class="cap-bar" style="width:${pctW}%;background:${barColor}"></div></div>
-      <div class="bud-mini-meta">
-        <div>سداد: <strong>${money(d.spent)}</strong> | ادخار كلي: <strong class="good">${money(d.totalSavings)}</strong></div>
-        <div style="font-size:9px;color:var(--emerald-neon)">انقر للتفاصيل الكاملة ›</div>
-      </div>
-    </div>`;
+    const savPctW=d.savingsTarget>0?Math.min(100,Math.max(0,(d.actualSavings/d.savingsTarget)*100)):(d.actualSavings>0?100:0);
+    return`<div class="bud-mini-card" data-bkey="${d.budgetId}" onclick="openFundDetailModal('${d.budgetId}')"><div class="bud-mini-head"><span class="bud-mini-name">${b.icon} ${b.short}</span><span class="bud-mini-pct good">${money(d.actualSavings)}</span></div><div class="cap-track"><div class="cap-bar" style="width:${savPctW}%;background:var(--emerald-neon)"></div></div><div class="bud-mini-meta"><div>سداد: <strong>${money(d.spent)}</strong> | ادخار فعلي: <strong class="good">${money(d.actualSavings)}</strong></div><div style="font-size:9px;color:var(--ink-muted)">هدف ادخار: <strong>${money(d.savingsTarget)}</strong> · انقر للتفاصيل ›</div></div></div>`;
   }
-
   if(d.budgetId==="emergency"){
-    return`<div class="bud-mini-card" data-bkey="${d.budgetId}" onclick="openFundDetailModal('${d.budgetId}')">
-      <div class="bud-mini-head"><span class="bud-mini-name">${b.icon} ${b.short}</span><span class="bud-mini-pct ${cls}">${pctTxt}</span></div>
-      <div class="cap-track"><div class="cap-bar" style="width:${pctW}%;background:${barColor}"></div></div>
-      <div class="bud-mini-meta">
-        <div>صرف كلي: <strong>${money(d.spent)}</strong> | صافي: <strong class="${cls}">${money(d.remaining)}</strong></div>
-        <div style="font-size:9px;color:var(--emerald-neon)">مفتاح الملخص والأرصدة ›</div>
-      </div>
-    </div>`;
+    return`<div class="bud-mini-card" data-bkey="${d.budgetId}" onclick="openFundDetailModal('${d.budgetId}')"><div class="bud-mini-head"><span class="bud-mini-name">${b.icon} ${b.short}</span><span class="bud-mini-pct ${cls}">${pctTxt}</span></div><div class="cap-track"><div class="cap-bar" style="width:${pctW}%;background:var(--sky-val)"></div></div><div class="bud-mini-meta"><div>صرف كلي: <strong>${money(d.spent)}</strong> | صافي: <strong class="${cls}">${money(d.remaining)}</strong></div><div style="font-size:9px;color:var(--sky-val)">مفتاح الملخص والأرصدة ›</div></div></div>`;
   }
-  
-  return`<div class="bud-mini-card" data-bkey="${d.budgetId}" onclick="openFundDetailModal('${d.budgetId}')">
-    <div class="bud-mini-head"><span class="bud-mini-name">${b.icon} ${b.short}</span><span class="bud-mini-pct ${cls}">${pctTxt}</span></div>
-    <div class="cap-track"><div class="cap-bar" style="width:${pctW}%;background:${barColor}"></div></div>
-    <div class="bud-mini-meta">
-      <div>صرف: <strong>${money(d.spent)}</strong> | متبقي: <strong class="${cls}">${money(d.remaining)}</strong></div>
-      <div style="font-size:9px;color:var(--emerald-neon)">انقر للتفاصيل الكاملة ›</div>
-    </div>
-  </div>`;
+  return`<div class="bud-mini-card" data-bkey="${d.budgetId}" onclick="openFundDetailModal('${d.budgetId}')"><div class="bud-mini-head"><span class="bud-mini-name">${b.icon} ${b.short}</span><span class="bud-mini-pct ${cls}">${pctTxt}</span></div><div class="cap-track"><div class="cap-bar" style="width:${pctW}%;background:${barColor}"></div></div><div class="bud-mini-meta"><div>صرف: <strong>${money(d.spent)}</strong> | متبقي: <strong class="${cls}">${money(d.remaining)}</strong></div><div style="font-size:9px;color:var(--emerald-neon)">انقر للتفاصيل الكاملة ›</div></div></div>`;
 }
 
-function openFundDetailModal(budgetId){
-  const modal=$("fund-detail-modal");
-  const title=$("fund-modal-title");
-  const content=$("fund-modal-content");
+const getAdvisoryNoteHtml=()=>`<div class="hint" style="font-size:10px;line-height:1.45;margin-top:4px"><strong>💡 تنبيه إرشادي:</strong><br>• <strong>الادخار الفعلي</strong> هو السيولة الحالية (الكاش + البنك)، بينما <strong>الادخار المستهدف</strong> مقياس تخطيطي من الراتب الأساسي.<br>• أي دين عليك ("أخذنا منه") يرفع السيولة مؤقتًا لكنه التزام واجب السداد.<br>• عند نزول راتب أساسي جديد تبدأ دورة جديدة وتُحسب النسب عليه فقط.</div>`;
+
+async function openFundDetailModal(budgetId){
+  const modal=$("fund-detail-modal"),title=$("fund-modal-title"),content=$("fund-modal-content");
   if(!modal||!title||!content)return;
-  
-  const cyc=currentCycle(cachedGlobalTxs);
-  if(!cyc)return;
-  const {income,items}=calcAllBudgets(cachedGlobalTxs,cyc);
-  const d=items.find(i=>i.budgetId===budgetId);
-  if(!d)return;
-  
-  const b=BUDGET_MAP[budgetId];
-  title.textContent=`${b.icon} تفاصيل صندوق ${b.short}`;
-  
+  const txs=await allTx();
+  const cyc=currentCycle(txs);if(!cyc)return;
+  const {items}=calcAllBudgets(txs,cyc);
+  const d=items.find(i=>i.budgetId===budgetId);if(!d)return;
+  title.textContent=`${BUDGET_MAP[budgetId].icon} تفاصيل صندوق ${BUDGET_MAP[budgetId].short}`;
   let html="";
 
   if(budgetId==="living"){
-    html+=`
-      <div class="row-between"><span>المستهدف (من الراتب الأساسي):</span><strong>${money(d.max)}</strong></div>
-      <div class="row-between"><span>المصروف الفعلي:</span><strong class="bad">${money(d.spent)}</strong></div>
-      <div class="row-between"><span>المتبقي:</span><strong class="${d.remaining<0?"bad":"good"}">${money(d.remaining)}</strong></div>
-      <hr style="border:0;border-top:1px dashed var(--border-subtle);margin:4px 0">
-      <div style="font-weight:800;color:var(--emerald-neon);margin-bottom:2px">📌 بنود المعيشة الفرعية:</div>
-    `;
-    (d.subItems||[]).forEach(s=>{
-      html+=`<div class="row-between small"><span>${s.label}:</span><span>مستهدف ${money(s.max)} | صرف ${money(s.spent)} | متبقي <strong class="${s.remaining<0?"bad":"good"}">${money(s.remaining)}</strong></span></div>`;
-    });
+    html+=`<div class="row-between"><span>المستهدف:</span><strong>${money(d.max)}</strong></div><div class="row-between"><span>المصروف الفعلي:</span><strong class="bad">${money(d.spent)}</strong></div><div class="row-between"><span>المتبقي:</span><strong class="${d.remaining<0?"bad":"good"}">${money(d.remaining)}</strong></div><hr style="border:0;border-top:1px dashed var(--border-subtle);margin:4px 0"><div style="font-weight:800;color:var(--emerald-neon)">📌 بنود المعيشة الفرعية:</div>`;
+    (d.subItems||[]).forEach(s=>{html+=`<div class="row-between small"><span>${s.label}:</span><span>مستهدف ${money(s.max)} | صرف ${money(s.spent)} | متبقي <strong class="${s.remaining<0?"bad":"good"}">${money(s.remaining)}</strong></span></div>`});
     html+=`<div class="row-between" style="margin-top:4px;border-top:1px dashed var(--border-subtle);padding-top:4px"><span>⚡ المتاح للصرف اليوم:</span><strong class="good">${money(d.remainingToday)}</strong></div>`;
-  }
-  else if(budgetId==="transfer"){
-    html+=`
-      <div class="row-between"><span>المستهدف (من الراتب الأساسي):</span><strong>${money(d.max)}</strong></div>
-      <div class="row-between"><span>المصروف الفعلي:</span><strong class="bad">${money(d.spent)}</strong></div>
-      <div class="row-between"><span>المتبقي:</span><strong class="${d.remaining<0?"bad":"good"}">${money(d.remaining)}</strong></div>
-      <hr style="border:0;border-top:1px dashed var(--border-subtle);margin:4px 0">
-    `;
-    const transfers=cachedGlobalTxs.filter(t=>inPeriod(t,cyc)&&t.type==="transfer");
-    let totalEgpAll=0, totalTransKwd=0;
+  }else if(budgetId==="transfer"){
+    html+=`<div class="row-between"><span>المستهدف:</span><strong>${money(d.max)}</strong></div><div class="row-between"><span>المصروف الفعلي:</span><strong class="bad">${money(d.spent)}</strong></div><div class="row-between"><span>المتبقي:</span><strong class="${d.remaining<0?"bad":"good"}">${money(d.remaining)}</strong></div><hr style="border:0;border-top:1px dashed var(--border-subtle);margin:4px 0">`;
+    const transfers=txs.filter(t=>inPeriod(t,cyc)&&t.type==="transfer");
+    let totalEgpAll=0,totalTransKwd=0;
     const beneficiaryMap={};
     transfers.forEach(t=>{
       totalTransKwd+=realAmt(t);
       const txEgp=(t.beneficiaries||[]).reduce((s,b)=>s+toNum(b.egp),0);
       (t.beneficiaries||[]).forEach(b=>{
-        totalEgpAll+=toNum(b.egp);
+        const egp=toNum(b.egp);totalEgpAll+=egp;
         if(!beneficiaryMap[b.name])beneficiaryMap[b.name]={egp:0,kwd:0};
-        beneficiaryMap[b.name].egp+=toNum(b.egp);
-        beneficiaryMap[b.name].kwd+=toNum(b.shareKwd||(txEgp>0?b.egp/txEgp*t.totalKwd:0));
+        beneficiaryMap[b.name].egp+=egp;
+        beneficiaryMap[b.name].kwd+=toNum(b.shareKwd||(txEgp>0?egp/txEgp*realAmt(t):0));
       });
     });
     const avgRate=totalEgpAll>0?(totalTransKwd/totalEgpAll*1000).toFixed(3):"0.000";
-    html+=`<div class="row-between"><span>إجمالي التحويلات بالدينار:</span><strong>${money(totalTransKwd)}</strong></div>`;
-    html+=`<div class="row-between"><span>متوسط تكلفة الألف جنيه:</span><strong>${avgRate} د.ك / 1000 ج.م</strong></div>`;
-    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-top:6px;margin-bottom:2px">👥 المستفيدون والمعدل اليومي (بالجنيه):</div>`;
-    if(!Object.keys(beneficiaryMap).length){
-      html+=`<span class="small">لا توجد تحويلات مسجلة بهذه الدورة.</span>`;
-    } else {
-      Object.entries(beneficiaryMap).forEach(([name,vals])=>{
-        const dailyEgp = (vals.egp / CYCLE_DAYS).toFixed(1);
-        html+=`<div class="row-between small" style="background:rgba(255,255,255,.02);padding:4px;border-radius:6px;margin-bottom:2px"><span>• ${esc(name)}:</span><span>إجمالي <strong>${vals.egp.toLocaleString()} ج.م</strong> (${money(vals.kwd)})<br><small style="color:var(--emerald-neon)">المتوسط اليومي: <strong>${dailyEgp} ج.م / يوم</strong></small></span></div>`;
-      });
-    }
-  }
-  else if(budgetId==="debt"){
-    html+=`<div class="stack" style="background:rgba(16,185,129,.05);border:1px solid var(--border-neon);padding:6px;border-radius:8px;margin-bottom:4px;gap:2px">
-      <div style="font-weight:900;color:var(--emerald-neon)">💰 منظومة الادخار (المستهدف + كل الفلوس المتبقية):</div>
-      <div class="row-between small"><span>الادخار المستهدف (${d.savingsPct||0}% من الراتب الأساسي):</span><strong>${money(d.savingsTarget||0)}</strong></div>
-      <div class="row-between small"><span>الدخل الثانوي في الدورة (يضاف تلقائياً):</span><strong class="good">+${money(d.secInc||0)}</strong></div>
-      <div class="row-between small"><span>فائض/عجز الصناديق وغير المخصص:</span><strong>${money((d.livingRem||0)+(d.transferRem||0)+(d.debtRemaining||0)+(d.unallocatedBase||0))}</strong></div>
-      <div class="row-between small" style="border-top:1px dashed var(--border-neon);padding-top:3px"><span>إجمالي الادخار الفعلي للدورة:</span><strong class="${(d.totalSavings||0)<0?"bad":"good"}">${money(d.totalSavings||0)}</strong></div>
-    </div>`;
-
-    html+=`<div class="stack" style="background:rgba(255,255,255,.02);border:1px solid var(--border-subtle);padding:6px;border-radius:8px;margin-bottom:4px;gap:2px">
-      <div style="font-weight:900;color:var(--ink)">🤝 مخصص سداد الديون في الدورة (${d.debtPct||0}%):</div>
-      <div class="row-between small"><span>المستهدف من الراتب الأساسي:</span><strong>${money(d.debtMax||0)}</strong></div>
-      <div class="row-between small"><span>المسدد في الدورة:</span><strong class="bad">${money(d.spent)}</strong></div>
-      <div class="row-between small"><span>المتبقي من مخصص الديون:</span><strong class="${(d.debtRemaining||0)<0?"bad":"good"}">${money(d.debtRemaining||0)}</strong></div>
-    </div>`;
-
-    const debts=cachedGlobalTxs.filter(t=>t.type==="debt");
+    html+=`<div class="row-between"><span>إجمالي التحويلات بالدينار:</span><strong>${money(totalTransKwd)}</strong></div><div class="row-between"><span>متوسط تكلفة الألف جنيه:</span><strong>${avgRate} د.ك / 1000 ج.م</strong></div><div style="font-weight:800;color:var(--emerald-neon);margin-top:6px">👥 المستفيدون:</div>`;
+    html+=Object.keys(beneficiaryMap).length?Object.entries(beneficiaryMap).map(([name,vals])=>`<div class="row-between small" style="background:rgba(255,255,255,.02);padding:4px;border-radius:6px;margin-bottom:2px"><span>• ${esc(name)}:</span><span>إجمالي <strong>${vals.egp.toLocaleString()} ج.م</strong> (${money(vals.kwd)})<br><small style="color:var(--emerald-neon)">المتوسط اليومي: <strong>${(vals.egp/CYCLE_DAYS).toFixed(1)} ج.م / يوم</strong></small></span></div>`).join(""):`<span class="small">لا توجد تحويلات مسجلة بهذه الدورة.</span>`;
+  }else if(budgetId==="debt"){
+    html+=`<div class="stack" style="background:rgba(16,185,129,.05);border:1px solid var(--border-neon);padding:6px;border-radius:8px;gap:2px"><div style="font-weight:900;color:var(--emerald-neon)">💰 الادخار المستهدف مقابل الادخار الفعلي:</div><div class="row-between small"><span>الادخار المستهدف (${d.savingsPct||0}%):</span><strong>${money(d.savingsTarget||0)}</strong></div><div class="row-between small"><span>الادخار الفعلي (بنك + كاش):</span><strong class="good">${money(d.actualSavings||0)}</strong></div><div class="row-between small"><span>— البنك: <strong>${money(d.bankBal||0)}</strong> | الكاش: <strong>${money(d.cashBal||0)}</strong></span></div></div>`;
+    html+=`<div class="stack" style="background:rgba(255,255,255,.02);border:1px solid var(--border-subtle);padding:6px;border-radius:8px;gap:2px"><div style="font-weight:900">🤝 مخصص سداد الديون (${d.debtPct||0}%):</div><div class="row-between small"><span>المستهدف:</span><strong>${money(d.debtMax||0)}</strong></div><div class="row-between small"><span>المسدد في الدورة:</span><strong class="bad">${money(d.spent)}</strong></div><div class="row-between small"><span>المتبقي:</span><strong class="${(d.debtRemaining||0)<0?"bad":"good"}">${money(d.debtRemaining||0)}</strong></div></div>`;
+    html+=getAdvisoryNoteHtml();
     const personMap={};
-    debts.forEach(dt=>{
+    txs.filter(t=>t.type==="debt").forEach(dt=>{
       const p=dt.person||"غير محدد";
       if(!personMap[p])personMap[p]={open:0,creditor:0,debtor:0};
       if(dt.debtType==="opening_balance")personMap[p].open+=realAmt(dt);
       else if(dt.debtType==="creditor")personMap[p].creditor+=realAmt(dt);
       else if(dt.debtType==="debtor")personMap[p].debtor+=realAmt(dt);
     });
-    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-bottom:2px">📑 سجل الأشخاص والجهات:</div>`;
-    if(!Object.keys(personMap).length){
-      html+=`<span class="small">لا توجد ديون مسجلة.</span>`;
-    } else {
-      const daysLeft=d.daysRemaining||1;
-      Object.entries(personMap).forEach(([name,vals])=>{
-        const totalDebt=vals.open+vals.creditor;
-        const paid=vals.debtor;
-        const remaining=totalDebt-paid;
-        const dailyRate=daysLeft>0?Math.max(0,remaining/daysLeft):0;
-
-        html+=`<div class="stack" style="background:rgba(255,255,255,.02);padding:6px;border-radius:8px;margin-bottom:4px;gap:2px">
-          <div style="font-weight:900;color:var(--ink)">• ${esc(name)}</div>
-          <div class="row-between small"><span>إجمالي الدين:</span><strong>${money(totalDebt)}</strong></div>
-          <div class="row-between small"><span>المسدد:</span><strong class="good">${money(paid)}</strong></div>
-          <div class="row-between small"><span>المتبقي:</span><strong class="bad">${money(remaining)}</strong></div>
-          <div class="row-between small"><span>المعدل اليومي المتبقي:</span><strong>${money(dailyRate)} / يوم</strong></div>
-        </div>`;
-      });
-    }
-  }
-  else if(budgetId==="emergency"){
-    const bankBal=getAccountBalance(cachedGlobalTxs,"bank_default");
-    const cashBal=getAccountBalance(cachedGlobalTxs,"cash_default");
-    const totalLiquid=bankBal+cashBal;
-    const debtItem=items.find(i=>i.budgetId==="debt");
-
-    html+=`<div class="stack" style="background:rgba(16,185,129,.05);border:1px solid var(--border-neon);padding:6px;border-radius:8px;margin-bottom:4px;gap:3px">
-      <div style="font-weight:900;color:var(--emerald-neon)">📊 ملخص الدورة والراتب الأساسي:</div>
-      <div class="row-between small"><span>الراتب الأساسي (مرجع التوزيعة):</span><strong>${money(d.baseSalary||0)}</strong></div>
-      <div class="row-between small"><span>الدخل الثانوي (يضاف للادخار):</span><strong class="good">+${money(d.secInc||0)}</strong></div>
-      <div class="row-between small"><span>إجمالي المصروف الفعلي بالدورة:</span><strong class="bad">${money(d.spent)}</strong></div>
-      <div class="row-between small"><span>صافي المتبقي بالدورة:</span><strong class="${d.remaining<0?"bad":"good"}">${money(d.remaining)}</strong></div>
-      <div class="row-between small"><span>إجمالي الادخار المحسوب بالدورة:</span><strong class="good">${money(debtItem?debtItem.totalSavings:0)}</strong></div>
-    </div>`;
-
-    html+=`<div class="stack" style="background:rgba(255,255,255,.02);border:1px solid var(--border-subtle);padding:6px;border-radius:8px;margin-bottom:4px;gap:3px">
-      <div style="font-weight:900;color:var(--ink)">💳 تفسير أرصدة الكاش والبنك (مفتاح الإجابة):</div>
-      <div class="row-between small"><span>رصيد الحساب البنكي:</span><strong class="good">${money(bankBal)}</strong></div>
-      <div class="row-between small"><span>رصيد الكاش:</span><strong class="good">${money(cashBal)}</strong></div>
-      <div class="row-between small"><span>إجمالي السيولة الفعلية الآن:</span><strong>${money(totalLiquid)}</strong></div>
-      <div class="field-note" style="margin-top:3px">
-        لماذا قد يظهر رصيد في الكاش أو البنك رغم استهلاك الصناديق؟<br>
-        1. الصناديق تقيس مصروفات الدورة الحالية مقابل <strong>الراتب الأساسي</strong>، بينما الكاش والبنك يمثلان الرصيد التراكمي الفعلي من كافة الدورات السابقة.<br>
-        2. وجود <strong>دخل ثانوي</strong> أو فوائض دورات سابقة يزيد السيولة الفعلية في الحسابات.<br>
-        3. حركات <strong>أخذنا منه (دين علينا)</strong> تزيد رصيد الحساب الفعلي، كما أن التحويلات الداخلية تنقل الرصيد بين الكاش والبنك دون استهلاك الصناديق.
-      </div>
-    </div>`;
-
-    const daysInCycle=Math.max(1,dateDiff(cyc.start,cyc.end)+1);
-    const activeDaysSet=new Set(cachedGlobalTxs.filter(t=>inPeriod(t,cyc)&&t.type==="expense").map(t=>t.date));
-    
-    const missingDates=[];
-    let curr=cyc.start;
-    const today=todayISO();
-    while(curr<=cyc.end&&curr<=today){
-      if(!activeDaysSet.has(curr))missingDates.push(curr);
-      curr=dateAdd(curr,1);
-    }
-
-    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-bottom:2px">📅 فجوة تسجيل المصروفات:</div>`;
-    html+=`<div class="row-between"><span>أيام الدورة المنقضية:</span><strong>${daysInCycle} يوم</strong></div>`;
-    html+=`<div class="row-between"><span>عدد الأيام بدون مصروفات مسجلة:</span><strong class="warning">${missingDates.length} يوم</strong></div>`;
-    if(!missingDates.length){
-      html+=`<span class="small good">ممتاز! تم تسجيل مصروفات في كل أيام الدورة السابقة حتى اليوم ✅</span>`;
-    } else {
-      html+=`<div class="stack" style="background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.2);padding:6px;border-radius:8px;max-height:110px;overflow-y:auto">`+
-        missingDates.map(dt=>`<div class="small" style="font-weight:700">• يوم ${fmtDate(dt)}</div>`).join("")+
-      `</div>`;
-    }
+    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-top:6px">📑 سجل الأشخاص والجهات:</div>`;
+    html+=Object.keys(personMap).length?Object.entries(personMap).map(([name,vals])=>{
+      const totalDebt=vals.open+vals.creditor,rem=totalDebt-vals.debtor,dailyRate=d.daysRemaining>0?Math.max(0,rem/d.daysRemaining):0;
+      return`<div class="stack" style="background:rgba(255,255,255,.02);padding:6px;border-radius:8px;margin-bottom:4px;gap:2px"><div style="font-weight:900">• ${esc(name)}</div><div class="row-between small"><span>إجمالي الدين:</span><strong>${money(totalDebt)}</strong></div><div class="row-between small"><span>المسدد:</span><strong class="good">${money(vals.debtor)}</strong></div><div class="row-between small"><span>المتبقي:</span><strong class="bad">${money(rem)}</strong></div><div class="row-between small"><span>المعدل اليومي المتبقي:</span><strong>${money(dailyRate)} / يوم</strong></div></div>`;
+    }).join(""):`<span class="small">لا توجد ديون مسجلة.</span>`;
+  }else if(budgetId==="emergency"){
+    html+=`<div class="stack" style="background:rgba(16,185,129,.05);border:1px solid var(--border-neon);padding:6px;border-radius:8px;gap:3px"><div style="font-weight:900;color:var(--emerald-neon)">📊 ملخص الدورة:</div><div class="row-between small"><span>الراتب الأساسي:</span><strong>${money(d.baseSalary||0)}</strong></div><div class="row-between small"><span>الدخل الثانوي:</span><strong class="good">+${money(d.secInc||0)}</strong></div><div class="row-between small"><span>إجمالي المصروف الفعلي:</span><strong class="bad">${money(d.spent)}</strong></div><div class="row-between small"><span>صافي المتبقي بالدورة:</span><strong class="${d.remaining<0?"bad":"good"}">${money(d.remaining)}</strong></div><div class="row-between small"><span>الادخار المستهدف (${d.savingsPct||0}%):</span><strong>${money(d.savingsTarget||0)}</strong></div><div class="row-between small"><span>الادخار الفعلي:</span><strong class="good">${money(d.actualSavings||0)}</strong></div></div>`;
+    html+=`<div class="stack" style="background:rgba(255,255,255,.02);border:1px solid var(--border-subtle);padding:6px;border-radius:8px;gap:3px"><div style="font-weight:900">💳 أرصدة الكاش والبنك:</div><div class="row-between small"><span>البنك:</span><strong class="good">${money(d.bankBal||0)}</strong></div><div class="row-between small"><span>الكاش:</span><strong class="good">${money(d.cashBal||0)}</strong></div><div class="row-between small"><span>إجمالي السيولة:</span><strong>${money(d.actualSavings||0)}</strong></div></div>`;
+    html+=getAdvisoryNoteHtml();
+    const activeDays=new Set(txs.filter(t=>inPeriod(t,cyc)&&t.type==="expense").map(t=>normIso(t.date)));
+    const missing=[];let curr=cyc.start;const today=todayISO();
+    while(curr<=cyc.end&&curr<=today){if(!activeDays.has(curr))missing.push(curr);curr=dateAdd(curr,1)}
+    html+=`<div style="font-weight:800;color:var(--emerald-neon);margin-top:4px">📅 أيام بدون مصروفات مسجلة: <strong class="warning">${missing.length} يوم</strong></div>`;
+    if(missing.length)html+=`<div class="stack" style="background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.2);padding:6px;border-radius:8px;max-height:110px;overflow-y:auto">${missing.map(dt=>`<div class="small" style="font-weight:700">• يوم ${fmtDate(dt)}</div>`).join("")}</div>`;
   }
 
   content.innerHTML=html;
   modal.classList.remove("hidden");
 }
-
-function closeFundModal(){
-  const modal=$("fund-detail-modal");
-  if(modal)modal.classList.add("hidden");
-}
+const closeFundModal=()=>$("fund-detail-modal")?.classList.add("hidden");
 
 function renderTodayCard(items){
   const v=$("dash-today-val"),bar=$("dash-today-bar"),note=$("dash-today-note");
   if(!v||!bar||!note)return;
   v.className="today-val";
-  if(!items){v.textContent=money(0);bar.style.width="0%";note.textContent="سجّل دخلًا أو رصيدًا لحساب حد اليوم.";return}
-  const living=items.find(i=>i.budgetId==="living"&&i.daysRemaining>0);
-  if(!living){v.textContent=money(0);bar.style.width="0%";note.textContent="الدورة انتهت — سجّل الراتب الأساسي الجديد.";return}
-  const allowed=Math.max(0,living.dailyActual);
-  const spent=living.spentToday;
-  const left=living.remainingToday;
-  const over=spent>allowed;
+  const living=items?.find(i=>i.budgetId==="living"&&i.daysRemaining>0);
+  if(!living){v.textContent=money(0);bar.style.width="0%";note.textContent=items?"الدورة انتهت — سجّل الراتب الأساسي الجديد.":"سجّل دخلًا لحساب حد اليوم.";return}
+  const allowed=Math.max(0,living.dailyActual),spent=living.spentToday,left=living.remainingToday,over=spent>allowed;
   const pct=allowed>0?Math.min(100,(spent/allowed)*100):(spent>0?100:0);
   const level=over?"bad":pct>=80?"warning":"good";
   if(level!=="good")v.classList.add(level);
@@ -1237,101 +953,67 @@ function renderTodayCard(items){
 }
 
 function renderAlertStrip(items){
-  const el=$("dash-alert-strip");
-  if(!el)return;
-  if(!items)return void(el.classList.add("hidden"),el.innerHTML="");
+  const el=$("dash-alert-strip");if(!el)return;
+  if(!items)return void el.classList.add("hidden");
   const bad=[],warn=[];
   items.forEach(it=>{
-    if(it.budgetId==="emergency")return;
-    if(it.max<=0&&it.spent<=0)return;
-    const b=BUDGET_MAP[it.budgetId];
-    const nm=`${b.icon} ${b.short}`;
+    if(it.budgetId==="emergency"||(it.max<=0&&it.spent<=0))return;
+    const nm=`${BUDGET_MAP[it.budgetId].icon} ${BUDGET_MAP[it.budgetId].short}`;
     const checkMax=it.budgetId==="debt"?(it.debtMax||0):it.max;
     const checkRem=it.budgetId==="debt"?(it.debtRemaining||0):it.remaining;
     const st=budgetStatus(checkMax,it.spent);
     if((checkMax<=0&&it.spent>0)||st.pct>=100||checkRem<0)bad.push(nm);
     else if(st.pct>=80)warn.push(`${nm} ${st.pct.toFixed(0)}%`);
   });
-  if(!bad.length&&!warn.length)return void(el.classList.add("hidden"),el.innerHTML="");
-  let html="";
-  if(bad.length)html+=`<div>🚨 تعدّى حده / عجز: ${bad.join("، ")}</div>`;
-  if(warn.length)html+=`<div>⚠️ قارب على حده: ${warn.join("، ")}</div>`;
+  if(!bad.length&&!warn.length)return void el.classList.add("hidden");
   el.className="alert-strip "+(bad.length?"bad":"warning");
-  el.innerHTML=html;
+  el.innerHTML=[bad.length?`<div>🚨 تعدّى حده / عجز: ${bad.join("، ")}</div>`:"",warn.length?`<div>⚠️ قارب على حده: ${warn.join("، ")}</div>`:""].join("");
 }
 
-function renderCyclePill(cyc){
-  const p=$("hdr-pill");
-  if(!p)return;
-  p.classList.remove("warn");
-  p.textContent=DEFAULT_PILL;
-}
-
-function renderDonut(items,income){
+function renderDonut(items,baseInc,totInc){
   const seg=document.querySelector(".donut-segment");
-  const center=document.querySelector(".donut-center-text strong");
+  const centerSub=document.querySelector(".donut-center-text");
   const legend=document.querySelector(".donut-legend");
-  if(!seg||!center||!legend)return;
-  if(!items||income<=0){
-    seg.setAttribute("stroke-dasharray","0, 100");
-    seg.setAttribute("stroke","#10b981");
-    center.textContent="0.0%";
-    return;
-  }
-  const coreItems=items.filter(i=>i.budgetId!=="emergency");
-  const spentAll=coreItems.reduce((s,i)=>s+Math.max(0,i.spent),0);
-  const overall=Math.min(100,(spentAll/income)*100);
+  if(!seg||!centerSub||!legend)return;
+
+  const base=Math.max(0,toNum(baseInc)),total=Math.max(0,toNum(totInc));
+  const pctOf=(val,denom)=>denom>0?Math.round((Math.max(0,val)/denom)*100):0;
+  const dualPct=val=>`${pctOf(val,base)}% / ${pctOf(val,total)}%`;
+
+  const getSpent=k=>Math.max(0,items?.find(i=>i.budgetId===k)?.spent||0);
+  const livingSpent=getSpent("living"),transferSpent=getSpent("transfer"),debtSpent=getSpent("debt");
+  const actualSavings=Math.max(0,toNum(items?.find(i=>i.budgetId==="debt")?.actualSavings||0));
+  const refDenom=total>0?total:base;
+  const overall=refDenom>0?Math.min(100,((livingSpent+transferSpent+debtSpent)/refDenom)*100):0;
+
   seg.setAttribute("stroke-dasharray",`${overall.toFixed(2)}, 100`);
   seg.setAttribute("stroke",overall>=100?"var(--red-val)":overall>=80?"var(--amber-val)":"#10b981");
-  center.textContent=overall.toFixed(1)+"%";
-  const getSpent=k=>{const f=items.find(i=>i.budgetId===k);return f?Math.max(0,f.spent):0};
-  const pct=v=>income>0?Math.round((v/income)*100):0;
-  const sumItem=items.find(i=>i.budgetId==="emergency");
-  const remPct=sumItem&&income>0?Math.max(0,Math.round((sumItem.remaining/income)*100)):0;
-  legend.innerHTML=`
-    <div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>${pct(getSpent("living"))}%</strong></div>
-    <div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>${pct(getSpent("transfer"))}%</strong></div>
-    <div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون والادخار</span><strong>${pct(getSpent("debt"))}%</strong></div>
-    <div class="donut-legend-item"><span><i class="dot" style="background:#60a5fa"></i>الملخص (متبقي)</span><strong>${remPct}%</strong></div>
-    <div class="donut-legend-item"><span><i class="dot" style="background:#94a3b8"></i>أخرى</span><strong>0%</strong></div>
-  `;
+  centerSub.innerHTML=`الدورة الحالية<strong style="color:var(--emerald-neon)">${overall.toFixed(1)}%</strong>${total>0?"من إجمالي الدخل":"من الراتب الأساسي"}`;
+  legend.innerHTML=`<div class="donut-legend-head"><span>البند</span><span>أساسي / إجمالي</span></div><div class="donut-legend-item"><span><i class="dot" style="background:#10b981"></i>المعيشة</span><strong>${dualPct(livingSpent)}</strong></div><div class="donut-legend-item"><span><i class="dot" style="background:#fbbf24"></i>التحويلات</span><strong>${dualPct(transferSpent)}</strong></div><div class="donut-legend-item"><span><i class="dot" style="background:#fb7185"></i>الديون</span><strong>${dualPct(debtSpent)}</strong></div><div class="donut-legend-item"><span><i class="dot" style="background:#38bdf8"></i>الادخار</span><strong>${dualPct(actualSavings)}</strong></div>`;
 }
 
 async function renderDashBudget(txs){
-  const el=$("dash-budget-summary");
-  if(!el)return;
-  try{
-    const data=txs||await allTx();
-    const cyc=currentCycle(data);
-    if(!cyc){
-      el.innerHTML='<span class="small" style="grid-column:span 2">لا توجد بيانات كافية لعرض الصناديق.</span>';
-      renderTodayCard(null);
-      renderAlertStrip(null);
-      renderCyclePill(null);
-      renderDonut(null,0);
-      return;
-    }
-    const {income,items}=calcAllBudgets(data,cyc);
-    el.innerHTML=items.map(renderBudgetRow).join("");
-    renderDonut(items,income);
-    renderTodayCard(items);
-    renderAlertStrip(items);
-    renderCyclePill(items[0]);
-  }catch(e){console.warn("renderDashBudget:",e)}
+  const el=$("dash-budget-summary");if(!el)return;
+  const data=txs||await allTx();
+  const cyc=currentCycle(data);
+  if(!cyc){el.innerHTML='<span class="small" style="grid-column:span 2">لا توجد بيانات كافية لعرض الصناديق.</span>';renderTodayCard(null);renderAlertStrip(null);renderDonut(null,0,0);return}
+  const {income,items}=calcAllBudgets(data,cyc);
+  el.innerHTML=items.map(renderBudgetRow).join("");
+  renderDonut(items,income,totalIncome(data,cyc));
+  renderTodayCard(items);
+  renderAlertStrip(items);
+  if($("hdr-pill"))$("hdr-pill").textContent=DEFAULT_PILL;
 }
 
 async function refreshDashboard(txs){
   const t=txs||await allTx();
-  renderAccountsBalance(t);
-  renderMonthlyTrend(t);
-  renderRecentTx(t);
-  await renderDashBudget(t);
+  renderAccountsBalance(t);renderMonthlyTrend(t);renderRecentTx(t);await renderDashBudget(t);
 }
 
 async function refreshAllViews(txs){
   const t=txs||await allTx();
-  $("backup-count").textContent=t.length;
-  $("last-saved").textContent=new Date().toLocaleTimeString("en-US");
+  if($("backup-count"))$("backup-count").textContent=t.length;
+  if($("last-saved"))$("last-saved").textContent=new Date().toLocaleTimeString("en-US");
   await refreshDashboard(t);
   renderTargetValuesPreview();
   updateReconcileCurrentBalance();
@@ -1343,8 +1025,7 @@ function readDate(prefix){
   const dn=Number(d),mn=Number(m),yn=Number(y);
   if(!(yn>=2000&&yn<=2100&&mn>=1&&mn<=12&&dn>=1&&dn<=31))return"";
   const dt=new Date(Date.UTC(yn,mn-1,dn));
-  if(dt.getUTCFullYear()!==yn||dt.getUTCMonth()!==mn-1||dt.getUTCDate()!==dn)return"";
-  return isoDate(yn,mn,dn);
+  return dt.getUTCFullYear()===yn&&dt.getUTCMonth()===mn-1&&dt.getUTCDate()===dn?isoDate(yn,mn,dn):"";
 }
 function writeDate(prefix,iso){
   if(!iso)return;
@@ -1363,53 +1044,42 @@ function initDates(){
 function switchInputTab(type,opts={}){
   if(!opts.force&&editId&&type!==inputTab){
     if(!confirm("سيتم إلغاء تعديل المعاملة الحالية والانتقال لتبويب آخر. متابعة؟"))return false;
-    editId=null;$("edit-banner").classList.add("hidden");
-    $("save-transaction").textContent="حفظ المعاملة 💾";
+    editId=null;$("edit-banner").classList.add("hidden");$("save-transaction").textContent="حفظ المعاملة 💾";
   }
   inputTab=type;
   ["expense","income","transfer","debt","internal_transfer"].forEach(t=>{
     $("subtab-"+t).classList.toggle("active",t===type);
     $("section-"+t).classList.toggle("hidden",t!==type);
   });
-  if(type==="debt"){
-    const sel=$("tx-account");
-    if(sel&&[...sel.options].some(o=>o.value===DUMMY))sel.value=DUMMY;
-  }
   return true;
 }
 
 function openInputForm(type){
-  if(editId){
-    if(!confirm("سيتم إلغاء تعديل المعاملة الحالية والانتقال لتسجيل جديد. متابعة؟"))return;
-    resetInputForm();
-  }
+  if(editId&&!confirm("سيتم إلغاء تعديل المعاملة الحالية والانتقال لتسجيل جديد. متابعة؟"))return;
+  if(editId)resetInputForm();
   $("view-input").classList.remove("hidden");
   switchInputTab(type,{force:true});
 }
 
 function resetInputForm(){
   editId=null;
+  if(window.location.search.includes("edit="))history.replaceState(null,"",window.location.pathname);
   $("edit-banner").classList.add("hidden");
   $("save-transaction").textContent="حفظ المعاملة 💾";
   ["expense-amount","income-amount","total-kwd","debt-amount","int-amount","tx-notes","tx-time"].forEach(id=>{if($(id))$(id).value=""});
   $("is-salary-base").checked=false;
   $("beneficiaries-list").innerHTML="";
   $("view-input").classList.add("hidden");
-  addBeneficiary();
-  writeDate("tx",todayISO());
-  initDates();
-  updateExpenseBudgetHint();
+  addBeneficiary();initDates();updateExpenseBudgetHint();
 }
 const cancelEdit=()=>resetInputForm();
 
 function addBeneficiary(){
-  const el=$("beneficiaries-list");
-  if(!el)return;
-  const ppl=getPeople();
-  const div=document.createElement("div");
+  const el=$("beneficiaries-list");if(!el)return;
+  const ppl=getPeople(),div=document.createElement("div");
   div.className="beneficiary";
   div.style.cssText="display:flex;gap:4px;align-items:center;margin-top:4px";
-  div.innerHTML=`<select class="beneficiary-name-select">${ppl.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join("")}</select><input type="number" min="1" step="1" inputmode="numeric" placeholder="المبلغ (ج.م)" class="beneficiary-amount"><button type="button" class="btn btn-soft btn-plus" onclick="openPersonModal(this)" title="إضافة اسم جديد">+</button><button type="button" class="btn btn-danger btn-del-beneficiary">✕</button><div class="beneficiary-kwd-share" style="display:none">نصيبه بالدينار: 0.000 د.ك</div>`;
+  div.innerHTML=`<select class="beneficiary-name-select">${ppl.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join("")}</select><input type="number" min="1" step="1" inputmode="numeric" placeholder="المبلغ (ج.م)" class="beneficiary-amount"><button type="button" class="btn btn-soft btn-plus" onclick="openPersonModal(this)" title="إضافة اسم جديد">+</button><button type="button" class="btn btn-danger btn-del-beneficiary">✕</button>`;
   el.appendChild(div);
   calculateExchange();
 }
@@ -1417,88 +1087,62 @@ function addBeneficiary(){
 function calculateExchange(){
   const total=toNum($("total-kwd")?.value);
   let sumEGP=0;
-  const items=document.querySelectorAll(".beneficiary");
-  items.forEach(el=>{
-    const n=el.querySelector(".beneficiary-name-select")?.value;
-    const v=toNum(el.querySelector(".beneficiary-amount")?.value);
+  document.querySelectorAll(".beneficiary").forEach(el=>{
+    const n=el.querySelector(".beneficiary-name-select")?.value,v=toNum(el.querySelector(".beneficiary-amount")?.value);
     if(n&&v>0)sumEGP+=v;
   });
   const rateEl=$("exchange-rate-display");
-  if(rateEl)rateEl.textContent=sumEGP>0&&total>0?(total/sumEGP*1000).toFixed(3)+" د.ك / 1000 ج.م":"0.000 د.ك / 1000 ج.م";
-  items.forEach(el=>{
-    const n=el.querySelector(".beneficiary-name-select")?.value;
-    const v=toNum(el.querySelector(".beneficiary-amount")?.value);
-    const o=el.querySelector(".beneficiary-kwd-share");
-    if(!o)return;
-    o.textContent=sumEGP>0&&total>0&&v>0&&n?`نصيبه بالدينار: ${money(v/sumEGP*total)}`:"نصيبه بالدينار: 0.000 د.ك";
-  });
+  if(rateEl)rateEl.textContent=sumEGP>0&&total>0?`${(total/sumEGP*1000).toFixed(3)} د.ك / 1000 ج.م`:"0.000 د.ك / 1000 ج.م";
 }
 
 async function saveTransaction(){
   const btn=$("save-transaction");
-  if(btn.disabled)return;
+  if(!btn||btn.disabled)return;
   try{
     btn.disabled=true;
     const date=readDate("tx");
     if(!date)return void toast("أدخل تاريخ المعاملة بشكل صحيح.");
-    const time=$("tx-time").value||"00:00";
-    const notes=$("tx-notes").value.trim();
+    const time=$("tx-time").value||"00:00",notes=$("tx-notes").value.trim();
     const id=editId||`tx_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
-    
     let acc=$("tx-account")?.value;
     if(!acc||acc===DUMMY)acc="cash_default";
-
     const tx={id,date,time,notes,type:inputTab};
 
     if(inputTab==="expense"){
-      const amt=toNum($("expense-amount").value);
+      const amt=toNum($("expense-amount").value),cat=$("expense-category").value;
       if(amt<=0)return void toast("أدخل مبلغًا صحيحًا.");
-      const cat=$("expense-category").value;
       if(!cat)return void toast("اختر تصنيف المصروف.");
-      tx.amount=amt;tx.category=cat;tx.budgetId=budgetIdForCat(cat);tx.account=acc;
+      Object.assign(tx,{amount:amt,category:cat,budgetId:budgetIdForCat(cat),account:acc});
     }else if(inputTab==="income"){
       const amt=toNum($("income-amount").value);
       if(amt<=0)return void toast("أدخل مبلغًا صحيحًا.");
-      tx.amount=amt;tx.category=$("income-category").value;tx.isSalaryBase=$("is-salary-base").checked;tx.account=acc;
+      Object.assign(tx,{amount:amt,category:$("income-category").value,isSalaryBase:$("is-salary-base").checked,account:acc});
     }else if(inputTab==="transfer"){
       const amt=toNum($("total-kwd").value);
       if(amt<=0)return void toast("أدخل إجمالي المبلغ المدفوع.");
       const bs=[];
       document.querySelectorAll(".beneficiary").forEach(el=>{
-        const nm=el.querySelector(".beneficiary-name-select").value;
-        const v=toNum(el.querySelector(".beneficiary-amount").value);
+        const nm=el.querySelector(".beneficiary-name-select").value,v=toNum(el.querySelector(".beneficiary-amount").value);
         if(v>0&&nm)bs.push({name:nm,egp:v});
       });
       if(!bs.length)return void toast("أضف مستفيدًا ومبلغًا واحدًا على الأقل.");
       const totalEGP=bs.reduce((s,b)=>s+b.egp,0);
-      tx.totalKwd=amt;tx.amount=amt;tx.budgetId="transfer";
-      tx.beneficiaries=bs.map(b=>({...b,shareKwd:totalEGP>0?b.egp/totalEGP*amt:0}));
-      tx.exchangeRate=totalEGP>0?amt/totalEGP*1000:0;
-      tx.account=acc;
+      Object.assign(tx,{totalKwd:amt,amount:amt,budgetId:"transfer",account:acc,exchangeRate:amt/totalEGP*1000,beneficiaries:bs.map(b=>({...b,shareKwd:b.egp/totalEGP*amt}))});
     }else if(inputTab==="debt"){
-      const amt=toNum($("debt-amount").value);
-      const person=$("debt-person-select").value;
+      const amt=toNum($("debt-amount").value),person=$("debt-person-select").value,debtType=$("debt-type").value;
       if(!person)return void toast("حدد الشخص أو الجهة.");
       if(amt<=0)return void toast("أدخل مبلغًا صحيحًا.");
-      tx.amount=amt;tx.person=person;tx.debtType=$("debt-type").value;
-      
-      if(tx.debtType==="opening_balance"){
-        tx.account=DUMMY;
-      }else{
-        tx.account=acc;
+      if(debtType==="opening_balance"){
+        const exists=(await allTx()).some(x=>x.id!==editId&&x.type==="debt"&&x.debtType==="opening_balance"&&x.person===person);
+        if(exists)return void toast(`"${person}" عنده رصيد أول المدة مسجّل بالفعل.`);
       }
-
-      if(tx.debtType==="debtor")tx.budgetId="debt";
-      if(tx.debtType==="opening_balance"){
-        const exists=(await allTx()).some(x=>x.id!==editId&&x.type==="debt"&&x.debtType==="opening_balance"&&x.person===tx.person);
-        if(exists)return void toast(`"${tx.person}" عنده رصيد أول المدة مسجّل بالفعل.`);
-      }
+      Object.assign(tx,{amount:amt,person,debtType,account:debtType==="opening_balance"?DUMMY:acc,...(debtType==="debtor"?{budgetId:"debt"}:{})});
     }else if(inputTab==="internal_transfer"){
       const from=$("int-from-account").value,to=$("int-to-account").value,amt=toNum($("int-amount").value);
       if(!from||!to)return void toast("اختر الحسابين.");
       if(from===to)return void toast("لا يمكن التحويل لنفس الحساب.");
       if(amt<=0)return void toast("أدخل مبلغًا صحيحًا.");
-      tx.amount=amt;tx.account=from;tx.toAccount=to;
+      Object.assign(tx,{amount:amt,account:from,toAccount:to});
     }
 
     if(!db)await openDB();
@@ -1507,138 +1151,80 @@ async function saveTransaction(){
     resetInputForm();
     await refreshAllViews();
     switchMainView("dashboard");
-  }catch(e){console.error("Save:",e);toast("فشل حفظ المعاملة")}
+  }catch(e){console.error(e);toast("فشل حفظ المعاملة")}
   finally{btn.disabled=false}
 }
 
 function loadTargetPercentages(){
   const t=getTargets();
-  ["fixed","regular","personal","transfer","debt","savings"].forEach(k=>{
-    const el=$("target-"+k+"-pct");
-    if(el)el.value=t[k]||0;
-  });
+  ["fixed","regular","personal","transfer","debt","savings"].forEach(k=>{if($("target-"+k+"-pct"))$("target-"+k+"-pct").value=t[k]||0});
 }
 
 function saveTargetPercentages(){
-  const get=k=>toNum($("target-"+k+"-pct")?.value);
-  const t={fixed:get("fixed"),regular:get("regular"),personal:get("personal"),transfer:get("transfer"),debt:get("debt"),savings:get("savings")};
+  const t={};
+  ["fixed","regular","personal","transfer","debt","savings"].forEach(k=>t[k]=toNum($("target-"+k+"-pct")?.value));
   localStorage.setItem(K_TARGET,JSON.stringify(t));
   toast("تم حفظ النسب المستهدفة للميزانية ✅");
-  renderTargetValuesPreview();
-  renderDashBudget();
+  renderTargetValuesPreview();renderDashBudget();
 }
 
 async function renderTargetValuesPreview(){
   try{
-    const txs=await allTx();
-    const cyc=currentCycle(txs);
-    const income=cyc?baseSalaryIncome(txs,cyc):0;
+    const txs=await allTx(),cyc=currentCycle(txs),income=cyc?baseSalaryIncome(txs,cyc):0;
+    const {totalLiquid}=getActualLiquidSavings(txs);
     const s={};
     ["fixed","regular","personal","transfer","debt","savings"].forEach(k=>s[k]=toNum($("target-"+k+"-pct")?.value));
     Object.entries(s).forEach(([k,v])=>{
-      const el=document.querySelector(`[data-target-hint="${k}"]`);
-      if(!el)return;
+      const el=document.querySelector(`[data-target-hint="${k}"]`);if(!el)return;
       if(v<=0||income<=0){el.textContent="";el.className="small target-value-hint";return}
-      el.textContent=`≈ ${money(income*v/100)} من الراتب الأساسي (${money(income)})`;
-      el.className="small target-value-hint good";
+      el.textContent=`≈ ${money(income*v/100)} من الراتب الأساسي (${money(income)})`;el.className="small target-value-hint good";
     });
     renderCyclesList(txs,s);
-    const sum=$("target-values-summary");
-    if(!sum)return;
+    const sum=$("target-values-summary");if(!sum)return;
     if(!cyc||income<=0)return void(sum.innerHTML='<span class="small">لا توجد دورة مسجّلة.</span>');
-    const totalPct=Object.values(s).reduce((a,b)=>a+b,0);
-    const allocated=income*totalPct/100;
-    const remPct=Math.max(0,100-totalPct);
-    const left=income-allocated;
-    let warn=totalPct>100?`<div class="small bad">⚠️ مجموع النسب (${totalPct}%) تجاوز 100%!</div>`
-      :totalPct===100?'<div class="small warning">⚠️ مجموع النسب 100%.</div>'
-      :`<div class="small good">💰 المتبقي غير الموزع (يضاف للادخار): ${remPct}% (${money(left)})</div>`;
-    sum.innerHTML=`
-      <div class="small" style="color:var(--emerald-neon);font-weight:700;border-bottom:1px dashed var(--border-neon);padding-bottom:4px">📊 القيم محسوبة على الراتب الأساسي</div>
-      <div class="row-between"><span>📅 الراتب الأساسي المرجعي:</span><strong>${money(income)}</strong></div>
-      <div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px"><span>🧮 مجموع النسب:</span><strong>${totalPct}%</strong></div>
-      <div class="row-between"><span>💰 مجموع المبالغ:</span><strong>${money(allocated)}</strong></div>
-      ${warn}`;
-  }catch(e){console.warn("renderTargetValuesPreview:",e)}
+    const totalPct=Object.values(s).reduce((a,b)=>a+b,0),allocated=income*totalPct/100,remPct=Math.max(0,100-totalPct);
+    const warn=totalPct>100?`<div class="small bad">⚠️ مجموع النسب (${totalPct}%) تجاوز 100%!</div>`:totalPct===100?'<div class="small warning">⚠️ مجموع النسب 100%.</div>':`<div class="small good">📌 المتبقي غير الموزع من الراتب الأساسي: ${remPct}% (${money(income-allocated)})</div>`;
+    sum.innerHTML=`<div class="small" style="color:var(--emerald-neon);font-weight:700;border-bottom:1px dashed var(--border-neon);padding-bottom:4px">📊 القيم محسوبة على الراتب الأساسي</div><div class="row-between"><span>📅 الراتب الأساسي المرجعي:</span><strong>${money(income)}</strong></div><div class="row-between"><span>💰 الادخار الفعلي (السيولة الموجودة):</span><strong class="good">${money(totalLiquid)}</strong></div><div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px"><span>🧮 مجموع النسب:</span><strong>${totalPct}%</strong></div><div class="row-between"><span>💵 مجموع المبالغ المستهدفة:</span><strong>${money(allocated)}</strong></div>${warn}`;
+  }catch(e){console.warn(e)}
 }
 
 function renderCyclesList(txs,s){
-  const box=$("target-cycles-list");
-  if(!box)return;
+  const box=$("target-cycles-list");if(!box)return;
   const cycles=getAllCycles(txs).slice().reverse();
-  const rows=[["fixed","📌 الثابتة"],["regular","📊 العادية"],["personal","🛍️ الشخصية"],["transfer","✈️ التحويلات"],["debt","🤝 الديون"],["savings","💰 المدخرات"]];
+  const rows=[["fixed","📌 الثابتة"],["regular","📊 العادية"],["personal","🛍️ الشخصية"],["transfer","✈️ التحويلات"],["debt","🤝 الديون"],["savings","🎯 الادخار المستهدف"]];
   const totalPct=Object.values(s).reduce((a,b)=>a+b,0);
-  let html='<div class="small" style="color:var(--emerald-neon);font-weight:800">📅 النسب المستهدفة (على الراتب الأساسي)</div>';
-  html+=cycles.map((c,i)=>{
-    const income=baseSalaryIncome(txs,c);
-    const allocated=income*totalPct/100;
-    const days=Math.max(1,dateDiff(c.start,c.end)+1);
-    const endTxt=c.isCurrent?"حتى اليوم":fmtDate(c.end);
-    const title=c.isCurrent?`🟢 الدورة الحالية`:`دورة ${i+1}`;
-    const rowsHtml=rows.map(([k,lbl])=>{
-      const p=s[k]||0;
-      if(p<=0)return"";
-      return`<div class="row-between"><span>${lbl} (${p}%)</span><strong>${money(income*p/100)}</strong></div>`;
-    }).join("");
-    return`<details class="tc-card${c.isCurrent?" current":""}" ${i===0?"open":""}>
-      <summary><span>${title}</span><span class="small">${fmtDate(c.start)} ← ${endTxt} · ${days} يوم</span><span class="small">الراتب الأساسي: <strong>${money(income)}</strong></span></summary>
-      <div class="tc-body">${rowsHtml||'<span class="small">لا توجد نسب مخصصة.</span>'}
-        <div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:3px"><span>💰 مجموع المخصص (${totalPct}%)</span><strong>${money(allocated)}</strong></div>
-      </div>
-    </details>`;
+  box.innerHTML='<div class="small" style="color:var(--emerald-neon);font-weight:800">📅 النسب المستهدفة (على الراتب الأساسي)</div>'+cycles.map((c,i)=>{
+    const income=baseSalaryIncome(txs,c),allocated=income*totalPct/100,days=Math.max(1,dateDiff(c.start,c.end)+1);
+    const rowsHtml=rows.map(([k,lbl])=>s[k]>0?`<div class="row-between"><span>${lbl} (${s[k]}%)</span><strong>${money(income*s[k]/100)}</strong></div>`:"").join("");
+    return`<details class="tc-card" ${i===0?"open":""}><summary><span>${c.isCurrent?"🟢 الدورة الحالية":`دورة ${i+1}`}</span><span class="small">${fmtDate(c.start)} ← ${c.isCurrent?"حتى اليوم":fmtDate(c.end)} · ${days} يوم</span><span class="small">الراتب الأساسي: <strong>${money(income)}</strong></span></summary><div class="tc-body">${rowsHtml||'<span class="small">لا توجد نسب مخصصة.</span>'}<div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:3px"><span>💰 مجموع المخصص (${totalPct}%)</span><strong>${money(allocated)}</strong></div></div></details>`;
   }).join("");
-  box.innerHTML=html;
 }
 
 function addPersonFromSettings(){
-  const el=$("new-person-name");
-  if(!el)return;
-  const name=el.value.trim();
-  if(!name)return;
-  const arr=getPeople();
-  if(arr.includes(name))return void toast("الاسم موجود بالفعل");
+  const el=$("new-person-name"),name=el?.value.trim();if(!name)return;
+  const arr=getPeople();if(arr.includes(name))return void toast("الاسم موجود بالفعل");
   arr.push(name);savePeople(arr);el.value="";toast("تمت الإضافة بنجاح");
 }
-
 async function deletePerson(name){
-  try{
-    const txs=await allTx();
-    const used=txs.some(t=>t.person===name||(t.beneficiaries||[]).some(b=>b.name===name));
-    if(used&&!confirm(`"${name}" عنده معاملات محفوظة. سيتم حذفه من القائمة فقط. متابعة؟`))return;
-    savePeople(getPeople().filter(x=>x!==name));
-    toast("تم الحذف من القائمة");
-  }catch(e){console.error(e);toast("تعذر حذف الاسم")}
+  const used=(await allTx()).some(t=>t.person===name||(t.beneficiaries||[]).some(b=>b.name===name));
+  if(used&&!confirm(`"${name}" عنده معاملات محفوظة. سيتم حذفه من القائمة فقط. متابعة؟`))return;
+  savePeople(getPeople().filter(x=>x!==name));toast("تم الحذف من القائمة");
 }
-
 function addExpenseCategoryFromSettings(){
-  const input=$("new-expense-cat-name"),sel=$("new-expense-cat-budget");
-  if(!input)return;
-  const name=input.value.trim();
-  const budgetId=sel?.value||"regular";
+  const input=$("new-expense-cat-name"),name=input?.value.trim(),budgetId=$("new-expense-cat-budget")?.value||"regular";
   if(!name)return void toast("اكتب اسم التصنيف");
-  const list=getCats();
-  if(list.some(c=>c.name===name))return void toast("التصنيف موجود بالفعل");
-  list.push({name,budgetId});
-  saveCats(list);
-  input.value="";
-  toast("تمت إضافة التصنيف ✅");
+  const list=getCats();if(list.some(c=>c.name===name))return void toast("التصنيف موجود بالفعل");
+  list.push({name,budgetId});saveCats(list);input.value="";toast("تمت إضافة التصنيف ✅");
 }
-
 async function deleteCategory(name){
-  try{
-    const txs=await allTx();
-    const used=txs.some(t=>t.type==="expense"&&t.category===name);
-    if(used&&!confirm(`"${name}" مستخدم في معاملات. سيتم حذفه من القائمة فقط. متابعة؟`))return;
-    saveCats(getCats().filter(c=>c.name!==name));
-    toast("تم حذف التصنيف");
-  }catch(e){console.error(e);toast("تعذر حذف التصنيف")}
+  const used=(await allTx()).some(t=>t.type==="expense"&&t.category===name);
+  if(used&&!confirm(`"${name}" مستخدم في معاملات. سيتم حذفه من القائمة فقط. متابعة؟`))return;
+  saveCats(getCats().filter(c=>c.name!==name));toast("تم حذف التصنيف");
 }
 
 function openPersonModal(btn){
-  const picker=btn?.closest?.(".person-picker, .beneficiary");
-  personCb=picker?picker.querySelector("select"):null;
-  $("person-modal-input").value="";
-  $("person-modal").classList.remove("hidden");
+  personCb=btn?.closest?.(".person-picker, .beneficiary")?.querySelector("select")||null;
+  $("person-modal-input").value="";$("person-modal").classList.remove("hidden");
   setTimeout(()=>$("person-modal-input").focus(),50);
 }
 function closePersonModal(){$("person-modal").classList.add("hidden");personCb=null}
@@ -1646,7 +1232,8 @@ function confirmAddPerson(){
   const name=$("person-modal-input").value.trim();
   if(!name)return void toast("أدخل اسمًا صحيحًا");
   const arr=getPeople();
-  arr.includes(name)?toast("الاسم موجود بالفعل — تم اختياره"):(arr.push(name),savePeople(arr),toast("تمت إضافة الاسم بنجاح"));
+  if(arr.includes(name))toast("الاسم موجود بالفعل — تم اختياره");
+  else{arr.push(name);savePeople(arr);toast("تمت إضافة الاسم بنجاح")}
   populatePeopleSelects();
   if(personCb&&[...personCb.options].some(o=>o.value===name))personCb.value=name;
   closePersonModal();
@@ -1655,8 +1242,7 @@ function confirmAddPerson(){
 async function updateReconcileCurrentBalance(){
   const sel=$("reconcile-account-select"),sys=$("reconcile-system-val"),act=$("reconcile-actual-val");
   if(!sel||!sys)return;
-  const txs=await allTx();
-  const bal=getAccountBalance(txs,sel.value);
+  const bal=getAccountBalance(await allTx(),sel.value);
   sys.textContent=money(bal);
   if(act&&!act.value)act.value=bal.toFixed(3);
 }
@@ -1666,68 +1252,40 @@ async function executeReconciliation(){
   if(!sel||!act)return;
   const actual=Number(act.value);
   if(!Number.isFinite(actual))return void toast("أدخل قيمة صحيحة للرصيد الفعلي.");
-  const txs=await allTx();
-  const sys=getAccountBalance(txs,sel.value);
-  const diff=actual-sys;
+  const diff=actual-getAccountBalance(await allTx(),sel.value);
   if(Math.abs(diff)<0.0005)return void toast("الرصيد مطابق تماماً، لا حاجة للتسوية.");
-  const now=new Date();
-  const tx={id:`tx_recon_${Date.now()}`,date:todayISO(),time:`${pad2(now.getHours())}:${pad2(now.getMinutes())}`,account:sel.value};
-  if(diff>0){tx.type="income";tx.category="أخرى";tx.amount=diff;tx.notes="تسوية رصيد (زيادة / فائض)"}
-  else{tx.type="expense";tx.category="نثريات ومتفرقات";tx.amount=Math.abs(diff);tx.budgetId="regular";tx.notes="تسوية رصيد (عجز / نقص)"}
+  const now=new Date,tx={id:`tx_recon_${Date.now()}`,date:todayISO(),time:`${pad2(now.getHours())}:${pad2(now.getMinutes())}`,account:sel.value};
+  if(diff>0)Object.assign(tx,{type:"income",category:"أخرى",amount:diff,notes:"تسوية رصيد (زيادة / فائض)"});
+  else Object.assign(tx,{type:"expense",category:"نثريات ومتفرقات",amount:Math.abs(diff),budgetId:"regular",notes:"تسوية رصيد (عجز / نقص)"});
   if(!db)await openDB();
   await putTx(tx);
   toast(`تمت التسوية بنجاح! الفرق: ${money(diff)} ✅`);
-  await refreshAllViews();
-  updateReconcileCurrentBalance();
+  await refreshAllViews();updateReconcileCurrentBalance();
 }
 
-function backupPayload(txs){
-  return{version:16,savedAt:new Date().toISOString(),transactions:txs,people:getPeople(),expenseCategories:getCats(),accounts:getAccounts(),targetPercentages:getTargets()};
-}
+const backupPayload=txs=>({version:16,savedAt:new Date().toISOString(),transactions:txs,people:getPeople(),expenseCategories:getCats(),accounts:getAccounts(),targetPercentages:getTargets()});
 
 async function downloadBackup(){
   try{
-    const txs=await allTx();
-    const json=JSON.stringify(backupPayload(txs),null,2);
+    const json=JSON.stringify(backupPayload(await allTx()),null,2);
     const fname=`نسخة_احتياطية_${todayISO()}.json`;
     const file=new File([json],fname,{type:"application/json"});
-    if(navigator.canShare&&navigator.canShare({files:[file]})){
+    if(navigator.canShare?.({files:[file]})){
       await navigator.share({title:"النسخة الاحتياطية",files:[file]});
-      toast("تمت المشاركة بنجاح ✅");
-      $("backup-status").textContent="آخر مشاركة: "+new Date().toLocaleTimeString("en-US");
-      return;
+    }else{
+      const url=URL.createObjectURL(new Blob([json],{type:"application/json;charset=utf-8"}));
+      const a=document.createElement("a");a.href=url;a.download=fname;document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
     }
-    const a=document.createElement("a");
-    a.href="data:application/json;charset=utf-8,"+encodeURIComponent(json);
-    a.download=fname;
-    document.body.appendChild(a);a.click();a.remove();
     $("backup-status").textContent="آخر تنزيل: "+new Date().toLocaleTimeString("en-US");
-    toast("تم تنزيل النسخة الاحتياطية ✅");
-  }catch(e){
-    if(e&&e.name==="AbortError")return void toast("تم إلغاء المشاركة");
-    toast("تعذر التنزيل أو المشاركة ❌");
-  }
+    toast("تم حفظ النسخة الاحتياطية ✅");
+  }catch(e){if(e?.name!=="AbortError")toast("تعذر التنزيل أو المشاركة ❌")}
 }
-
-async function shareBackup(){
-  try{
-    const txs=await allTx();
-    const json=JSON.stringify(backupPayload(txs),null,2);
-    if(navigator.share){
-      try{
-        const file=new File([json],`نسخة_احتياطية_${todayISO()}.json`,{type:"application/json"});
-        await navigator.share({title:"نسخة احتياطية",files:[file]});
-        return;
-      }catch(e){}
-    }
-    if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(json);toast("تم النسخ للحافظة")}
-    else toast("تعذر النسخ");
-  }catch(e){toast("تعذر المشاركة")}
-}
+const shareBackup=()=>downloadBackup();
 
 function restoreBackup(){
   const el=$("restore-file");
-  if(!el.files.length)return void toast("اختر ملف النسخة أولاً");
+  if(!el?.files.length)return void toast("اختر ملف النسخة أولاً");
   if(!confirm("⚠️ سيتم استبدال كل البيانات بالنسخة. متابعة؟"))return;
   const fr=new FileReader;
   fr.onload=async ev=>{
@@ -1735,16 +1293,14 @@ function restoreBackup(){
       const data=JSON.parse(ev.target.result);
       const txs=Array.isArray(data.transactions)?data.transactions:[];
       if(!db)await openDB();
-      const tx=db.transaction(STORE,"readwrite");
-      const store=tx.objectStore(STORE);
+      const tx=db.transaction(STORE,"readwrite"),store=tx.objectStore(STORE);
       store.clear();
-      txs.forEach(x=>{if(x.date){const p=x.date.split("-");if(p.length===3)x.date=isoDate(p[0],p[1],p[2])}store.put(x)});
+      txs.forEach(x=>store.put({...x,date:normIso(x?.date)||x.date}));
       tx.oncomplete=async()=>{
         if(Array.isArray(data.people))savePeople(data.people);
         if(Array.isArray(data.expenseCategories))saveCats(data.expenseCategories);
         if(data.targetPercentages){localStorage.setItem(K_TARGET,JSON.stringify(data.targetPercentages));loadTargetPercentages()}
-        toast("تمت الاستعادة ✅");
-        await refreshAllViews();
+        toast("تمت الاستعادة ✅");await refreshAllViews();
       };
       tx.onerror=()=>toast("فشلت الاستعادة");
     }catch(e){toast("ملف غير صالح")}
@@ -1757,7 +1313,7 @@ async function clearAllTransactions(){
   if(!db)await openDB();
   const t=db.transaction(STORE,"readwrite");
   t.objectStore(STORE).clear();
-  t.oncomplete=async()=>{toast("تم تفريغ البيانات");await refreshAllViews()};
+  t.oncomplete=async()=>{editId=null;toast("تم تفريغ البيانات");await refreshAllViews()};
   t.onerror=()=>toast("فشل التفريغ");
 }
 
@@ -1768,84 +1324,67 @@ function switchMainView(view){
   if(view==="dashboard")refreshDashboard();
   else{
     renderCatsList();renderPeopleList();loadTargetPercentages();renderTargetValuesPreview();
-    fillSelect($("new-expense-cat-budget"),SUB_ITEMS,"key","label");
-    populateReconcileSelect();
+    fillSelect($("new-expense-cat-budget"),SUB_ITEMS,"key","label");populateReconcileSelect();
   }
   window.scrollTo({top:0,behavior:"smooth"});
 }
+const toggleAccordion=id=>$(id)?.classList.toggle("open");
 
-function toggleAccordion(id){$(id)?.classList.toggle("open")}
-
-async function handleEditFromQuery(){
-  const editQ=new URLSearchParams(window.location.search).get("edit");
-  if(!editQ)return;
-  try{
-    db||await openDB();
-    const txs=await allTx();
-    const t=txs.find(x=>x.id===editQ);
-    if(!t)return;
-    openInputForm(t.type);
-    editId=t.id;
-    writeDate("tx",t.date);
-    $("tx-time").value=t.time||"00:00";
-    $("tx-notes").value=t.notes||"";
-    if(t.account){const sel=$("tx-account");if(sel&&[...sel.options].some(o=>o.value===t.account))sel.value=t.account}
-    if(t.type==="expense"){
-      $("expense-amount").value=t.amount;
-      const sel=$("expense-category");
-      if([...sel.options].some(o=>o.value===t.category))sel.value=t.category;
-      updateExpenseBudgetHint();
-    }else if(t.type==="income"){
-      $("income-amount").value=t.amount;$("income-category").value=t.category;$("is-salary-base").checked=!!t.isSalaryBase;
-    }else if(t.type==="transfer"){
-      $("total-kwd").value=t.totalKwd??t.amount??"";
-      const el=$("beneficiaries-list");el.innerHTML="";
-      (t.beneficiaries||[]).forEach(b=>{
-        addBeneficiary();
-        const all=el.querySelectorAll(".beneficiary");
-        const last=all[all.length-1];
-        const sel=last.querySelector(".beneficiary-name-select");
-        if([...sel.options].some(o=>o.value===b.name))sel.value=b.name;
-        else{const o=document.createElement("option");o.value=b.name;o.textContent=b.name;sel.appendChild(o);sel.value=b.name}
-        last.querySelector(".beneficiary-amount").value=b.egp;
-      });
-      calculateExchange();
-    }else if(t.type==="debt"){
-      $("debt-amount").value=t.amount;
-      const sel=$("debt-person-select");
-      if([...sel.options].some(o=>o.value===t.person))sel.value=t.person;
-      $("debt-type").value=t.debtType;
-    }else if(t.type==="internal_transfer"){
-      $("int-amount").value=t.amount;
-      const f=$("int-from-account"),to=$("int-to-account");
-      if(f&&[...f.options].some(o=>o.value===t.account))f.value=t.account;
-      if(to&&[...to.options].some(o=>o.value===t.toAccount))to.value=t.toAccount;
-    }
-    $("edit-banner").classList.remove("hidden");
-    $("save-transaction").textContent="تحديث المعاملة ✏️";
-  }catch(e){console.warn(e)}
+async function loadTransactionForEdit(id){
+  const t=(await allTx()).find(x=>x.id===id);
+  if(!t)return;
+  openInputForm(t.type);
+  editId=t.id;
+  writeDate("tx",t.date);
+  $("tx-time").value=t.time||"00:00";
+  $("tx-notes").value=t.notes||"";
+  if(t.account&&[...$("tx-account").options].some(o=>o.value===t.account))$("tx-account").value=t.account;
+  if(t.type==="expense"){
+    $("expense-amount").value=t.amount;
+    if([...$("expense-category").options].some(o=>o.value===t.category))$("expense-category").value=t.category;
+    updateExpenseBudgetHint();
+  }else if(t.type==="income"){
+    $("income-amount").value=t.amount;$("income-category").value=t.category;$("is-salary-base").checked=!!t.isSalaryBase;
+  }else if(t.type==="transfer"){
+    $("total-kwd").value=t.totalKwd??t.amount??"";
+    const el=$("beneficiaries-list");el.innerHTML="";
+    (t.beneficiaries||[]).forEach(b=>{
+      addBeneficiary();
+      const last=el.querySelectorAll(".beneficiary")[el.querySelectorAll(".beneficiary").length-1];
+      const sel=last.querySelector(".beneficiary-name-select");
+      if(![...sel.options].some(o=>o.value===b.name))sel.add(new Option(b.name,b.name));
+      sel.value=b.name;last.querySelector(".beneficiary-amount").value=b.egp;
+    });
+    calculateExchange();
+  }else if(t.type==="debt"){
+    $("debt-amount").value=t.amount;
+    if([...$("debt-person-select").options].some(o=>o.value===t.person))$("debt-person-select").value=t.person;
+    $("debt-type").value=t.debtType;
+  }else if(t.type==="internal_transfer"){
+    $("int-amount").value=t.amount;
+    if([...$("int-from-account").options].some(o=>o.value===t.account))$("int-from-account").value=t.account;
+    if([...$("int-to-account").options].some(o=>o.value===t.toAccount))$("int-to-account").value=t.toAccount;
+  }
+  $("edit-banner").classList.remove("hidden");
+  $("save-transaction").textContent="تحديث المعاملة ✏️";
 }
 
 document.addEventListener("click",e=>{
-  const t=e.target.closest("[data-action]");
-  if(!t)return;
-  if(t.dataset.action==="del-person")deletePerson(t.dataset.person);
-  else if(t.dataset.action==="del-cat")deleteCategory(t.dataset.cat);
+  const act=e.target.closest("[data-action]");
+  if(act?.dataset.action==="del-person")return void deletePerson(act.dataset.person);
+  if(act?.dataset.action==="del-cat")return void deleteCategory(act.dataset.cat);
+  const editBtn=e.target.closest("[data-edit-id]");
+  if(editBtn)return void loadTransactionForEdit(editBtn.dataset.editId);
+  const delBtn=e.target.closest("[data-del-id]");
+  if(delBtn)return void deleteTransaction(delBtn.dataset.delId);
 });
 
-$("beneficiaries-list")?.addEventListener("input",e=>{
-  if(e.target.classList.contains("beneficiary-amount"))calculateExchange();
-});
-$("beneficiaries-list")?.addEventListener("click",e=>{
-  if(e.target.classList.contains("btn-del-beneficiary")){e.target.parentElement.remove();calculateExchange()}
-});
-
+$("beneficiaries-list")?.addEventListener("input",e=>{if(e.target.classList.contains("beneficiary-amount"))calculateExchange()});
+$("beneficiaries-list")?.addEventListener("click",e=>{if(e.target.classList.contains("btn-del-beneficiary")){e.target.parentElement.remove();calculateExchange()}});
 $("view-input").addEventListener("click",e=>{if(e.target===$("view-input"))cancelEdit()});
 $("person-modal")?.addEventListener("click",e=>{if(e.target===$("person-modal"))closePersonModal()});
 $("fund-detail-modal")?.addEventListener("click",e=>{if(e.target===$("fund-detail-modal"))closeFundModal()});
-
 document.addEventListener("focusin",e=>{if(e.target.tagName==="INPUT"&&e.target.type==="number")e.target.select()});
-
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape"){
     if(!$("person-modal").classList.contains("hidden"))closePersonModal();
@@ -1853,39 +1392,27 @@ document.addEventListener("keydown",e=>{
     if(!$("fund-detail-modal").classList.contains("hidden"))closeFundModal();
   }
 });
-
 ["person-modal-input","new-person-name","new-expense-cat-name"].forEach(id=>{
   $(id)?.addEventListener("keydown",e=>{
-    if(e.key!=="Enter")return;
-    e.preventDefault();
+    if(e.key!=="Enter")return;e.preventDefault();
     id==="person-modal-input"?confirmAddPerson():id==="new-person-name"?addPersonFromSettings():addExpenseCategoryFromSettings();
   });
 });
-
 document.addEventListener("change",e=>{if(e.target?.id==="expense-category")updateExpenseBudgetHint()});
-
-window.addEventListener("beforeunload",e=>{
-  if(editId){e.preventDefault();e.returnValue="لديك تعديلات غير محفوظة.";return e.returnValue}
-});
+window.addEventListener("beforeunload",e=>{if(editId){e.preventDefault();e.returnValue="لديك تعديلات غير محفوظة."}});
 
 window.addEventListener("DOMContentLoaded",async()=>{
   try{
     initTheme();
     privacyHidden=localStorage.getItem(K_PRIVACY)==="1";
-    const pb=$("privacy-toggle-btn");
-    if(pb)pb.textContent=privacyHidden?"🙈":"👁️";
-    initDates();
-    loadTargetPercentages();
+    if($("privacy-toggle-btn"))$("privacy-toggle-btn").textContent=privacyHidden?"🙈":"👁️";
+    initDates();loadTargetPercentages();
     fillSelect($("new-expense-cat-budget"),SUB_ITEMS,"key","label");
-    populateCategorySelects();
-    populatePeopleSelects();
-    populateAccountSelects();
-    renderPeopleList();
-    renderCatsList();
-    addBeneficiary();
-    await openDB();
-    await refreshAllViews();
-    await handleEditFromQuery();
+    populateCategorySelects();populatePeopleSelects();populateAccountSelects();
+    renderPeopleList();renderCatsList();addBeneficiary();
+    await openDB();await refreshAllViews();
+    const editQ=new URLSearchParams(window.location.search).get("edit");
+    if(editQ)await loadTransactionForEdit(editQ);
   }catch(e){console.warn("Init:",e)}
 });
 </script>
