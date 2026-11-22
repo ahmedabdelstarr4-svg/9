@@ -8,81 +8,74 @@
 <title>التقارير المالية — النظام المالي الشخصي</title>
 <style>
 :root[data-theme="dark"] {
-  --bg-main: #050806; --bg-app: #090d0b; --bg-card: #0e1612; --bg-card-hover: #14201a;
-  --bg-input: #0a110d; --border-neon: rgba(16, 185, 129, 0.22); --border-subtle: rgba(255, 255, 255, 0.07);
+  --bg-main: #050806; --bg-app: #090d0b; --bg-card: #0e1612; --bg-input: #0a110d;
+  --border-neon: rgba(16, 185, 129, 0.22); --border-subtle: rgba(255, 255, 255, 0.07);
   --ink: #f8fafc; --ink-muted: #94a3b8; --emerald-neon: #10b981; --emerald-glow: rgba(16, 185, 129, 0.35);
-  --green-val: #34d399; --red-val: #fb7185; --amber-val: #fbbf24; --sky-val: #38bdf8; --purple-val: #c084fc;
+  --green-val: #34d399; --red-val: #fb7185; --amber-val: #fbbf24; --sky-val: #38bdf8;
   --header-bg: #070c09; --nav-bg: rgba(10, 17, 13, 0.85); --modal-overlay: rgba(3, 7, 5, 0.85);
   --app-max: 480px; --shadow-neon: 0 0 20px rgba(16, 185, 129, 0.15);
 }
 :root[data-theme="light"] {
-  --bg-main: #f1f5f9; --bg-app: #ffffff; --bg-card: #f8fafc; --bg-card-hover: #f1f5f9;
-  --bg-input: #ffffff; --border-neon: rgba(5, 150, 105, 0.25); --border-subtle: #e2e8f0;
+  --bg-main: #f1f5f9; --bg-app: #ffffff; --bg-card: #f8fafc; --bg-input: #ffffff;
+  --border-neon: rgba(5, 150, 105, 0.25); --border-subtle: #e2e8f0;
   --ink: #0f172a; --ink-muted: #64748b; --emerald-neon: #059669; --emerald-glow: rgba(5, 150, 105, 0.2);
-  --green-val: #059669; --red-val: #e11d48; --amber-val: #d97706; --sky-val: #0284c7; --purple-val: #7c3aed;
+  --green-val: #059669; --red-val: #e11d48; --amber-val: #d97706; --sky-val: #0284c7;
   --header-bg: #0f172a; --nav-bg: rgba(255, 255, 255, 0.9); --modal-overlay: rgba(15, 23, 42, 0.6);
   --app-max: 480px; --shadow-neon: 0 10px 25px rgba(5, 150, 105, 0.1);
 }
-*{box-sizing:border-box;transition:background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;}
+*{box-sizing:border-box;transition:background-color .2s,border-color .2s,color .2s}
 html,body{margin:0;padding:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg-main);color:var(--ink);overflow-x:hidden}
 body{padding:4px;padding-bottom:calc(65px + env(safe-area-inset-bottom,8px));display:flex;justify-content:center;align-items:flex-start}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer;touch-action:manipulation;min-height:36px}
-.app{width:100%;max-width:var(--app-max);background:var(--bg-app);border:1px solid var(--border-neon);border-radius:24px;box-shadow:var(--shadow-neon);display:flex;flex-direction:column;overflow:hidden;position:relative;}
-.header{background:var(--header-bg);color:var(--ink);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:800;gap:8px;border-bottom:1px solid var(--border-subtle);}
-.header-actions{display:flex;align-items:center;gap:8px;}
-.theme-toggle-btn{background:rgba(255,255,255,0.06);border:1px solid var(--border-subtle);color:var(--ink);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;min-height:26px;display:inline-flex;align-items:center;gap:4px;}
+.app{width:100%;max-width:var(--app-max);background:var(--bg-app);border:1px solid var(--border-neon);border-radius:24px;box-shadow:var(--shadow-neon);display:flex;flex-direction:column;overflow:hidden;position:relative}
+.header{background:var(--header-bg);color:var(--ink);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:800;gap:8px;border-bottom:1px solid var(--border-subtle)}
+.header-actions{display:flex;align-items:center;gap:8px}
+.theme-toggle-btn{background:rgba(255,255,255,.06);border:1px solid var(--border-subtle);color:var(--ink);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;min-height:26px;display:inline-flex;align-items:center;gap:4px}
 .content{padding:6px;flex:1;display:flex;flex-direction:column;gap:6px}
-.view{display:flex;flex-direction:column;gap:6px}
 .hidden{display:none!important}
 .stack{display:flex;flex-direction:column;gap:6px}
 label{display:block;color:var(--ink-muted);font-size:11px;font-weight:800;margin-bottom:4px}
-input,select,textarea{width:100%;min-width:0;padding:8px 10px;border:1px solid var(--border-subtle);border-radius:12px;background:var(--bg-input);color:var(--ink);outline:none;font-size:12px;}
-input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-shadow:0 0 8px var(--emerald-glow);}
+input,select,textarea{width:100%;min-width:0;padding:8px 10px;border:1px solid var(--border-subtle);border-radius:12px;background:var(--bg-input);color:var(--ink);outline:none;font-size:12px}
+input:focus,select:focus,textarea:focus{border-color:var(--emerald-neon);box-shadow:0 0 8px var(--emerald-glow)}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
-.panel{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;min-width:0;}
-.btn{border:0;border-radius:10px;padding:8px 10px;font-weight:800;font-size:11px;transition:all .2s ease;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:32px}
-.btn-primary{background:linear-gradient(135deg, #10b981, #047857);color:white;box-shadow:0 4px 12px rgba(16,185,129,0.3)}
-.btn-dark{background:var(--header-bg);color:white;border:1px solid var(--border-subtle)}
-.btn-soft{background:rgba(16,185,129,0.1);color:var(--emerald-neon);border:1px solid var(--border-neon)}
-.btn-green{background:#10b981;color:white}
-.btn-muted{background:rgba(255,255,255,0.05);color:var(--ink);border:1px solid var(--border-subtle)}
-.btn-danger{background:rgba(251,113,133,0.12);color:var(--red-val);border:1px solid rgba(251,113,133,0.4)}
-.btn-danger-solid{background:linear-gradient(135deg,#e11d48,#9f1239);color:white;box-shadow:0 4px 12px rgba(225,29,72,0.3)}
-.action-btn-mini{padding:2px 6px;font-size:11px;min-height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;}
+.panel{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.btn{border:0;border-radius:10px;padding:8px 10px;font-weight:800;font-size:11px;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:32px}
+.btn-primary{background:linear-gradient(135deg,#10b981,#047857);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,.3)}
+.btn-dark{background:var(--header-bg);color:#fff;border:1px solid var(--border-subtle)}
+.btn-soft{background:rgba(16,185,129,.1);color:var(--emerald-neon);border:1px solid var(--border-neon)}
+.btn-green{background:#10b981;color:#fff}
+.btn-muted{background:rgba(255,255,255,.05);color:var(--ink);border:1px solid var(--border-subtle)}
+.btn-danger{background:rgba(251,113,133,.12);color:var(--red-val);border:1px solid rgba(251,113,133,.4)}
+.btn-danger-solid{background:linear-gradient(135deg,#e11d48,#9f1239);color:#fff;box-shadow:0 4px 12px rgba(225,29,72,.3)}
+.action-btn-mini{padding:2px 6px;font-size:11px;min-height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center}
 .action-group{display:inline-flex;align-items:center;justify-content:center;gap:4px}
-.nav-bottom{position:fixed;bottom:4px;left:50%;transform:translateX(-50%);width:calc(100% - 10px);max-width:440px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding:3px;border:1px solid var(--border-neon);background:var(--nav-bg);backdrop-filter:blur(16px);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:30;}
-.nav-bottom .nav-btn{background:transparent;border:0;color:var(--ink-muted);padding:4px 2px;font-size:9.5px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:1px;border-radius:12px;}
+.nav-bottom{position:fixed;bottom:4px;left:50%;transform:translateX(-50%);width:calc(100% - 10px);max-width:440px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding:3px;border:1px solid var(--border-neon);background:var(--nav-bg);backdrop-filter:blur(16px);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:30}
+.nav-bottom .nav-btn{background:transparent;border:0;color:var(--ink-muted);padding:4px 2px;font-size:9.5px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:1px;border-radius:12px}
 .nav-bottom .nav-btn span:first-child{font-size:14px}
-.nav-bottom .nav-btn.active{background:rgba(16,185,129,0.15);color:var(--emerald-neon);box-shadow:0 0 8px var(--emerald-glow)}
+.nav-bottom .nav-btn.active{background:rgba(16,185,129,.15);color:var(--emerald-neon);box-shadow:0 0 8px var(--emerald-glow)}
 .small{font-size:10.5px;color:var(--ink-muted)}
 .table-wrap{overflow-x:auto;border:1px solid var(--border-subtle);border-radius:10px;width:100%;background:var(--bg-card)}
 table{border-collapse:separate;border-spacing:0;width:100%;min-width:420px;font-size:10.5px;text-align:right;table-layout:auto}
 th,td{padding:8px 6px;border-bottom:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle);vertical-align:middle;word-break:keep-all;white-space:nowrap}
 th:last-child,td:last-child{border-left:0}
-th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
-.report{background:var(--bg-app);border:1px solid var(--border-subtle);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;width:100%}
-.report-head{background:linear-gradient(135deg,#0e1612,#070c09);color:white;border-radius:12px;text-align:center;padding:16px 12px;border:1px solid var(--border-neon)}
-.report-meta{background:var(--bg-card);border:1px solid var(--border-subtle);padding:12px;border-radius:12px;font-size:12px;display:flex;flex-direction:column;gap:6px}
-.report-summary{background:rgba(16,185,129,0.05);border:1px solid var(--border-neon);padding:12px;border-radius:12px;display:flex;flex-direction:column;gap:6px;font-size:12px}
-#toast{position:fixed;bottom:65px;left:50%;transform:translateX(-50%);z-index:200;background:#090d0b;color:var(--ink);padding:8px 14px;border-radius:12px;font-size:11px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,0.6);max-width:90vw;text-align:center;display:none;border:1px solid var(--border-neon)}
-.person-picker{display:grid;grid-template-columns:1fr auto;gap:4px}
-.btn-plus{padding:0 10px;font-size:14px;font-weight:800;min-width:36px}
+th{background:rgba(255,255,255,.05);color:var(--ink);font-weight:900}
+.report{background:var(--bg-app);border:1px solid var(--border-subtle);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;width:100%}
+.report-head{background:linear-gradient(135deg,#0f2018,#070c09);color:#fff;border-radius:14px;text-align:center;padding:16px 12px;border:1px solid var(--border-neon)}
+.report-meta,.report-summary{background:var(--bg-card);border:1px solid var(--border-subtle);padding:12px;border-radius:12px;font-size:12px;display:flex;flex-direction:column;gap:6px}
+.report-summary{background:rgba(16,185,129,.05);border-color:var(--border-neon)}
+#toast{position:fixed;bottom:65px;left:50%;transform:translateX(-50%);z-index:200;background:#090d0b;color:var(--ink);padding:8px 14px;border-radius:12px;font-size:11px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.6);max-width:90vw;text-align:center;display:none;border:1px solid var(--border-neon)}
 .modal-overlay{position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(4px);z-index:150;display:flex;align-items:center;justify-content:center;padding:10px}
-.modal-box{background:var(--bg-app);border-radius:16px;border:1px solid var(--border-neon);padding:14px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,0.5);}
+.modal-box{background:var(--bg-app);border-radius:16px;border:1px solid var(--border-neon);padding:14px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.finance-tabs{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:3px;background:rgba(0,0,0,0.2);padding:3px;border-radius:12px;border:1px solid var(--border-subtle)}
-.finance-tabs .tab{padding:8px 2px;font-weight:800;border:0;background:transparent;color:var(--ink-muted);border-radius:8px;}
-.finance-tabs .tab.active{background:var(--emerald-neon);color:#fff;}
 .good{color:var(--green-val)!important}
 .bad{color:var(--red-val)!important}
-.warning{color:var(--amber-val)!important}
 .date-parts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
 .date-parts input{text-align:center;padding:6px 2px}
 .row-between{display:flex;justify-content:space-between;align-items:center;gap:4px}
 @media print{
   .no-print{display:none!important}
-  .report tr,.report .report-head,.report .report-meta,.report .report-summary,.report .metric,.report .balance-card,.report .panel,.person-item,.table-wrap{break-inside:avoid;page-break-inside:avoid}
+  .report tr,.report .report-head,.report .report-meta,.report .report-summary,.report .panel,.table-wrap{break-inside:avoid;page-break-inside:avoid}
   .table-wrap{overflow:visible!important}
   .report{box-shadow:none;border:0;width:100%!important;padding:0!important}
 }
@@ -93,145 +86,130 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
 </head>
 <body>
 <div class="app">
-<header class="header">
-  <span>التقارير والكشوفات المالية 📊</span>
-  <div class="header-actions">
-    <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="تبديل المظهر" title="تبديل المظهر">
-      <span id="theme-toggle-icon">🌙</span> <span id="theme-toggle-text">داكن</span>
-    </button>
-    <button type="button" class="theme-toggle-btn" onclick="window.location.href='index.html'" aria-label="الرئيسية" title="الرئيسية">
-      🏠 الرئيسية
-    </button>
-  </div>
-</header>
+  <header class="header">
+    <span>التقارير والكشوفات المالية 📊</span>
+    <div class="header-actions">
+      <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="تبديل المظهر">
+        <span id="theme-toggle-icon">🌙</span> <span id="theme-toggle-text">داكن</span>
+      </button>
+      <button type="button" class="theme-toggle-btn" onclick="window.location.href='index.html'">🏠 الرئيسية</button>
+    </div>
+  </header>
 
-<main class="content">
-<section id="view-reports" class="view stack">
-  <div class="finance-tabs no-print">
-    <button type="button" class="tab active" id="finance-tab-ledger" onclick="switchFinanceTab('ledger')">سجل المعاملات التفصيلي والتقارير 📜</button>
-  </div>
-  <section id="finance-ledger-view" class="stack">
-    <div id="filter-section" class="stack no-print">
-      <div class="panel" style="background:rgba(16,185,129,0.08);border-color:var(--border-neon);color:var(--emerald-neon);font-size:11.5px;font-weight:700">حدد معايير التقرير</div>
-      
-      <div class="grid2">
-        <div>
-          <label>التصنيف الرئيسي</label>
-          <select id="report-type" onchange="onReportTypeChange()">
-            <option value="expense">مصروفات (دورة حالية + معدل حرق)</option>
-            <option value="income">دخل وإيرادات (شامل دخل السلف والاسترداد)</option>
-            <option value="debt">ديون وعلاقات مالية (الوعي العام وتفاصيل الشخص)</option>
-            <option value="transfer">تحويلات مالية خارجية (حوالات)</option>
-            <option value="internal_transfer">تحويلات بين الحسابات</option>
-            <option value="all">ملخص كل المعاملات</option>
-          </select>
-        </div>
-        <div><label>الحساب / طريقة الدفع</label><select id="report-account-filter"><option value="all">كل الحسابات (شامل)</option></select></div>
+  <main class="content">
+    <section id="filter-section" class="stack no-print">
+      <div class="panel" style="background:rgba(16,185,129,.08);border-color:var(--border-neon);color:var(--emerald-neon);font-size:11.5px;font-weight:700">
+        الفلتر الموحد للتقارير — التزام تام وكامل بجميع المعايير
       </div>
 
-      <div id="debt-filters-box" class="stack hidden panel" style="background:rgba(251,191,36,0.04);border-color:rgba(251,191,36,0.3)">
-        <div style="font-weight:900;color:var(--amber-val);font-size:11.5px">⚖️ خيارات الوعي العام للديون (مرتبطة بفترة التقرير)</div>
+      <div class="panel stack">
         <div class="grid2">
           <div>
-            <label>طبيعة الحق</label>
-            <select id="debt-nature-filter">
-              <option value="all">الكل (دائنة ومدينة)</option>
-              <option value="creditor">ديون عليك فقط (ذمم دائنة)</option>
-              <option value="debtor">ديون لك فقط (ذمم مدينة)</option>
-              <option value="closed">حسابات خالصة ومغلقة</option>
+            <label>1. التصنيف الرئيسي</label>
+            <select id="report-type" onchange="onReportTypeChange()">
+              <option value="expense">مصروفات (دورة + معدل حرق)</option>
+              <option value="income">دخل وإيرادات (شامل السلف والاسترداد)</option>
+              <option value="debt">ديون وعلاقات مالية</option>
+              <option value="transfer">تحويلات مالية خارجية (حوالات)</option>
+              <option value="internal_transfer">تحويلات بين الحسابات</option>
+              <option value="all">ملخص كل المعاملات</option>
             </select>
           </div>
           <div>
-            <label>الوعي الحركي بالفترة</label>
-            <select id="debt-activity-filter">
-              <option value="all">كل الحركات التاريخية والتراكمية</option>
-              <option value="active_period">حسابات شهدت حركة سداد/استلف بالفترة</option>
-              <option value="idle_period">حسابات خاملة بدون حركة في الفترة</option>
-            </select>
+            <label>2. النوع الفرعي / التخصيص</label>
+            <select id="report-subtype" onchange="updateReportTargetOptions()"></select>
           </div>
         </div>
-      </div>
 
-      <div class="panel" style="background:rgba(16,185,129,0.05);border-color:var(--border-neon);gap:8px;">
-        <div class="row-between" style="font-weight:800;font-size:11.5px;color:var(--emerald-neon);">
-          <span>🔄 مقارنة بين دورتين راتب</span>
-          <button type="button" class="btn btn-soft action-btn-mini" onclick="toggleCompareMode()" id="compare-mode-toggle-btn" aria-label="تفعيل أو إلغاء المقارنة">تفعيل المقارنة ➕</button>
+        <div class="grid2">
+          <div>
+            <label>3. الحساب / طريقة الدفع</label>
+            <select id="report-account-filter"><option value="all">كل الحسابات (شامل)</option></select>
+          </div>
+          <div>
+            <label>4. الطرف / الشخص أو المستفيد</label>
+            <select id="beneficiary-select"><option value="all">الكل (بدون تقييد بطرف)</option></select>
+          </div>
         </div>
-        <div id="compare-selectors-box" class="stack hidden" style="margin-top:2px;">
+
+        <div class="stack">
+          <div class="row-between" style="margin-bottom:2px">
+            <label style="margin:0">5. الفترة الزمنية (من — إلى)</label>
+            <div style="display:flex;gap:4px">
+              <button type="button" class="btn btn-soft action-btn-mini" onclick="setCurrentCycleRange()">🔄 الدورة الحالية</button>
+              <button type="button" class="btn btn-muted action-btn-mini" onclick="setOldestTransactionRange()">⏮️ أقدم معاملة</button>
+            </div>
+          </div>
           <div class="grid2">
             <div>
-              <label>الدورة الأولى (السابقة)</label>
-              <select id="filter-cycle-1" onchange="applyCycleSelection(1)"><option value="">اختر الدورة...</option></select>
+              <label>من تاريخ (بداية الفترة)</label>
+              <div class="date-parts">
+                <input id="date-from-day" type="number" min="1" max="31" inputmode="numeric" placeholder="يوم">
+                <input id="date-from-month" type="number" min="1" max="12" inputmode="numeric" placeholder="شهر">
+                <input id="date-from-year" type="number" min="2000" max="2100" inputmode="numeric" placeholder="سنة">
+              </div>
             </div>
             <div>
-              <label>الدورة الثانية (المقارنة)</label>
-              <select id="filter-cycle-2" onchange="applyCycleSelection(2)"><option value="">اختر الدورة...</option></select>
+              <label>إلى تاريخ (نهاية الفترة)</label>
+              <div class="date-parts">
+                <input id="date-to-day" type="number" min="1" max="31" inputmode="numeric" placeholder="يوم">
+                <input id="date-to-month" type="number" min="1" max="12" inputmode="numeric" placeholder="شهر">
+                <input id="date-to-year" type="number" min="2000" max="2100" inputmode="numeric" placeholder="سنة">
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div id="report-subtype-wrap"><label>النوع الفرعي</label><select id="report-subtype" onchange="updateReportTargetOptions()"></select></div>
-      <div id="report-target-wrap"><label>الطرف / المستفيد أو الشخص</label><div class="person-picker"><select id="beneficiary-select"><option value="all">الكل (عرض الكشف العام)</option></select><button type="button" class="btn btn-soft btn-plus" onclick="openPersonModal(this)" aria-label="إضافة اسم جديد" title="إضافة اسم جديد">+</button></div></div>
-      
-      <div class="panel" style="background:rgba(56,189,248,0.04);border-color:rgba(56,189,248,0.3);gap:6px;">
-        <div style="font-weight:800;color:var(--sky-val);font-size:11.5px">⚡ اختيار سريع للفترة الزمنية</div>
-        <div class="grid2">
-          <button type="button" onclick="setQuickDateRange('this_month')" class="btn btn-soft" style="font-size:10.5px;padding:4px 6px;">📅 هذا الشهر</button>
-          <button type="button" onclick="setQuickDateRange('last_month')" class="btn btn-soft" style="font-size:10.5px;padding:4px 6px;">⏮️ الشهر السابق</button>
+        <div>
+          <label>🏷️ اسم التقرير</label>
+          <input id="report-custom-title" maxlength="60" placeholder="مثال: تقرير مصروفات الدورة الحالية">
         </div>
-        <div class="grid2">
-          <button type="button" onclick="setQuickDateRange('last_30')" class="btn btn-soft" style="font-size:10.5px;padding:4px 6px;">⏳ آخر 30 يوماً</button>
-          <button type="button" onclick="setSalaryCycleDates()" class="btn btn-soft" style="font-size:10.5px;padding:4px 6px;">💼 دورة الراتب الحالية</button>
+        <div>
+          <label>📝 ملاحظات التقرير (اختياري)</label>
+          <textarea id="report-notes" maxlength="500" rows="2" placeholder="ملاحظات تظهر في المستند..." style="resize:vertical;min-height:44px"></textarea>
         </div>
       </div>
-
-      <div class="grid2">
-        <div><label>من تاريخ (بداية الفترة)</label><div class="date-parts"><input id="date-from-day" type="number" min="1" max="31" inputmode="numeric" placeholder="يوم"><input id="date-from-month" type="number" min="1" max="12" inputmode="numeric" placeholder="شهر"><input id="date-from-year" type="number" min="2000" max="2100" inputmode="numeric" placeholder="سنة"></div></div>
-        <div><label>إلى تاريخ (نهاية الفترة)</label><div class="date-parts"><input id="date-to-day" type="number" min="1" max="31" inputmode="numeric" placeholder="يوم"><input id="date-to-month" type="number" min="1" max="12" inputmode="numeric" placeholder="شهر"><input id="date-to-year" type="number" min="2000" max="2100" inputmode="numeric" placeholder="سنة"></div></div>
-      </div>
-      <div class="grid2">
-        <button type="button" onclick="setOldestTransactionDate()" class="btn btn-muted" style="font-size:10.5px;padding:4px 6px;">⏮️ أقدم معاملة بالتاريخ</button>
-      </div>
-
-      <div><label>🏷️ اسم التقرير (اختياري)</label><input id="report-custom-title" maxlength="60" placeholder="مثال: تقرير مصروفات الدورة الحالية"></div>
-      <div><label>📝 ملاحظات التقرير (اختياري)</label><textarea id="report-notes" maxlength="500" rows="2" placeholder="ملاحظات تظهر في المستند..." style="resize:vertical;min-height:44px"></textarea></div>
 
       <button type="button" onclick="generateReport()" class="btn btn-dark">إنشاء التقرير الذكي 📄</button>
-    </div>
-    
-    <div id="report-section" class="stack hidden">
-      <button type="button" onclick="backToFilters()" class="btn btn-soft no-print">⬅️ تعديل معايير التقرير</button>
-      
+    </section>
+
+    <section id="report-section" class="stack hidden">
+      <button type="button" onclick="backToFilters()" class="btn btn-soft no-print">⬅️ تعديل معايير الفلتر الموحد</button>
+
       <div class="grid2 no-print">
-        <div id="report-search-wrap"><label>🔍 بحث ذكي شامل (بالاسم، البيان، المبلغ، التاريخ...)</label><input id="report-search" placeholder="اكتب للبحث الفوري في كافة حقول التقرير..." oninput="filterReportTable()"></div>
-        <div><label>🔄 ترتيب حسب التاريخ</label><select id="report-sort-order" onchange="filterReportTable()"><option value="desc">الأحدث أولاً</option><option value="asc">الأقدم أولاً</option></select></div>
+        <div>
+          <label>🔍 بحث فوري ضمن النتائج</label>
+          <input id="report-search" placeholder="بحث بالاسم، البيان، المبلغ، التاريخ..." oninput="filterReportTable()">
+        </div>
+        <div>
+          <label>🔄 ترتيب حسب التاريخ</label>
+          <select id="report-sort-order" onchange="filterReportTable()">
+            <option value="desc">الأحدث أولاً</option>
+            <option value="asc">الأقدم أولاً</option>
+          </select>
+        </div>
       </div>
-      
+
       <div id="capture-area" class="report">
         <div class="report-head">
           <h2 id="report-title" style="margin:0;font-size:16px">كشف حساب مالي</h2>
           <div style="font-size:11px;color:#cbd5e1;margin-top:4px">النظام المالي الشخصي — كشف غير رسمي</div>
           <div id="report-number" style="font-size:10px;color:#cbd5e1;margin-top:2px"></div>
         </div>
+
         <div class="report-meta">
-          <div class="row-between"><span>الفترة / الدورة:</span><strong id="display-date-range">—</strong></div>
-          <div class="row-between"><span>العرض المختار:</span><strong id="display-target">الكل</strong></div>
-          <div class="row-between"><span>عدد العناصر:</span><strong id="display-count">0</strong></div>
+          <div class="row-between"><span>اسم التقرير:</span><strong id="display-report-name">—</strong></div>
+          <div class="row-between"><span>تاريخ التقرير:</span><strong id="display-report-date">—</strong></div>
+          <div class="row-between"><span>الفترة الزمنية:</span><strong id="display-date-range">—</strong></div>
+          <div class="row-between"><span>التخصيص / الحساب / الطرف:</span><strong id="display-target">الكل</strong></div>
+          <div class="row-between"><span>عدد العناصر المعروضة:</span><strong id="display-count">0</strong></div>
         </div>
 
-        <div id="expense-insights-panel" class="panel hidden" style="background:rgba(56,189,248,0.05);border-color:rgba(56,189,248,0.3)">
-          <div style="font-weight:900;color:var(--sky-val);font-size:11.5px">📊 مؤشرات المصروفات ودورة الدخل</div>
-          <div id="expense-insights-content" style="display:flex;flex-direction:column;gap:4px;font-size:11.5px"></div>
-        </div>
+        <div id="expense-insights-panel" class="panel hidden" style="background:rgba(56,189,248,.05);border-color:rgba(56,189,248,.3)"></div>
 
-        <div id="debt-awareness-panel" class="panel hidden" style="background:rgba(251,191,36,0.05);border-color:rgba(251,191,36,0.3)">
-          <div style="font-weight:900;color:var(--amber-val);font-size:11.5px" id="debt-awareness-title">⚖️ الوعي العام للديون والذمم</div>
-          <div id="debt-awareness-content" style="display:flex;flex-direction:column;gap:6px;font-size:11.5px"></div>
-        </div>
-
-        <div id="transfer-beneficiaries-panel" class="panel hidden" style="background:rgba(16,185,129,0.05);border-color:var(--border-neon)">
-          <div style="font-weight:900;color:var(--emerald-neon);font-size:11.5px">📊 إحصائيات وإجماليات المستفيدين الخارجيين</div>
+        <div id="transfer-beneficiaries-panel" class="panel hidden" style="background:rgba(16,185,129,.05);border-color:var(--border-neon)">
+          <div style="font-weight:900;color:var(--emerald-neon);font-size:11.5px">📊 إحصائيات وإجماليات المستفيدين (ملتزمة بالفلتر)</div>
+          <div id="transfer-rate-summary" class="small"></div>
           <div class="table-wrap" style="margin-top:4px">
             <table>
               <thead>
@@ -240,7 +218,7 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
                   <th class="amount">عدد الحوالات</th>
                   <th class="amount">الإجمالي (ج.م)</th>
                   <th class="amount">الإجمالي (د.ك)</th>
-                  <th class="amount">المعدل اليومي للتحويل</th>
+                  <th class="amount">المعدل اليومي (ج.م)</th>
                 </tr>
               </thead>
               <tbody id="transfer-beneficiaries-body"></tbody>
@@ -248,10 +226,7 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
           </div>
         </div>
 
-        <div id="all-summary-dashboard" class="panel hidden" style="background:rgba(16,185,129,0.05);border-color:var(--border-neon);gap:8px">
-          <div style="font-weight:900;color:var(--emerald-neon);font-size:12px">🏦 القفلة الحسابية الشاملة وموقف رأس المال</div>
-          <div id="all-summary-content" style="display:flex;flex-direction:column;gap:5px;font-size:11.5px"></div>
-        </div>
+        <div id="all-summary-dashboard" class="panel hidden" style="background:rgba(16,185,129,.05);border-color:var(--border-neon);gap:8px"></div>
 
         <div class="table-wrap">
           <table>
@@ -259,41 +234,48 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
             <tbody id="report-table-body"></tbody>
           </table>
         </div>
-        <div id="sub-breakdowns-box" class="panel hidden" style="font-size:11.5px;gap:8px"></div>
-        
+
         <div class="report-summary" id="report-summary"></div>
-        <div id="tafqit-box" class="panel" style="font-size:11.5px;text-align:center;font-weight:700">ملاحظات التقرير ستظهر هنا.</div>
-        
-        <div id="report-notes-display" class="panel hidden" style="background:rgba(56,189,248,0.05);border-color:rgba(56,189,248,0.3)">
+        <div id="tafqit-box" class="panel" style="font-size:11.5px;text-align:center;font-weight:700"></div>
+
+        <div id="report-notes-display" class="panel hidden" style="background:rgba(56,189,248,.05);border-color:rgba(56,189,248,.3)">
           <div style="font-weight:900;color:var(--sky-val);font-size:11.5px">📝 ملاحظات</div>
           <div id="report-notes-text" style="font-size:11.5px;line-height:1.5;white-space:pre-wrap"></div>
         </div>
 
-        <div style="font-size:10px;color:var(--ink-muted);text-align:center;border-top:1px solid var(--border-subtle);padding-top:8px">تم إصدار هذا المستند إلكترونياً من النظام المالي الشخصي (كشف غير رسمي).</div>
+        <div style="font-size:10px;color:var(--ink-muted);text-align:center;border-top:1px solid var(--border-subtle);padding-top:8px">
+          تم إصدار هذا المستند إلكترونياً من النظام المالي الشخصي (كشف غير رسمي).
+        </div>
       </div>
 
-      <div id="report-actions" class="grid2 no-print" style="margin-top:8px">
+      <div class="grid2 no-print" style="margin-top:8px">
         <button type="button" onclick="exportReportExcel()" class="btn btn-green">تصدير Excel 📗</button>
         <button type="button" onclick="shareReport()" class="btn btn-green">مشاركة / واتساب 💬</button>
-        <button type="button" onclick="exportPDF('capture-area','Report','p')" class="btn btn-dark">تصدير PDF 📄</button>
-        <button type="button" onclick="shareAsImageSafe('capture-area','Report')" class="btn btn-soft">حفظ كصورة 🖼️</button>
+        <button type="button" onclick="exportPDF('capture-area','p')" class="btn btn-dark">تصدير PDF 📄</button>
+        <button type="button" onclick="shareAsImageSafe('capture-area')" class="btn btn-soft">حفظ كصورة 🖼️</button>
       </div>
-    </div>
-  </section>
-</section>
-</main>
+    </section>
+  </main>
 
-<nav class="nav-bottom no-print">
-  <button type="button" class="nav-btn" onclick="window.location.href='index.html'" aria-label="الرئيسية"><span>🏠</span><span>الرئيسية</span></button>
-  <button type="button" class="nav-btn active" onclick="switchFinanceTab('ledger')" aria-label="التقارير"><span>📜</span><span>التقارير</span></button>
-  <button type="button" class="nav-btn" onclick="window.location.href='index.html'" aria-label="الإعدادات"><span>⚙️</span><span>الإعدادات</span></button>
-</nav>
+  <nav class="nav-bottom no-print">
+    <button type="button" class="nav-btn" onclick="window.location.href='index.html'"><span>🏠</span><span>الرئيسية</span></button>
+    <button type="button" class="nav-btn active" onclick="showReportView()"><span>📜</span><span>التقارير</span></button>
+    <button type="button" class="nav-btn" onclick="window.location.href='index.html'"><span>⚙️</span><span>الإعدادات</span></button>
+  </nav>
 </div>
 
 <div id="toast" role="status" aria-live="polite"></div>
-<div id="person-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="person-modal-title"><div class="modal-box"><h3 id="person-modal-title" style="margin:0;font-size:14px">إضافة اسم جديد</h3><input id="person-modal-input" placeholder="اسم الشخص / الجهة" maxlength="80"><div class="modal-actions"><button type="button" class="btn btn-primary" onclick="confirmAddPerson()">حفظ</button><button type="button" class="btn btn-muted" onclick="closePersonModal()">إلغاء</button></div></div></div>
 
-<div id="delete-modal" class="modal-overlay hidden" role="dialog" aria-modal="true"><div class="modal-box"><h3 style="margin:0;font-size:14px;color:var(--red-val)">🗑️ تأكيد الحذف</h3><div id="delete-modal-text" style="font-size:12px;line-height:1.6">هل أنت متأكد من حذف هذه الحركة نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.</div><div class="modal-actions"><button type="button" class="btn btn-danger-solid" onclick="confirmDeleteTransaction()">نعم، احذف</button><button type="button" class="btn btn-muted" onclick="closeDeleteModal()">إلغاء</button></div></div></div>
+<div id="delete-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <h3 style="margin:0;font-size:14px;color:var(--red-val)">🗑️ تأكيد الحذف</h3>
+    <div id="delete-modal-text" style="font-size:12px;line-height:1.6">هل أنت متأكد من حذف هذه الحركة نهائيًا؟</div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-danger-solid" onclick="confirmDeleteTransaction()">نعم، احذف</button>
+      <button type="button" class="btn btn-muted" onclick="closeDeleteModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
 
 <div id="edit-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
   <div class="modal-box" style="max-width:420px">
@@ -308,293 +290,252 @@ th{background:rgba(255,255,255,0.05);color:var(--ink);font-weight:900}
 
 <script>
 // @ts-nocheck
-const DB_NAME="PersonalFinanceDB",DB_VERSION=1,STORE_NAME="transactions";
-const PEOPLE_KEY="pf_people_list";
-const EXPENSE_CATS_KEY="pf_expense_cats_list";
-const ACCOUNTS_KEY="pf_accounts_list";
-const THEME_KEY="pf_theme_pref";
-const REPORT_STATE_KEY="pf_report_saved_state";
+const DB_NAME = "PersonalFinanceDB", DB_VERSION = 1, STORE_NAME = "transactions";
+const THEME_KEY = "pf_theme_pref", REPORT_STATE_KEY = "pf_report_saved_state";
 
-let db=null,activePersonCallback=null,currentFinanceTab="ledger",toastTimer=null,cachedReportRecords=[],visibleReportRecords=[],cachedReportRange={from:"",to:""},reportGenerated=!1;
-let isCompareModeActive=false, allCyclesCache=[];
-let pendingDeleteId=null;
-let editingTransactionId=null;
-let lastDeletedTransaction=null;
-let lastFocusedElement = null;
+let db = null, toastTimer = null, cachedReportRecords = [], visibleReportRecords = [], reportGenerated = false;
+let pendingDeleteId = null, editingTransactionId = null, lastDeletedTransaction = null, lastFocusedElement = null;
 
-function $(e){return document.getElementById(e)}
+const $ = id => document.getElementById(id);
+const escapeHTML = s => String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+const money = (v, c = "د.ك") => Number(v || 0).toLocaleString("en-US", { minimumFractionDigits: 3, maximumFractionDigits: 3 }) + " " + c;
+const moneyEGP = v => Number(v || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " ج.م";
+const ratePer1000EGP = (kwd, egp) => egp > 0 ? money((kwd / egp) * 1000) + " / 1,000 ج.م" : "—";
+const formatStrictISO = (y, m, d) => `${String(y).padStart(4,"0")}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+const todayISO = () => { const d = new Date(); return formatStrictISO(d.getFullYear(), d.getMonth() + 1, d.getDate()); };
+const firstOfMonthISO = () => { const d = new Date(); return formatStrictISO(d.getFullYear(), d.getMonth() + 1, 1); };
+const fmtDate = iso => { if (!iso) return ""; const p = iso.split("-"); return p.length < 3 ? iso : `${String(p[2]).padStart(2,"0")}/${String(p[1]).padStart(2,"0")}/${p[0]}`; };
+const isFixedExpense = tx => Boolean(tx && (tx.budgetId === "fixed" || tx.isFixed));
+const isCreditorEntry = tx => tx && tx.type === "debt" && tx.debtType === "creditor";
+const isDebtorEntry = tx => tx && tx.type === "debt" && tx.debtType === "debtor";
+const isOpeningEntry = tx => tx && tx.type === "debt" && tx.debtType === "opening_balance";
+const isSalaryEntry = tx => Boolean(tx && tx.type === "income" && (tx.isSalaryBase || tx.category === "راتب أساسي"));
+const sortByDate = (arr, order = "desc") => [...arr].sort((a, b) => {
+  const cmp = a.date.localeCompare(b.date) || (a.time || "").localeCompare(b.time || "") || String(a.id).localeCompare(String(b.id));
+  return order === "asc" ? cmp : -cmp;
+});
 
-function initTheme(){
-  const saved=localStorage.getItem(THEME_KEY)||"dark";
-  document.documentElement.setAttribute("data-theme",saved);
-  updateThemeUI(saved);
+function getFilteredBeneficiaries(tx, beneficiaryFilter = "all") {
+  const allB = Array.isArray(tx?.beneficiaries) ? tx.beneficiaries : [];
+  if (!beneficiaryFilter || beneficiaryFilter === "all") return allB;
+  return allB.filter(b => (b?.name || "") === beneficiaryFilter);
 }
-function toggleTheme(){
-  const current=document.documentElement.getAttribute("data-theme")||"dark";
-  const next=current==="dark"?"light":"dark";
-  document.documentElement.setAttribute("data-theme",next);
-  localStorage.setItem(THEME_KEY,next);
-  updateThemeUI(next);
+
+function txMatchesBeneficiary(tx, beneficiaryFilter = "all") {
+  if (!beneficiaryFilter || beneficiaryFilter === "all") return true;
+  if (tx?.person === beneficiaryFilter) return true;
+  return Array.isArray(tx?.beneficiaries) && tx.beneficiaries.some(b => b?.name === beneficiaryFilter);
 }
-function updateThemeUI(theme){
-  const icon=$("theme-toggle-icon");
-  const text=$("theme-toggle-text");
-  if(icon&&text){
-    if(theme==="dark"){icon.textContent="🌙";text.textContent="داكن";}
-    else{icon.textContent="☀️";text.textContent="فاتح";}
+
+function effectiveAmount(tx, beneficiaryFilter = "all") {
+  if (!tx) return 0;
+  if (tx.type === "transfer") {
+    const totalKwd = Number(tx.totalKwd ?? tx.amount) || 0;
+    const allB = Array.isArray(tx.beneficiaries) ? tx.beneficiaries : [];
+    if (!beneficiaryFilter || beneficiaryFilter === "all" || !allB.length) return totalKwd;
+    const matched = getFilteredBeneficiaries(tx, beneficiaryFilter);
+    if (!matched.length) return 0;
+    const totalEgp = allB.reduce((s, b) => s + (Number(b.egp) || 0), 0);
+    return matched.reduce((sum, b) => {
+      const bEgp = Number(b.egp) || 0;
+      return sum + (totalEgp > 0 ? totalKwd * (bEgp / totalEgp) : totalKwd / allB.length);
+    }, 0);
   }
+  if (tx.type === "internal_transfer") return Number(tx.totalKwd ?? tx.amount) || 0;
+  return Number(tx.amount) || 0;
 }
-function showToast(e, actionText=null, actionCallback=null){
-  const t=$("toast");
-  if(actionText && actionCallback) {
-    t.innerHTML = `${escapeHTML(e)} <button type="button" id="toast-action-btn" class="btn btn-soft action-btn-mini" style="margin-right:8px;padding:1px 6px;">${escapeHTML(actionText)}</button>`;
-    setTimeout(() => {
-      const btn = $("toast-action-btn");
-      if(btn) btn.onclick = () => { actionCallback(); t.style.display="none"; };
-    }, 50);
-  } else {
-    t.textContent=e;
-  }
-  t.style.display="block";
-  toastTimer&&clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.style.display="none", 6000);
-}
-function escapeHTML(e){return String(e||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
 
-function money(e,t){
-  const val = Number(e || 0);
-  return val.toLocaleString("en-US", {minimumFractionDigits: 3, maximumFractionDigits: 3}) + " " + (t || "د.ك");
-}
-function moneyEGP(e){return Number(e||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})+" ج.م"}
-
-function formatStrictISO(e,t,a){return`${String(e).padStart(4,"0")}-${String(t).padStart(2,"0")}-${String(a).padStart(2,"0")}`}
-function todayISO(){const e=new Date;return formatStrictISO(e.getFullYear(),e.getMonth()+1,e.getDate())}
-function firstOfMonthISO(){const e=new Date;return formatStrictISO(e.getFullYear(),e.getMonth()+1,1)}
-function fmtDate(e){if(!e)return"";const t=e.split("-");if(t.length<3)return e;const[a,n,s]=t;return`${String(s).padStart(2,"0")}/${String(n).padStart(2,"0")}/${a}`}
-
-function getAccounts(){
+function getAccounts() {
   return [
-    {id:"cash_default",name:"الكاش",type:"cash",icon:"💵"},
-    {id:"bank_default",name:"الحساب البنكي",type:"bank",icon:"🏦"},
-    {id:"outside",name:"خارج النظام (بداية)",type:"outside",icon:"🌐",hidden:true}
+    { id: "cash_default", name: "الكاش", icon: "💵" },
+    { id: "bank_default", name: "الحساب البنكي", icon: "🏦" },
+    { id: "outside", name: "خارج النظام (بداية)", icon: "🌐" }
   ];
 }
-function getAccountById(id){
-  if(!id || id === "outside" || id === "dummy_account") return { id: "unknown", name: "حساب غير معروف", type: "unknown", icon: "❓" };
-  return getAccounts().find(a=>a.id===id)||{ id: "unknown", name: "حساب غير معروف", type: "unknown", icon: "❓" };
+function getAccountById(id) {
+  if (!id || id === "outside" || id === "dummy_account") return { id: "unknown", name: "حساب غير معروف", icon: "❓" };
+  return getAccounts().find(a => a.id === id) || { id: "unknown", name: "حساب غير معروف", icon: "❓" };
+}
+function getIncomeCategories() {
+  return ["راتب أساسي", "عمل إضافي", "أرباح / عوائد", "دخل السلف والاسترداد الديون", "أخرى"];
+}
+function debtTypeLabel(type) {
+  return { creditor: "استلفت منه (دين جديد)", debtor: "سدّدت له / استرداد (سداد)", opening_balance: "رصيد افتتاحي (دين سابق)" }[type] || type || "";
+}
+
+function initTheme() { applyTheme(localStorage.getItem(THEME_KEY) || "dark"); }
+function toggleTheme() {
+  const next = (document.documentElement.getAttribute("data-theme") || "dark") === "dark" ? "light" : "dark";
+  localStorage.setItem(THEME_KEY, next);
+  applyTheme(next);
+}
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  if ($("theme-toggle-icon")) $("theme-toggle-icon").textContent = theme === "dark" ? "🌙" : "☀️";
+  if ($("theme-toggle-text")) $("theme-toggle-text").textContent = theme === "dark" ? "داكن" : "فاتح";
+}
+
+function showToast(msg, actionText = null, actionCallback = null) {
+  const t = $("toast");
+  if (!t) return;
+  if (actionText && actionCallback) {
+    t.innerHTML = `${escapeHTML(msg)} <button type="button" id="toast-action-btn" class="btn btn-soft action-btn-mini" style="margin-right:8px;padding:1px 6px">${escapeHTML(actionText)}</button>`;
+    setTimeout(() => {
+      const btn = $("toast-action-btn");
+      if (btn) btn.onclick = () => { actionCallback(); t.style.display = "none"; };
+    }, 50);
+  } else {
+    t.textContent = msg;
+  }
+  t.style.display = "block";
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.style.display = "none"; }, 6000);
+}
+
+function readDateParts(prefix) {
+  const d = Number($(prefix + "-day")?.value), m = Number($(prefix + "-month")?.value), y = Number($(prefix + "-year")?.value);
+  if (!(y >= 2000 && y <= 2100 && m >= 1 && m <= 12 && d >= 1 && d <= 31)) return "";
+  const chk = new Date(Date.UTC(y, m - 1, d));
+  return (chk.getUTCFullYear() !== y || chk.getUTCMonth() !== m - 1 || chk.getUTCDate() !== d) ? "" : formatStrictISO(y, m, d);
+}
+function writeDateParts(prefix, iso) {
+  if (!iso) return;
+  const [y, m, d] = iso.split("-");
+  if (!y || !m || !d) return;
+  if ($(prefix + "-day")) $(prefix + "-day").value = Number(d);
+  if ($(prefix + "-month")) $(prefix + "-month").value = Number(m);
+  if ($(prefix + "-year")) $(prefix + "-year").value = Number(y);
 }
 function populateAccountFilterSelect() {
-    const accSelect = $("report-account-filter");
-    if (!accSelect) return;
-    const accounts = getAccounts();
-    const currentVal = accSelect.value;
-    accSelect.innerHTML = '<option value="all">كل الحسابات (شامل)</option>' + 
-        accounts.map(acc => `<option value="${escapeHTML(acc.id)}">${escapeHTML(acc.icon || "")} ${escapeHTML(acc.name)}</option>`).join("");
-    if (accounts.some(a => a.id === currentVal)) accSelect.value = currentVal;
+  const sel = $("report-account-filter");
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '<option value="all">كل الحسابات (شامل)</option>' +
+    getAccounts().map(a => `<option value="${escapeHTML(a.id)}">${escapeHTML(a.icon || "")} ${escapeHTML(a.name)}</option>`).join("");
+  if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
 }
 
-function initDates(){
-  $("date-from-year")&&!$("date-from-year").value&&writeDateParts("date-from",firstOfMonthISO());
-  $("date-to-year")&&!$("date-to-year").value&&writeDateParts("date-to",todayISO());
-}
-
-function setQuickDateRange(rangeType) {
-  const now = new Date();
-  let fromDate = "", toDate = todayISO();
-  
-  if (rangeType === "this_month") {
-    fromDate = formatStrictISO(now.getFullYear(), now.getMonth() + 1, 1);
-  } else if (rangeType === "last_month") {
-    let y = now.getFullYear(), m = now.getMonth();
-    if (m === 0) { m = 12; y -= 1; }
-    const lastDay = new Date(y, m, 0).getDate();
-    fromDate = formatStrictISO(y, m, 1);
-    toDate = formatStrictISO(y, m, lastDay);
-  } else if (rangeType === "last_30") {
-    const d = new Date();
-    d.setDate(d.getDate() - 30);
-    fromDate = formatStrictISO(d.getFullYear(), d.getMonth() + 1, d.getDate());
+async function setCurrentCycleRange() {
+  try {
+    const txs = sortByDate(await allTransactions(), "desc");
+    const latestSalary = txs.find(x => isSalaryEntry(x) && x.date);
+    const toStr = todayISO();
+    writeDateParts("date-to", toStr);
+    if (latestSalary) {
+      writeDateParts("date-from", latestSalary.date);
+      showToast(`تم ضبط الدورة من آخر راتب أساسي (${fmtDate(latestSalary.date)}) 🔄`);
+    } else {
+      const fallback = firstOfMonthISO();
+      writeDateParts("date-from", fallback);
+      showToast("لا يوجد راتب أساسي مسجل؛ تم ضبط البداية على أول الشهر ⚠️");
+    }
+  } catch (e) {
+    showToast("تعذر تحديد تاريخ الدورة الحالية");
   }
-
-  if (fromDate) writeDateParts("date-from", fromDate);
-  if (toDate) writeDateParts("date-to", toDate);
-  showToast("تم ضبط الفترة الزمنية السريعة بنجاح ⚡");
 }
 
-function readDateParts(e){
-  const t=$(e+"-day")?.value,a=$(e+"-month")?.value,n=$(e+"-year")?.value;
-  if(!t||!a||!n)return"";
-  const s=Number(t),r=Number(a),o=Number(n);
-  if(!(o>=2000&&o<=2100&&r>=1&&r<=12&&s>=1&&s<=31))return"";
-  const l=new Date(Date.UTC(o,r-1,s));
-  return l.getUTCFullYear()!==o||l.getUTCMonth()!==r-1||l.getUTCDate()!==s?"":formatStrictISO(o,r,s);
-}
-function writeDateParts(e,t){
-  if(!t)return;
-  const a=t.split("-");
-  if(a.length<3)return;
-  const[n,s,r]=a;
-  $(e+"-day")&&($(e+"-day").value=Number(r));
-  $(e+"-month")&&($(e+"-month").value=Number(s));
-  $(e+"-year")&&($(e+"-year").value=Number(n));
+async function setOldestTransactionRange() {
+  try {
+    const txs = sortByDate(await allTransactions(), "asc");
+    const oldest = txs.find(x => x && x.date);
+    if (!oldest) return showToast("لا توجد معاملات مسجلة بعد");
+    writeDateParts("date-from", oldest.date);
+    writeDateParts("date-to", todayISO());
+    showToast(`تم ضبط البداية على أقدم معاملة (${fmtDate(oldest.date)}) ⏮️`);
+  } catch (e) {
+    showToast("تعذر تحديد أقدم معاملة");
+  }
 }
 
-function getExpenseCategories(){
-  const raw=localStorage.getItem(EXPENSE_CATS_KEY);
-  if(raw)try{const arr=JSON.parse(raw);if(Array.isArray(arr))return arr.map(c=>typeof c==="string"?{name:c,budgetId:"regular"}:c);}catch(e){}
-  return [];
-}
-function getIncomeCategories(){return["راتب أساسي","عمل إضافي","أرباح / عوائد","دخل السلف والاسترداد الديون","أخرى"]}
-
-function getPeopleList(){
-  const e=localStorage.getItem(PEOPLE_KEY);
-  if(!e)return[];
-  try{const t=JSON.parse(e);return Array.isArray(t)?t:[]}catch(e){return[]}
-}
-function savePeopleList(e){localStorage.setItem(PEOPLE_KEY,JSON.stringify([...new Set(e)]));populatePeopleSelects();}
-function populatePeopleSelects(){
-  const e=getPeopleList(),n=$("beneficiary-select");
-  if(n){const s=n.value;n.innerHTML='<option value="all">الكل (عرض الكشف العام)</option>'+e.map(x=>`<option value="${escapeHTML(x)}">${escapeHTML(x)}</option>`).join("");if(e.includes(s))n.value=s;}
-}
-function openPersonModal(e){
-  lastFocusedElement = document.activeElement;
-  activePersonCallback=e.closest(".person-picker")?.querySelector("select")||null;
-  $("person-modal-input").value="";
-  $("person-modal").classList.remove("hidden");
-  setTimeout(()=>$("person-modal-input").focus(),50);
-}
-function closePersonModal(){
-  $("person-modal").classList.add("hidden");
-  activePersonCallback=null;
-  if(lastFocusedElement) { lastFocusedElement.focus(); lastFocusedElement = null; }
-}
-function confirmAddPerson(){
-  const e=$("person-modal-input").value.trim();
-  if(!e)return void showToast("أدخل اسمًا صحيحًا");
-  const t=activePersonCallback,a=getPeopleList();
-  a.includes(e)?showToast("الاسم موجود بالفعل — تم اختياره"):(a.push(e),savePeopleList(a),showToast("تمت إضافة الاسم بنجاح"));
-  populatePeopleSelects();
-  t&&[...t.options].some(x=>x.value===e)&&(t.value=e);
-  closePersonModal();
-}
-
-function openDB(){
-  return db?Promise.resolve(db):new Promise((res,rej)=>{
-    const a=indexedDB.open(DB_NAME,DB_VERSION);
-    a.onupgradeneeded=e=>{
-      const t=e.target.result;
-      if(!t.objectStoreNames.contains(STORE_NAME)){
-        t.createObjectStore(STORE_NAME,{keyPath:"id"}).createIndex("date","date",{unique:!1});
+function openDB() {
+  if (db) return Promise.resolve(db);
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => {
+      if (!e.target.result.objectStoreNames.contains(STORE_NAME)) {
+        e.target.result.createObjectStore(STORE_NAME, { keyPath: "id" }).createIndex("date", "date", { unique: false });
       }
     };
-    a.onsuccess=t=>{db=t.target.result;res(db);};
-    a.onerror=e=>rej(e.target.error);
+    req.onsuccess = e => { db = e.target.result; resolve(db); };
+    req.onerror = e => reject(e.target.error);
   });
 }
-async function allTransactions(){
-  if(!db)await openDB();
-  return new Promise((res,rej)=>{
-    const a=db.transaction(STORE_NAME,"readonly").objectStore(STORE_NAME).getAll();
-    a.onsuccess=()=>{
-      const t=a.result.map(e=>{
-        if(e&&e.date){
-          const p=e.date.split("-");
-          if(p.length===3)e.date=formatStrictISO(p[0],p[1],p[2]);
-        }
-        return e;
-      });
-      res(t.sort((x,y)=>y.date.localeCompare(x.date)||(y.time||"").localeCompare(y.time||"")||y.id.localeCompare(x.id)));
-    };
-    a.onerror=()=>rej(a.error);
-  });
-}
-
-async function deleteTransactionById(id){
-  if(!db)await openDB();
-  return new Promise((res,rej)=>{
-    const tx=db.transaction(STORE_NAME,"readwrite");
-    const store = tx.objectStore(STORE_NAME);
-    store.get(id).onsuccess = (evt) => {
-      const rec = evt.target.result;
-      if(rec) lastDeletedTransaction = rec;
-      store.delete(id);
-    };
-    tx.oncomplete=()=>res(true);
-    tx.onerror=()=>rej(tx.error);
-    tx.onabort=()=>rej(tx.error);
-  });
-}
-
-async function restoreTransactionInDB(rec) {
-  if(!db)await openDB();
-  return new Promise((res,rej)=>{
-    const tx=db.transaction(STORE_NAME,"readwrite");
-    tx.objectStore(STORE_NAME).put(rec);
-    tx.oncomplete=()=>res(true);
-    tx.onerror=()=>rej(tx.error);
-  });
-}
-
-async function updateTransactionInDB(id, updates) {
+async function allTransactions() {
   if (!db) await openDB();
   return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, "readwrite");
-    const store = tx.objectStore(STORE_NAME);
-    const getReq = store.get(id);
-    getReq.onsuccess = () => {
-      const existing = getReq.result;
-      if (!existing) return reject(new Error("Not found"));
-      const putReq = store.put({ ...existing, ...updates });
-      putReq.onsuccess = () => resolve(true);
-      putReq.onerror = () => reject(putReq.error);
+    const req = db.transaction(STORE_NAME, "readonly").objectStore(STORE_NAME).getAll();
+    req.onsuccess = () => {
+      const list = req.result.map(x => {
+        if (x && x.date) { const p = x.date.split("-"); if (p.length === 3) x.date = formatStrictISO(p[0], p[1], p[2]); }
+        return x;
+      });
+      resolve(sortByDate(list, "desc"));
     };
-    getReq.onerror = () => reject(getReq.error);
+    req.onerror = () => reject(req.error);
   });
 }
-
-function openDeleteModal(id){
-  lastFocusedElement = document.activeElement;
-  pendingDeleteId=id;
-  const rec=cachedReportRecords.find(x=>x&&String(x.id)===String(id));
-  const txt=$("delete-modal-text");
-  if(txt){
-    if(rec && rec.type){
-      const typeLabels = { expense: "مصروف", income: "دخل", debt: "دين", transfer: "حوالة خارجية", internal_transfer: "تحويل داخلي" };
-      const label = rec.category || rec.person || typeLabels[rec.type] || "حركة";
-      let extra = "";
-      if (rec.type === "transfer" && Array.isArray(rec.beneficiaries) && rec.beneficiaries.length > 1) {
-        extra = `<br><small style="color:var(--amber-val)">⚠️ ستُحذف الحوالة بأكملها (${rec.beneficiaries.length} مستفيدين). لتعديل مستفيد واحد فقط، استخدم زر التعديل ✏️</small>`;
-      }
-      txt.innerHTML=`هل أنت متأكد من حذف هذه الحركة نهائيًا؟<br><strong>${escapeHTML(label)}</strong> — ${fmtDate(rec.date||"")} — <strong>${money(realAmount(rec))}</strong>${extra}<br><small style="color:var(--red-val)">لا يمكن التراجع عن هذا الإجراء.</small>`;
-    } else {
-      txt.textContent="هل أنت متأكد من حذف هذه الحركة نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.";
+function mutateTransaction(mode, payload) {
+  return openDB().then(() => new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readwrite");
+    const store = tx.objectStore(STORE_NAME);
+    if (mode === "delete") {
+      store.get(payload).onsuccess = e => { if (e.target.result) lastDeletedTransaction = e.target.result; };
+      store.delete(payload);
+    } else if (mode === "put") {
+      store.put(payload);
+    } else if (mode === "update") {
+      store.get(payload.id).onsuccess = e => {
+        if (!e.target.result) return reject(new Error("Not found"));
+        store.put({ ...e.target.result, ...payload.updates });
+      };
     }
+    tx.oncomplete = () => resolve(true);
+    tx.onerror = () => reject(tx.error);
+  }));
+}
+
+function openModal(id, focusId = null) {
+  lastFocusedElement = document.activeElement;
+  $(id)?.classList.remove("hidden");
+  if (focusId) setTimeout(() => $(focusId)?.focus(), 50);
+}
+function closeModal(id) {
+  $(id)?.classList.add("hidden");
+  if (lastFocusedElement) { lastFocusedElement.focus(); lastFocusedElement = null; }
+}
+
+function openDeleteModal(id) {
+  pendingDeleteId = id;
+  const rec = cachedReportRecords.find(x => x && String(x.id) === String(id));
+  const txt = $("delete-modal-text");
+  if (txt && rec && rec.type) {
+    const typeLabels = { expense: "مصروف", income: "دخل", debt: "دين", transfer: "حوالة خارجية", internal_transfer: "تحويل داخلي" };
+    const extra = (rec.type === "transfer" && rec.beneficiaries?.length > 1)
+      ? `<br><small style="color:var(--amber-val)">⚠️ ستُحذف الحوالة بأكملها (${rec.beneficiaries.length} مستفيدين).</small>` : "";
+    txt.innerHTML = `هل أنت متأكد من حذف هذه الحركة نهائيًا؟<br><strong>${escapeHTML(rec.category || rec.person || typeLabels[rec.type])}</strong> — ${fmtDate(rec.date || "")} — <strong>${money(effectiveAmount(rec, "all"))}</strong>${extra}`;
   }
-  $("delete-modal").classList.remove("hidden");
+  openModal("delete-modal");
 }
-function closeDeleteModal(){
-  $("delete-modal").classList.add("hidden");
-  pendingDeleteId=null;
-  if(lastFocusedElement) { lastFocusedElement.focus(); lastFocusedElement = null; }
-}
-async function confirmDeleteTransaction(){
-  const id=pendingDeleteId;
-  if(id===null||id===undefined){closeDeleteModal();return;}
-  try{
-    await deleteTransactionById(id);
+function closeDeleteModal() { pendingDeleteId = null; closeModal("delete-modal"); }
+
+async function confirmDeleteTransaction() {
+  if (pendingDeleteId === null) return closeDeleteModal();
+  const id = pendingDeleteId;
+  try {
+    await mutateTransaction("delete", id);
     closeDeleteModal();
     showToast("تم حذف الحركة بنجاح 🗑️", "تراجع ↩", async () => {
-      if(lastDeletedTransaction) {
-        await restoreTransactionInDB(lastDeletedTransaction);
+      if (lastDeletedTransaction) {
+        await mutateTransaction("put", lastDeletedTransaction);
         lastDeletedTransaction = null;
-        showToast("تم التراجع واستعادة الحركة بنجاح ✅");
+        showToast("تم التراجع واستعادة الحركة ✅");
         await updateReportTargetOptions();
         await generateReport(true);
       }
     });
     await updateReportTargetOptions();
     await generateReport(true);
-  }catch(err){
+  } catch (err) {
     console.error(err);
     closeDeleteModal();
     showToast("تعذر حذف الحركة");
@@ -602,95 +543,69 @@ async function confirmDeleteTransaction(){
 }
 
 function openEditModal(id) {
-  if (!id) return;
-  lastFocusedElement = document.activeElement;
   const rec = cachedReportRecords.find(x => x && String(x.id) === String(id));
-  if (!rec) return showToast("تعذر إيجاد الحركة");
-  if (!rec.type) return showToast("لا يمكن تعديل هذا العنصر من هنا");
+  if (!rec || !rec.type) return showToast("لا يمكن تعديل هذا العنصر");
   editingTransactionId = id;
   renderEditFields(rec);
-  $("edit-modal").classList.remove("hidden");
+  openModal("edit-modal");
 }
-
-function closeEditModal() {
-  $("edit-modal").classList.add("hidden");
-  editingTransactionId = null;
-  if(lastFocusedElement) { lastFocusedElement.focus(); lastFocusedElement = null; }
-}
+function closeEditModal() { editingTransactionId = null; closeModal("edit-modal"); }
 
 function renderEditFields(rec) {
-  const container = $("edit-fields-container");
-  const parts = (rec.date || "").split("-");
-  const d = parts[2] || "", m = parts[1] || "", y = parts[0] || "";
-  let html = `<div>
-    <label>التاريخ</label>
-    <div class="date-parts">
-      <input type="number" id="edit-day" value="${d}" min="1" max="31" placeholder="يوم">
-      <input type="number" id="edit-month" value="${m}" min="1" max="12" placeholder="شهر">
-      <input type="number" id="edit-year" value="${y}" min="2000" max="2100" placeholder="سنة">
-    </div>
-  </div>`;
+  const [y, m, d] = (rec.date || "").split("-");
+  const accOpts = getAccounts().map(a => `<option value="${a.id}" ${(rec.account || "cash_default") === a.id ? "selected" : ""}>${a.icon} ${a.name}</option>`).join("");
+  const toAccOpts = getAccounts().map(a => `<option value="${a.id}" ${(rec.toAccount || "cash_default") === a.id ? "selected" : ""}>${a.icon} ${a.name}</option>`).join("");
+
+  let html = `<div><label>التاريخ</label><div class="date-parts">
+    <input type="number" id="edit-day" value="${d || ""}" min="1" max="31" placeholder="يوم">
+    <input type="number" id="edit-month" value="${m || ""}" min="1" max="12" placeholder="شهر">
+    <input type="number" id="edit-year" value="${y || ""}" min="2000" max="2100" placeholder="سنة">
+  </div></div>`;
 
   if (rec.type === "expense" || rec.type === "income") {
-    html += `<div><label>المبلغ (د.ك)</label><input type="number" step="0.001" id="edit-amount" value="${Number(rec.amount)||0}"></div>`;
-    html += `<div><label>التصنيف</label><input type="text" id="edit-category" value="${escapeHTML(rec.category||'')}"></div>`;
-    html += `<div><label>الحساب</label><select id="edit-account">${getAccounts().map(a=>`<option value="${a.id}" ${(rec.account||'cash_default')===a.id?'selected':''}>${a.icon||''} ${a.name}</option>`).join("")}</select></div>`;
+    html += `<div><label>المبلغ (د.ك)</label><input type="number" step="0.001" id="edit-amount" value="${Number(rec.amount) || 0}"></div>
+      <div><label>التصنيف</label><input type="text" id="edit-category" value="${escapeHTML(rec.category || "")}"></div>
+      <div><label>الحساب</label><select id="edit-account">${accOpts}</select></div>`;
     if (rec.type === "expense") {
-      const isFixed = rec.budgetId === "fixed" || rec.isFixed;
-      html += `<div><label>نوع المصروف</label><select id="edit-budget"><option value="regular" ${!isFixed?'selected':''}>🛍️ نثريات</option><option value="fixed" ${isFixed?'selected':''}>📌 ثابت</option></select></div>`;
+      html += `<div><label>نوع المصروف</label><select id="edit-budget"><option value="regular" ${!isFixedExpense(rec) ? "selected" : ""}>🛍️ نثريات</option><option value="fixed" ${isFixedExpense(rec) ? "selected" : ""}>📌 ثابت</option></select></div>`;
+    } else {
+      html += `<label style="display:flex;align-items:center;gap:6px;color:var(--ink);font-weight:600"><input type="checkbox" id="edit-salary" ${rec.isSalaryBase ? "checked" : ""} style="width:auto"> راتب أساسي</label>`;
     }
-    if (rec.type === "income") {
-      html += `<label style="display:flex;align-items:center;gap:6px;color:var(--ink);font-weight:600"><input type="checkbox" id="edit-salary" ${rec.isSalaryBase?'checked':''} style="width:auto"> راتب أساسي (لتحديد دورات الراتب)</label>`;
-    }
-    html += `<div><label>ملاحظات</label><textarea id="edit-notes" rows="2">${escapeHTML(rec.notes||'')}</textarea></div>`;
-  }
-  else if (rec.type === "debt") {
-    html += `<div><label>المبلغ (د.ك)</label><input type="number" step="0.001" id="edit-amount" value="${Number(rec.amount)||0}"></div>`;
-    html += `<div><label>الشخص / الجهة</label><input type="text" id="edit-person" value="${escapeHTML(rec.person||'')}"></div>`;
-    html += `<div><label>نوع الحركة</label><select id="edit-debt-type">
-      <option value="creditor" ${rec.debtType==='creditor'?'selected':''}>استلفت منه (دين جديد)</option>
-      <option value="debtor" ${rec.debtType==='debtor'?'selected':''}>سدّدت له / استرداد</option>
-      <option value="opening_balance" ${rec.debtType==='opening_balance'?'selected':''}>رصيد افتتاحي</option>
-    </select></div>`;
-    html += `<div><label>الحساب</label><select id="edit-account">${getAccounts().map(a=>`<option value="${a.id}" ${(rec.account||'cash_default')===a.id?'selected':''}>${a.icon||''} ${a.name}</option>`).join("")}</select></div>`;
-    html += `<div><label>ملاحظات</label><textarea id="edit-notes" rows="2">${escapeHTML(rec.notes||'')}</textarea></div>`;
-  }
-  else if (rec.type === "transfer") {
-    html += `<div><label>إجمالي بالدينار الكويتي (د.ك)</label><input type="number" step="0.001" id="edit-total-kwd" value="${Number(rec.totalKwd ?? rec.amount)||0}"></div>`;
-    html += `<div><label>ملاحظات</label><textarea id="edit-notes" rows="2">${escapeHTML(rec.notes||'')}</textarea></div>`;
-    html += `<div style="font-weight:900;color:var(--emerald-neon);font-size:11.5px;margin-top:4px">👥 المستفيدون</div>`;
-    html += `<div id="edit-benefs-container" style="display:flex;flex-direction:column;gap:4px">`;
-    (rec.beneficiaries || []).forEach(b => {
-      html += `<div class="benef-edit-row" style="display:grid;grid-template-columns:2fr 1fr auto;gap:4px">
-        <input type="text" class="edit-benef-name" placeholder="الاسم" value="${escapeHTML(b.name||'')}">
-        <input type="number" class="edit-benef-egp" placeholder="ج.م" step="0.01" value="${Number(b.egp)||0}">
-        <button type="button" class="btn btn-danger action-btn-mini" onclick="this.parentElement.remove()" title="حذف المستفيد">✖</button>
-      </div>`;
-    });
-    html += `</div>`;
-    html += `<button type="button" class="btn btn-soft" onclick="addBenefRowEdit()" style="margin-top:4px">➕ إضافة مستفيد</button>`;
-  }
-  else if (rec.type === "internal_transfer") {
-    html += `<div><label>المبلغ (د.ك)</label><input type="number" step="0.001" id="edit-amount" value="${Number(rec.amount)||0}"></div>`;
-    html += `<div><label>من حساب</label><select id="edit-account">${getAccounts().map(a=>`<option value="${a.id}" ${(rec.account||'cash_default')===a.id?'selected':''}>${a.icon||''} ${a.name}</option>`).join("")}</select></div>`;
-    html += `<div><label>إلى حساب</label><select id="edit-to-account">${getAccounts().map(a=>`<option value="${a.id}" ${(rec.toAccount||'cash_default')===a.id?'selected':''}>${a.icon||''} ${a.name}</option>`).join("")}</select></div>`;
-    html += `<div><label>ملاحظات</label><textarea id="edit-notes" rows="2">${escapeHTML(rec.notes||'')}</textarea></div>`;
-  }
-  else {
-    html += `<div class="small" style="text-align:center;padding:12px;color:var(--red-val)">لا يمكن تعديل هذا النوع من هنا.</div>`;
+  } else if (rec.type === "debt") {
+    html += `<div><label>المبلغ (د.ك)</label><input type="number" step="0.001" id="edit-amount" value="${Number(rec.amount) || 0}"></div>
+      <div><label>الشخص / الجهة</label><input type="text" id="edit-person" value="${escapeHTML(rec.person || "")}"></div>
+      <div><label>نوع الحركة</label><select id="edit-debt-type">
+        <option value="creditor" ${rec.debtType === "creditor" ? "selected" : ""}>استلفت منه (دين جديد)</option>
+        <option value="debtor" ${rec.debtType === "debtor" ? "selected" : ""}>سدّدت له / استرداد</option>
+        <option value="opening_balance" ${rec.debtType === "opening_balance" ? "selected" : ""}>رصيد افتتاحي</option>
+      </select></div>
+      <div><label>الحساب</label><select id="edit-account">${accOpts}</select></div>`;
+  } else if (rec.type === "transfer") {
+    html += `<div><label>إجمالي بالدينار الكويتي (د.ك)</label><input type="number" step="0.001" id="edit-total-kwd" value="${Number(rec.totalKwd ?? rec.amount) || 0}"></div>
+      <div style="font-weight:900;color:var(--emerald-neon);font-size:11.5px">👥 المستفيدون</div>
+      <div id="edit-benefs-container" style="display:flex;flex-direction:column;gap:4px">${(rec.beneficiaries || []).map(b => `
+        <div class="benef-edit-row" style="display:grid;grid-template-columns:2fr 1fr auto;gap:4px">
+          <input type="text" class="edit-benef-name" placeholder="الاسم" value="${escapeHTML(b.name || "")}">
+          <input type="number" class="edit-benef-egp" placeholder="ج.م" step="0.01" value="${Number(b.egp) || 0}">
+          <button type="button" class="btn btn-danger action-btn-mini" onclick="this.parentElement.remove()">✖</button>
+        </div>`).join("")}</div>
+      <button type="button" class="btn btn-soft" onclick="addBenefRowEdit()">➕ إضافة مستفيد</button>`;
+  } else if (rec.type === "internal_transfer") {
+    html += `<div><label>المبلغ (د.ك)</label><input type="number" step="0.001" id="edit-amount" value="${Number(rec.amount) || 0}"></div>
+      <div><label>من حساب</label><select id="edit-account">${accOpts}</select></div>
+      <div><label>إلى حساب</label><select id="edit-to-account">${toAccOpts}</select></div>`;
   }
 
-  container.innerHTML = html;
+  html += `<div><label>ملاحظات</label><textarea id="edit-notes" rows="2">${escapeHTML(rec.notes || "")}</textarea></div>`;
+  $("edit-fields-container").innerHTML = html;
 }
 
 function addBenefRowEdit() {
-  const container = $("edit-benefs-container");
-  if (!container) return;
   const row = document.createElement("div");
   row.className = "benef-edit-row";
   row.style.cssText = "display:grid;grid-template-columns:2fr 1fr auto;gap:4px";
-  row.innerHTML = `<input type="text" class="edit-benef-name" placeholder="الاسم"><input type="number" class="edit-benef-egp" placeholder="ج.م" step="0.01"><button type="button" class="btn btn-danger action-btn-mini" onclick="this.parentElement.remove()" title="حذف">✖</button>`;
-  container.appendChild(row);
+  row.innerHTML = `<input type="text" class="edit-benef-name" placeholder="الاسم"><input type="number" class="edit-benef-egp" placeholder="ج.م" step="0.01"><button type="button" class="btn btn-danger action-btn-mini" onclick="this.parentElement.remove()">✖</button>`;
+  $("edit-benefs-container")?.appendChild(row);
 }
 
 async function confirmEditTransaction() {
@@ -699,45 +614,42 @@ async function confirmEditTransaction() {
   if (!rec) return showToast("تعذر إيجاد الحركة");
 
   const day = Number($("edit-day")?.value), month = Number($("edit-month")?.value), year = Number($("edit-year")?.value);
-  if (!(year >= 2000 && year <= 2100 && month >= 1 && month <= 12 && day >= 1 && day <= 31)) return showToast("تاريخ غير صالح");
-  const checkDate = new Date(Date.UTC(year, month - 1, day));
-  if (checkDate.getUTCFullYear() !== year || checkDate.getUTCMonth() !== month - 1 || checkDate.getUTCDate() !== day) return showToast("تاريخ غير صالح");
+  const chk = new Date(Date.UTC(year, month - 1, day));
+  if (!(year >= 2000 && year <= 2100 && month >= 1 && month <= 12 && day >= 1 && day <= 31) ||
+      chk.getUTCFullYear() !== year || chk.getUTCMonth() !== month - 1 || chk.getUTCDate() !== day) {
+    return showToast("تاريخ غير صالح");
+  }
 
-  const updates = { date: formatStrictISO(year, month, day) };
+  const updates = { date: formatStrictISO(year, month, day), notes: $("edit-notes")?.value.trim() || "" };
 
-  if (rec.type === "expense" || rec.type === "income" || rec.type === "debt" || rec.type === "internal_transfer") {
+  if (rec.type === "transfer") {
+    const tk = Number($("edit-total-kwd")?.value);
+    if (!Number.isFinite(tk) || tk < 0) return showToast("مبلغ غير صالح");
+    updates.totalKwd = updates.amount = Number(tk.toFixed(3));
+    const benefs = [];
+    for (const row of document.querySelectorAll("#edit-benefs-container .benef-edit-row")) {
+      const name = row.querySelector(".edit-benef-name")?.value.trim() || "";
+      const egp = Number(row.querySelector(".edit-benef-egp")?.value) || 0;
+      if (!Number.isFinite(egp) || egp < 0) return showToast("مبلغ الجنيه المصري يجب أن يكون موجباً أو صفراً");
+      if (name || egp > 0) benefs.push({ name, egp });
+    }
+    if (!benefs.length) return showToast("أضف مستفيدًا واحدًا على الأقل");
+    updates.beneficiaries = benefs;
+  } else {
     const amt = Number($("edit-amount")?.value);
     if (!Number.isFinite(amt) || amt < 0) return showToast("مبلغ غير صالح");
     updates.amount = Number(amt.toFixed(3));
     if ($("edit-category")) updates.category = $("edit-category").value.trim();
     if ($("edit-account")) updates.account = $("edit-account").value;
     if ($("edit-to-account")) updates.toAccount = $("edit-to-account").value;
-    if ($("edit-notes")) updates.notes = $("edit-notes").value.trim();
     if ($("edit-budget")) updates.budgetId = $("edit-budget").value;
     if ($("edit-person")) updates.person = $("edit-person").value.trim();
     if ($("edit-debt-type")) updates.debtType = $("edit-debt-type").value;
     if ($("edit-salary")) updates.isSalaryBase = $("edit-salary").checked;
-  } else if (rec.type === "transfer") {
-    const tk = Number($("edit-total-kwd")?.value);
-    if (!Number.isFinite(tk) || tk < 0) return showToast("مبلغ غير صالح");
-    updates.totalKwd = Number(tk.toFixed(3));
-    updates.amount = Number(tk.toFixed(3));
-    if ($("edit-notes")) updates.notes = $("edit-notes").value.trim();
-
-    const newBenefs = [];
-    document.querySelectorAll("#edit-benefs-container .benef-edit-row").forEach(row => {
-      const name = row.querySelector(".edit-benef-name")?.value.trim() || "";
-      const egp = Number(row.querySelector(".edit-benef-egp")?.value) || 0;
-      if (name || egp > 0) newBenefs.push({ name, egp });
-    });
-    if (newBenefs.length === 0) return showToast("أضف مستفيدًا واحدًا على الأقل");
-    updates.beneficiaries = newBenefs;
-  } else {
-    return showToast("نوع غير مدعوم");
   }
 
   try {
-    await updateTransactionInDB(editingTransactionId, updates);
+    await mutateTransaction("update", { id: editingTransactionId, updates });
     closeEditModal();
     showToast("تم حفظ التعديلات ✅");
     await generateReport(true);
@@ -747,1380 +659,630 @@ async function confirmEditTransaction() {
   }
 }
 
-function realAmount(e){return e?(e.type==="transfer"||e.type==="internal_transfer")?Number(e.totalKwd??e.amount)||0:Number(e.amount)||0:0}
-function isCreditorEntry(e){return e.type==="debt"&&e.debtType==="creditor"}
-function isDebtorEntry(e){return e.type==="debt"&&e.debtType==="debtor"}
-function isOpeningEntry(e){return e.type==="debt"&&e.debtType==="opening_balance"}
+async function onReportTypeChange() {
+  const typeVal = $("report-type").value;
+  const subSel = $("report-subtype");
+  subSel.disabled = false;
 
-function debtTypeLabel(e){
-  return {
-    creditor: "استلفت منه (دين جديد)",
-    debtor:   "سدّدت له / استرداد (سداد)",
-    opening_balance: "رصيد افتتاحي (دين سابق)"
-  }[e] || e || "";
-}
-
-function toggleCompareMode(){
-  isCompareModeActive = !isCompareModeActive;
-  const box = $("compare-selectors-box");
-  const btn = $("compare-mode-toggle-btn");
-  if(isCompareModeActive){
-    box.classList.remove("hidden");
-    btn.textContent = "إلغاء المقارنة ✖";
-    btn.className = "btn btn-danger action-btn-mini";
-    populateCompareCyclesSelects().catch(()=>{});
+  if (typeVal === "expense") {
+    subSel.innerHTML = '<option value="all">كل المصروفات (شامل)</option><option value="fixed">📌 المصروفات الثابتة فقط</option><option value="regular_and_others">🛍️ النثريات والمصروفات العادية</option>';
+  } else if (typeVal === "income") {
+    subSel.innerHTML = '<option value="all">كل المصادر (شامل)</option>' +
+      getIncomeCategories().map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
+  } else if (typeVal === "debt") {
+    subSel.innerHTML = '<option value="all">كل حركات الديون</option><option value="creditor">استلاف / دين عليك</option><option value="debtor">سداد / استرداد</option><option value="opening_balance">رصيد افتتاحي</option>';
+  } else if (typeVal === "internal_transfer") {
+    subSel.innerHTML = '<option value="all">كل التحويلات الداخلية</option>';
+    subSel.disabled = true;
+  } else if (typeVal === "transfer") {
+    subSel.innerHTML = '<option value="all">كل الحوالات الخارجية</option>';
+    subSel.disabled = true;
   } else {
-    box.classList.add("hidden");
-    btn.textContent = "تفعيل المقارنة ➕";
-    btn.className = "btn btn-soft action-btn-mini";
+    subSel.innerHTML = '<option value="all">كل الأنواع الفرعية</option>';
+    subSel.disabled = true;
   }
-}
-
-async function populateCompareCyclesSelects(){
-  const txs = await allTransactions();
-  allCyclesCache = getAllSalaryCycles(txs);
-  const sel1 = $("filter-cycle-1");
-  const sel2 = $("filter-cycle-2");
-  if(!sel1 || !sel2) return;
-  const opts = '<option value="">اختر الدورة...</option>' + allCyclesCache.map((c, idx) => `<option value="${idx}">${escapeHTML(c.label)} (${fmtDate(c.start)} إلى ${fmtDate(c.end)})</option>`).join("");
-  sel1.innerHTML = opts;
-  sel2.innerHTML = opts;
-}
-
-function applyCycleSelection(which){
-  const sel1 = $("filter-cycle-1");
-  const sel2 = $("filter-cycle-2");
-  if(!sel1 || !sel2) return;
-  const idx1 = sel1.value;
-  const idx2 = sel2.value;
-  if(which === 2 && idx2 !== "" && allCyclesCache[idx2]){
-    const c = allCyclesCache[idx2];
-    writeDateParts("date-from", c.start);
-    writeDateParts("date-to", c.end);
-    showToast(`تم ضبط نطاق التاريخ على: ${c.label}`);
-  } else if(which === 1 && idx1 !== "" && allCyclesCache[idx1]){
-    const c = allCyclesCache[idx1];
-    if(!sel2.value){
-      writeDateParts("date-from", c.start);
-      writeDateParts("date-to", c.end);
-    }
-  }
-}
-
-async function onReportTypeChange(){
-  const e=$("report-type").value,t=$("report-subtype-wrap"),a=$("report-subtype");
-  const debtFiltersBox = $("debt-filters-box");
-  t.classList.remove("hidden");
-  if(debtFiltersBox) debtFiltersBox.classList.toggle("hidden", e !== "debt");
-
-  if(e==="expense")a.innerHTML='<option value="all">كل المصروفات (شامل)</option><option value="fixed">📌 المصروفات الثابتة فقط (معزولة)</option><option value="regular_and_others">🛍️ النثريات والمصروفات العادية (لحساب معدل الحرق)</option>';
-  else if(e==="income")a.innerHTML='<option value="all">كل المصادر (شامل الإيرادات ودخل السلف)</option>'+getIncomeCategories().map(c=>`<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
-  else if(e==="debt")a.innerHTML='<option value="all">كل حركات الديون</option>';
-  else if(e==="internal_transfer")a.innerHTML='<option value="all">كل التحويلات الداخلية بين الحسابات</option>';
-  else if(e==="transfer")a.innerHTML='<option value="all">كل الحوالات المالية الخارجية</option>';
-  else t.classList.add("hidden");
-  a.value="all";
-  $("report-target-wrap").classList.toggle("hidden",!(e==="debt"||e==="transfer"||e==="all"));
+  subSel.value = "all";
   await updateReportTargetOptions();
 }
 
-async function updateReportTargetOptions(){
-  try{
-    const e=await allTransactions(),t=new Set;
-    const reportType=$("report-type")?$("report-type").value:"all";
-    e.forEach(x=>{
-      if(reportType==="all" || reportType===x.type || (reportType==="debt" && x.type==="debt") || (reportType==="transfer" && x.type==="transfer")){
-        if(x.type==="debt"&&x.person)t.add(x.person);
-        if(x.type==="transfer")(x.beneficiaries||[]).forEach(b=>{if(b.name)t.add(b.name);});
+async function updateReportTargetOptions() {
+  try {
+    const txs = await allTransactions(), targets = new Set(), typeVal = $("report-type")?.value || "all";
+    txs.forEach(x => {
+      if (typeVal === "all" || typeVal === x.type) {
+        if (x.person) targets.add(x.person);
+        if (Array.isArray(x.beneficiaries)) x.beneficiaries.forEach(b => { if (b?.name) targets.add(b.name); });
       }
     });
-    const a=[...t].sort((x,y)=>x.localeCompare(y,"ar")),n=$("beneficiary-select");
-    if(!n)return;
-    const s=n.value;
-    n.innerHTML='<option value="all">الكل (عرض الكشف العام)</option>'+a.map(x=>`<option value="${escapeHTML(x)}">${escapeHTML(x)}</option>`).join("");
-    if(a.includes(s))n.value=s;
-  }catch(e){console.warn("updateReportTargetOptions:",e)}
+    const sel = $("beneficiary-select");
+    if (!sel) return;
+    const prev = sel.value, sorted = [...targets].sort((a, b) => a.localeCompare(b, "ar"));
+    sel.innerHTML = '<option value="all">الكل (بدون تقييد بطرف)</option>' + sorted.map(n => `<option value="${escapeHTML(n)}">${escapeHTML(n)}</option>`).join("");
+    if (sorted.includes(prev)) sel.value = prev;
+  } catch (e) { console.warn(e); }
 }
 
-async function setSalaryCycleDates(){
-  try{
-    const cycles=getAllSalaryCycles(await allTransactions());
-    if(cycles.length>0){
-      const t=cycles[cycles.length-1];
-      writeDateParts("date-from",t.start);
-      writeDateParts("date-to",t.end);
-      showToast("تم تحديد فترة دورة الراتب الحالية 📅");
-    }else showToast("لم يتم تسجيل أي راتب أساسي بعد");
-  }catch(e){showToast("تعذر تحديد فترة الراتب")}
+function getPeriodDays(fromDate, toDate) {
+  const startStr = fromDate || firstOfMonthISO();
+  const endStr = toDate || todayISO();
+  const [sy, sm, sd] = startStr.split("-").map(Number);
+  const [ey, em, ed] = endStr.split("-").map(Number);
+  const diff = Math.round((Date.UTC(ey, em - 1, ed) - Date.UTC(sy, sm - 1, sd)) / 86400000) + 1;
+  return Math.max(1, diff);
 }
 
-async function setOldestTransactionDate(){
-  try{
-    const txs = await allTransactions();
-    if(txs.length > 0){
-      const oldest = txs[txs.length - 1].date;
-      writeDateParts("date-from", oldest);
-      writeDateParts("date-to", todayISO());
-      showToast("تم تحديد تاريخ أقدم معاملة ⏮️");
-    } else {
-      showToast("لا توجد معاملات مسجلة بعد");
-    }
-  }catch(e){showToast("تعذر جلب أقدم معاملة")}
-}
-
-function calculatePeriodDuration(dateFromStr, dateToStr){
-  if(!dateFromStr || !dateToStr) return "—";
-  const start = new Date(dateFromStr);
-  const end = new Date(dateToStr);
-  if(isNaN(start) || isNaN(end) || start > end) return "—";
-  const diffTime = Math.abs(end - start);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-  return `${diffDays} يوم فعلي`;
-}
-
-function processExpenseInsights(allTxs, fromDate, toDate) {
-  let periodIncome = 0;
-  allTxs.forEach(x => {
-    if(x.type === "income" && (!fromDate || x.date >= fromDate) && (!toDate || x.date <= toDate)) {
-      periodIncome += realAmount(x);
-    }
-  });
-
-  let fixedTotal = 0;
-  let regularTotal = 0;
-  const regularItems = [];
-
-  allTxs.forEach(x => {
-    if(x.type === "expense" && (!fromDate || x.date >= fromDate) && (!toDate || x.date <= toDate)) {
-      const amt = realAmount(x);
-      const isFixed = x.budgetId === "fixed" || x.isFixed;
-      if(isFixed) {
-        fixedTotal += amt;
-      } else {
-        regularTotal += amt;
-        regularItems.push({ ...x, amountVal: amt });
+function computeFilteredAccountBalances(filteredTxs, accFilter = "all", beneficiaryFilter = "all") {
+  let cash = 0, bank = 0;
+  filteredTxs.forEach(x => {
+    if (beneficiaryFilter && beneficiaryFilter !== "all" && !txMatchesBeneficiary(x, beneficiaryFilter)) return;
+    const amt = effectiveAmount(x, beneficiaryFilter);
+    const acc = x.account || "cash_default", toAcc = x.toAccount || "cash_default";
+    if (x.type === "income" || isCreditorEntry(x) || isOpeningEntry(x)) {
+      if (acc === "bank_default") bank += amt; else if (acc === "cash_default") cash += amt;
+    } else if (x.type === "expense" || x.type === "transfer" || isDebtorEntry(x)) {
+      if (acc === "bank_default") bank -= amt; else if (acc === "cash_default") cash -= amt;
+    } else if (x.type === "internal_transfer") {
+      if (accFilter === "all" || accFilter === acc) {
+        if (acc === "bank_default") bank -= amt; else if (acc === "cash_default") cash -= amt;
+      }
+      if (accFilter === "all" || accFilter === toAcc) {
+        if (toAcc === "bank_default") bank += amt; else if (toAcc === "cash_default") cash += amt;
       }
     }
   });
-
-  const todayStr = todayISO();
-  const effectiveEnd = toDate && toDate < todayStr ? toDate : todayStr;
-  const startDt = fromDate ? new Date(fromDate) : new Date(firstOfMonthISO());
-  const endDt = new Date(effectiveEnd);
-  const elapsedDays = Math.max(1, Math.ceil(Math.abs(endDt - startDt) / (1000 * 60 * 60 * 24)) + 1);
-  const dailyBurnRate = regularTotal / elapsedDays;
-
-  return { periodIncome, fixedTotal, regularTotal, elapsedDays, dailyBurnRate, regularItems };
+  return { cash, bank, total: cash + bank };
 }
 
-function renderExpenseInsightsPanel(insights, reportType) {
+function renderExpenseInsightsPanel(filteredTxs, fromDate, toDate) {
   const panel = $("expense-insights-panel");
-  if(!panel) return;
-  if(reportType !== "expense") { panel.classList.add("hidden"); return; }
-
-  const { periodIncome, fixedTotal, regularTotal, elapsedDays, dailyBurnRate } = insights;
+  let fixedTotal = 0, regularTotal = 0;
+  filteredTxs.forEach(x => {
+    if (x.type === "expense") {
+      const amt = effectiveAmount(x);
+      if (isFixedExpense(x)) fixedTotal += amt; else regularTotal += amt;
+    }
+  });
+  const hasExplicitRange = Boolean(fromDate || toDate);
+  const days = getPeriodDays(fromDate, toDate);
+  const rangeNote = hasExplicitRange ? `${days} يوم` : `${days} يوم (تقديري منذ بداية الشهر)`;
+  const burnRow = regularTotal > 0 ? `<div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:4px">
+    <span>🔥 معدل الحرق اليومي للنثريات (${rangeNote}):</span>
+    <strong style="color:var(--sky-val)">${money(regularTotal / days)} / يوم</strong>
+  </div>` : "";
   panel.innerHTML = `
-    <div style="font-weight:900;color:var(--sky-val);font-size:11.5px;margin-bottom:4px">📊 مؤشرات المصروفات ومعدل الحرق للفترة الحالية</div>
-    <div class="row-between"><span>📥 دخل الدورة الفعلي (خلال الفترة):</span><strong>${money(periodIncome)}</strong></div>
-    <div class="row-between"><span>📌 إجمالي المصروفات الثابتة (معزولة):</span><strong style="color:var(--amber-val)">${money(fixedTotal)}</strong></div>
-    <div class="row-between"><span>🛍️ إجمالي المصروفات غير الثابتة (النثريات):</span><strong style="color:var(--red-val)">${money(regularTotal)}</strong></div>
-    <div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:4px">
-      <span>🔥 معدل الحرق اليومي للنثريات (${elapsedDays} يوم منقضٍ):</span>
-      <strong style="color:var(--sky-val);font-size:12px">${money(dailyBurnRate)} / يوم</strong>
-    </div>
-  `;
+    <div style="font-weight:900;color:var(--sky-val);font-size:11.5px">📊 مؤشرات المصروفات ومعدل الحرق (ملتزمة بالفلتر)</div>
+    <div class="row-between"><span>📌 إجمالي المصروفات الثابتة:</span><strong style="color:var(--amber-val)">${money(fixedTotal)}</strong></div>
+    <div class="row-between"><span>🛍️ إجمالي النثريات:</span><strong class="bad">${money(regularTotal)}</strong></div>
+    ${burnRow}`;
   panel.classList.remove("hidden");
 }
 
-function processDebtAwareness(allTxs, targetPerson, natureFilter, activityFilter, fromDate, toDate) {
-  const personMap = {};
-
-  allTxs.filter(x => x.type === "debt").forEach(x => {
-    const p = x.person || "غير محدد";
-    if(!personMap[p]) {
-      personMap[p] = {
-        name: p,
-        openingBalance: 0,
-        periodCreditor: 0,
-        periodDebtor: 0,
-        cumulativeCreditor: 0,
-        cumulativeDebtor: 0,
-        firstDate: x.date,
-        lastDate: x.date,
-        transactionsCount: 0,
-        hasActivityInPeriod: false,
-        txs: []
-      };
-    }
-    const item = personMap[p];
-    item.transactionsCount++;
-    item.txs.push(x);
-    if(x.date < item.firstDate) item.firstDate = x.date;
-    if(x.date > item.lastDate) item.lastDate = x.date;
-
-    const amt = realAmount(x);
-    const isInPeriod = (!fromDate || x.date >= fromDate) && (!toDate || x.date <= toDate);
-
-    if(isInPeriod) item.hasActivityInPeriod = true;
-
-    if(isOpeningEntry(x)) {
-      item.openingBalance += amt;
-    } else if(isCreditorEntry(x)) {
-      if(isInPeriod) item.periodCreditor += amt;
-      item.cumulativeCreditor += amt;
-    } else if(isDebtorEntry(x)) {
-      if(isInPeriod) item.periodDebtor += amt;
-      item.cumulativeDebtor += amt;
-    }
-  });
-
-  let personsArray = Object.values(personMap).map(item => {
-    const totalCreditCalc = item.openingBalance + item.cumulativeCreditor;
-    const netBalance = totalCreditCalc - item.cumulativeDebtor;
-    const isClosed = Math.abs(netBalance) < 0.001;
-    const today = new Date();
-    const ageDays = netBalance !== 0 ? Math.floor((today - new Date(item.firstDate)) / (1000 * 60 * 60 * 24)) : 0;
-    const lastMovementDays = Math.floor((today - new Date(item.lastDate)) / (1000 * 60 * 60 * 24));
-    return { ...item, totalCreditCalc, netBalance, isClosed, ageDays, lastMovementDays };
-  });
-
-  if(natureFilter === "creditor") personsArray = personsArray.filter(p => p.netBalance > 0);
-  else if(natureFilter === "debtor") personsArray = personsArray.filter(p => p.netBalance < 0);
-  else if(natureFilter === "closed") personsArray = personsArray.filter(p => p.isClosed);
-
-  if(activityFilter === "active_period") personsArray = personsArray.filter(p => p.hasActivityInPeriod);
-  else if(activityFilter === "idle_period") personsArray = personsArray.filter(p => !p.hasActivityInPeriod);
-
-  if(targetPerson && targetPerson !== "all") {
-    personsArray = personsArray.filter(p => p.name === targetPerson);
-  }
-
-  let totalCreditorSum = 0, totalDebtorSum = 0;
-  personsArray.forEach(p => {
-    if(p.netBalance > 0) totalCreditorSum += p.netBalance;
-    else totalDebtorSum += Math.abs(p.netBalance);
-  });
-  const grandNet = totalCreditorSum - totalDebtorSum;
-
-  return { personsArray, totalCreditorSum, totalDebtorSum, grandNet };
-}
-
-function renderDebtAwarenessPanel(debtData, targetPerson) {
-  const panel = $("debt-awareness-panel");
-  const titleEl = $("debt-awareness-title");
-  if(!panel || !titleEl) return;
-
-  const { totalCreditorSum, totalDebtorSum, grandNet, personsArray } = debtData;
-  if(targetPerson && targetPerson !== "all") {
-    titleEl.textContent = `👤 بطاقة موقف تفصيلية للشخص: ${targetPerson}`;
-  } else {
-    titleEl.textContent = `⚖️ الوعي العام للديون والذمم (ضمن فترة التقرير)`;
-  }
-
-  panel.innerHTML = `
-    <div class="row-between"><span>💸 إجمالي الديون المستحقة عليك (ذمم دائنة):</span><strong class="bad">${money(totalCreditorSum)}</strong></div>
-    <div class="row-between"><span>📥 إجمالي المستحقات لك عند الغير (ذمم مدينة):</span><strong class="good">${money(totalDebtorSum)}</strong></div>
-    <div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:4px">
-      <span>⚖️ صافي الموقف الختامي للديون:</span>
-      <strong class="${grandNet > 0 ? 'bad' : 'good'}" style="font-size:12px">${grandNet > 0 ? 'عليك صافي ' + money(grandNet) : 'لك صافي ' + money(Math.abs(grandNet))}</strong>
-    </div>
-    <div class="small" style="margin-top:2px;color:var(--ink-muted)">عدد الأطراف في هذا العرض: ${personsArray.length} جهة</div>
-  `;
-  panel.classList.remove("hidden");
-}
-
-function renderTransferBeneficiariesPanel(txs, fromDate, toDate) {
-  const panel = $("transfer-beneficiaries-panel");
-  const body = $("transfer-beneficiaries-body");
-  if(!panel || !body) return;
-
-  const benefMap = {};
+function renderTransferBeneficiariesPanel(txs, fromDate, toDate, targetBeneficiary = "all") {
+  const panel = $("transfer-beneficiaries-panel"), body = $("transfer-beneficiaries-body"), rateEl = $("transfer-rate-summary"), map = {};
+  let totalKwd = 0, totalEgp = 0;
   txs.forEach(x => {
-    if(x.type === "transfer" && Array.isArray(x.beneficiaries)) {
-      x.beneficiaries.forEach(b => {
+    if (x.type === "transfer" && Array.isArray(x.beneficiaries)) {
+      const tKwd = Number(x.totalKwd ?? x.amount) || 0;
+      const tEgp = x.beneficiaries.reduce((s, b) => s + (Number(b.egp) || 0), 0);
+      totalKwd += effectiveAmount(x, targetBeneficiary);
+      getFilteredBeneficiaries(x, targetBeneficiary).forEach(b => {
         const name = b.name || "غير محدد";
-        if(!benefMap[name]) {
-          benefMap[name] = { count: 0, totalEgp: 0, totalKwd: 0 };
-        }
-        benefMap[name].count += 1;
-        benefMap[name].totalEgp += Number(b.egp) || 0;
-        const totalXAmount = Number(x.totalKwd ?? x.amount) || 0;
-        const totalXCurrency = x.beneficiaries.reduce((sum, item) => sum + (Number(item.egp) || 0), 0);
-        const shareKwd = totalXCurrency > 0 ? totalXAmount * ((Number(b.egp) || 0) / totalXCurrency) : (totalXAmount / x.beneficiaries.length);
-        benefMap[name].totalKwd += shareKwd;
+        const bEgp = Number(b.egp) || 0;
+        totalEgp += bEgp;
+        if (!map[name]) map[name] = { count: 0, egp: 0, kwd: 0 };
+        map[name].count++;
+        map[name].egp += bEgp;
+        map[name].kwd += tEgp > 0 ? tKwd * (bEgp / tEgp) : tKwd / x.beneficiaries.length;
       });
     }
   });
-
-  const list = Object.keys(benefMap);
-  if(list.length === 0) {
-    panel.classList.add("hidden");
-    return;
+  const keys = Object.keys(map);
+  if (!keys.length) return panel.classList.add("hidden");
+  const days = getPeriodDays(fromDate, toDate);
+  if (rateEl) {
+    rateEl.innerHTML = `متوسط سعر الصرف: <strong>${ratePer1000EGP(totalKwd, totalEgp)}</strong> • إجمالي الجنيه: <strong>${moneyEGP(totalEgp)}</strong>`;
   }
-
-  const startDt = fromDate ? new Date(fromDate) : new Date(firstOfMonthISO());
-  const todayStr = todayISO();
-  const endDt = toDate && toDate < todayStr ? new Date(toDate) : new Date(todayStr);
-  const elapsedDays = Math.max(1, Math.ceil(Math.abs(endDt - startDt) / (1000 * 60 * 60 * 24)) + 1);
-
-  let html = "";
-  list.forEach(name => {
-    const item = benefMap[name];
-    const dailyRateKwd = item.totalKwd / elapsedDays;
-    html += `<tr>
-      <td><strong>${escapeHTML(name)}</strong></td>
-      <td class="amount">${item.count}</td>
-      <td class="amount">${moneyEGP(item.totalEgp)}</td>
-      <td class="amount"><strong>${money(item.totalKwd)}</strong></td>
-      <td class="amount" style="color:var(--sky-val)">${money(dailyRateKwd)} / يوم</td>
-    </tr>`;
-  });
-  body.innerHTML = html;
+  body.innerHTML = keys.map(name => `<tr>
+    <td><strong>${escapeHTML(name)}</strong></td>
+    <td class="amount">${map[name].count}</td>
+    <td class="amount">${moneyEGP(map[name].egp)}</td>
+    <td class="amount"><strong>${money(map[name].kwd)}</strong></td>
+    <td class="amount" style="color:var(--sky-val)">${moneyEGP(map[name].egp / days)} / يوم</td>
+  </tr>`).join("");
   panel.classList.remove("hidden");
 }
 
-function renderAllSummaryDashboard(filteredTxs, allTxs) {
+function renderAllSummaryDashboard(filteredTxs, accFilter = "all", beneficiaryFilter = "all") {
   const panel = $("all-summary-dashboard");
-  const content = $("all-summary-content");
-  if(!panel || !content) return;
-
-  let totalIncome = 0, totalExpenseFixed = 0, totalExpenseRegular = 0;
-  let totalTransferKwd = 0, totalTransferEgp = 0, totalInternal = 0;
-  let totalDebtIn = 0, totalDebtOut = 0;
-
+  let inc = 0, fix = 0, reg = 0, trKwd = 0, trEgp = 0, intTr = 0, debtIn = 0, debtOut = 0;
   filteredTxs.forEach(x => {
-    const amt = realAmount(x);
-    if(x.type === "income") totalIncome += amt;
-    else if(x.type === "expense") {
-      if(x.budgetId === "fixed" || x.isFixed) totalExpenseFixed += amt;
-      else totalExpenseRegular += amt;
+    const amt = effectiveAmount(x, beneficiaryFilter);
+    if (x.type === "income") inc += amt;
+    else if (x.type === "expense") { if (isFixedExpense(x)) fix += amt; else reg += amt; }
+    else if (x.type === "transfer") {
+      trKwd += amt;
+      getFilteredBeneficiaries(x, beneficiaryFilter).forEach(b => { trEgp += Number(b.egp) || 0; });
     }
-    else if(x.type === "transfer") {
-      totalTransferKwd += amt;
-      if(Array.isArray(x.beneficiaries)) x.beneficiaries.forEach(b => { totalTransferEgp += Number(b.egp) || 0; });
-    }
-    else if(x.type === "internal_transfer") totalInternal += amt;
-    else if(x.type === "debt") {
-      if(isCreditorEntry(x) || isOpeningEntry(x)) totalDebtIn += amt;
-      else if(isDebtorEntry(x)) totalDebtOut += amt;
-    }
+    else if (x.type === "internal_transfer") intTr += amt;
+    else if (x.type === "debt") { if (isCreditorEntry(x) || isOpeningEntry(x)) debtIn += amt; else if (isDebtorEntry(x)) debtOut += amt; }
   });
-
-  const totalOutflows = totalExpenseFixed + totalExpenseRegular + totalTransferKwd + totalDebtOut;
-  const totalInflows = totalIncome + totalDebtIn;
-  const netPeriodBalance = totalInflows - totalOutflows;
-
-  let cashBal = 0, bankBal = 0;
-  allTxs.forEach(x => {
-    const amt = realAmount(x);
-    const acc = x.account || "cash_default";
-    const toAcc = x.toAccount || "cash_default";
-    if(acc === "outside") return;
-
-    if(x.type === "income" || isCreditorEntry(x) || isOpeningEntry(x)) {
-      if(acc === "bank_default") bankBal += amt;
-      else if(acc === "cash_default") cashBal += amt;
-    } else if(x.type === "expense" || x.type === "transfer" || isDebtorEntry(x)) {
-      if(acc === "bank_default") bankBal -= amt;
-      else if(acc === "cash_default") cashBal -= amt;
-    } else if(x.type === "internal_transfer") {
-      if(acc === "bank_default") bankBal -= amt;
-      else if(acc === "cash_default") cashBal -= amt;
-      if(toAcc === "bank_default") bankBal += amt;
-      else if(toAcc === "cash_default") cashBal += amt;
-    }
-  });
-
-  const totalActualLiquidity = cashBal + bankBal;
-
-  content.innerHTML = `
-    <div class="row-between"><span>📥 إجمالي السيولة الداخلة (إيرادات + سلف مستلمة):</span><strong class="good">${money(totalInflows)}</strong></div>
-    <div class="row-between small" style="padding-right:10px"><span>• دخل وإيرادات: ${money(totalIncome)}</span><span>• سلف مستلمة: ${money(totalDebtIn)}</span></div>
-    
-    <div class="row-between" style="margin-top:2px"><span>📤 إجمالي السيولة الخارجة (مصروفات + حوالات + سداد):</span><strong class="bad">${money(totalOutflows)}</strong></div>
-    <div class="row-between small" style="padding-right:10px"><span>• ثابتة: ${money(totalExpenseFixed)} | نثريات: ${money(totalExpenseRegular)}</span></div>
-    <div class="row-between small" style="padding-right:10px"><span>• حوالات خارجية: ${money(totalTransferKwd)} (${moneyEGP(totalTransferEgp)})</span><span>• سداد ديون: ${money(totalDebtOut)}</span></div>
-
-    <div class="row-between small" style="margin-top:2px;color:var(--ink-muted)"><span>🔄 إجمالي التحويلات الداخلية بين الحسابات:</span><strong>${money(totalInternal)}</strong></div>
-
-    <div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:4px;margin-top:2px">
-      <span>⚖️ صافي الحركة خلال الفترة المحددة:</span>
-      <strong class="${netPeriodBalance >= 0 ? 'good' : 'bad'}" style="font-size:12.5px">${netPeriodBalance >= 0 ? '+' : ''}${money(netPeriodBalance)}</strong>
+  const inflows = inc + debtIn, outflows = fix + reg + trKwd + debtOut, net = inflows - outflows;
+  const bal = computeFilteredAccountBalances(filteredTxs, accFilter, beneficiaryFilter);
+  panel.innerHTML = `
+    <div style="font-weight:900;color:var(--emerald-neon);font-size:12px">🏦 القفلة الحسابية ضمن نطاق الفلتر</div>
+    <div class="small">محسوبة على حركات نطاق الفلتر الحالي فقط</div>
+    <div class="row-between"><span>📥 إجمالي السيولة الداخلة:</span><strong class="good">${money(inflows)}</strong></div>
+    <div class="row-between small" style="padding-right:10px"><span>• دخل: ${money(inc)}</span><span>• سلف / افتتاحي: ${money(debtIn)}</span></div>
+    <div class="row-between"><span>📤 إجمالي السيولة الخارجة:</span><strong class="bad">${money(outflows)}</strong></div>
+    <div class="row-between small" style="padding-right:10px"><span>• ثابتة: ${money(fix)} | نثريات: ${money(reg)}</span></div>
+    <div class="row-between small" style="padding-right:10px"><span>• حوالات: ${money(trKwd)} (${moneyEGP(trEgp)})</span><span>• سداد: ${money(debtOut)}</span></div>
+    <div class="row-between small" style="color:var(--ink-muted)"><span>🔄 تحويلات داخلية:</span><strong>${money(intTr)}</strong></div>
+    <div class="row-between" style="border-top:1px dashed var(--border-subtle);padding-top:4px">
+      <span>⚖️ صافي الحركة خلال النطاق:</span>
+      <strong class="${net >= 0 ? "good" : "bad"}">${net >= 0 ? "+" : ""}${money(net)}</strong>
     </div>
-
-    <div style="background:rgba(16,185,129,0.08);border:1px solid var(--border-neon);border-radius:10px;padding:8px;margin-top:4px;display:flex;flex-direction:column;gap:4px">
-      <div style="font-weight:900;color:var(--emerald-neon);font-size:11.5px">💰 الأرصدة الختامية الفعلية بالحسابات (السيولة المتاحة الآن):</div>
-      <div class="row-between"><span>💵 رصيد الكاش الفعلي:</span><strong>${money(cashBal)}</strong></div>
-      <div class="row-between"><span>🏦 رصيد الحساب البنكي الفعلي:</span><strong>${money(bankBal)}</strong></div>
-      <div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px">
-        <span>💎 إجمالي السيولة النقدية والبنكية:</span>
-        <strong class="good" style="font-size:13px">${money(totalActualLiquidity)}</strong>
-      </div>
-    </div>
-  `;
+    <div style="background:rgba(16,185,129,.08);border:1px solid var(--border-neon);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:4px">
+      <div style="font-weight:900;color:var(--emerald-neon);font-size:11.5px">💰 صافي الأرصدة وفق الفلتر:</div>
+      <div class="row-between"><span>💵 الكاش:</span><strong>${money(bal.cash)}</strong></div>
+      <div class="row-between"><span>🏦 الحساب البنكي:</span><strong>${money(bal.bank)}</strong></div>
+      <div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px"><span>💎 الإجمالي:</span><strong class="good">${money(bal.total)}</strong></div>
+    </div>`;
   panel.classList.remove("hidden");
 }
 
-async function generateReport(isRestoring=false){
-  const s = readDateParts("date-from"),
-        r = readDateParts("date-to");
-
-  if(s && r && s > r) {
-    showToast("خطأ: تاريخ البداية لا يمكن أن يكون بعد تاريخ النهاية ⚠️");
-    return;
-  }
-
-  const allTxs = await allTransactions(),
-        typeVal = $("report-type").value,
-        subtypeVal = $("report-subtype").value,
-        beneficiaryVal = $("beneficiary-select") ? $("beneficiary-select").value : "all",
-        accFilter = $("report-account-filter") ? $("report-account-filter").value : "all";
-
-  if(!isRestoring && $("report-search")) $("report-search").value="";
-  if(!isRestoring && $("report-sort-order")) $("report-sort-order").value="desc";
-
-  const stateData = {
-    reportType: typeVal,
-    reportSubtype: subtypeVal,
-    beneficiary: beneficiaryVal,
-    accountFilter: accFilter,
+function getFilterState() {
+  return {
+    reportType: $("report-type").value,
+    reportSubtype: $("report-subtype").value,
+    beneficiary: $("beneficiary-select")?.value || "all",
+    accountFilter: $("report-account-filter")?.value || "all",
     dateFrom: { d: $("date-from-day")?.value, m: $("date-from-month")?.value, y: $("date-from-year")?.value },
     dateTo: { d: $("date-to-day")?.value, m: $("date-to-month")?.value, y: $("date-to-year")?.value },
-    searchQuery: $("report-search") ? $("report-search").value : "",
-    sortOrder: $("report-sort-order") ? $("report-sort-order").value : "desc",
-    debtNature: $("debt-nature-filter") ? $("debt-nature-filter").value : "all",
-    debtActivity: $("debt-activity-filter") ? $("debt-activity-filter").value : "all",
-    isCompareActive: isCompareModeActive,
-    cycle1: $("filter-cycle-1")?.value,
-    cycle2: $("filter-cycle-2")?.value,
+    searchQuery: $("report-search")?.value || "",
+    sortOrder: $("report-sort-order")?.value || "desc",
     customTitle: $("report-custom-title")?.value || "",
     notes: $("report-notes")?.value || ""
   };
-  localStorage.setItem(REPORT_STATE_KEY, JSON.stringify(stateData));
+}
+
+function matchesUnifiedFilter(x, { typeVal, subtypeVal, beneficiaryVal, accFilter, dateFrom, dateTo }) {
+  if (!x) return false;
+  if (typeVal !== "all" && x.type !== typeVal) return false;
+  if (typeVal === "expense" && subtypeVal !== "all") {
+    if (subtypeVal === "fixed" && !isFixedExpense(x)) return false;
+    if (subtypeVal === "regular_and_others" && isFixedExpense(x)) return false;
+  }
+  if (typeVal === "income" && subtypeVal !== "all" && x.category !== subtypeVal) return false;
+  if (typeVal === "debt" && subtypeVal !== "all" && x.debtType !== subtypeVal) return false;
+  if (accFilter !== "all" && (x.account || "cash_default") !== accFilter && x.toAccount !== accFilter) return false;
+  if (beneficiaryVal !== "all" && !txMatchesBeneficiary(x, beneficiaryVal)) return false;
+  if (dateFrom && x.date < dateFrom) return false;
+  if (dateTo && x.date > dateTo) return false;
+  return true;
+}
+
+async function generateReport(isRestoring = false) {
+  const dateFrom = readDateParts("date-from"), dateTo = readDateParts("date-to");
+  if (dateFrom && dateTo && dateFrom > dateTo) return showToast("خطأ: تاريخ البداية لا يمكن أن يكون بعد تاريخ النهاية ⚠️");
+
+  const allTxs = await allTransactions();
+  const typeVal = $("report-type").value, subtypeVal = $("report-subtype").value;
+  const beneficiaryVal = $("beneficiary-select")?.value || "all", accFilter = $("report-account-filter")?.value || "all";
+
+  if (!isRestoring) {
+    if ($("report-search")) $("report-search").value = "";
+    if ($("report-sort-order")) $("report-sort-order").value = "desc";
+  }
+  localStorage.setItem(REPORT_STATE_KEY, JSON.stringify(getFilterState()));
 
   $("filter-section").classList.add("hidden");
   $("report-section").classList.remove("hidden");
   reportGenerated = true;
 
-  cachedReportRange = { from: s, to: r };
-  const durationText = calculatePeriodDuration(s, r);
-  $("display-date-range").innerHTML = `${(s ? fmtDate(s) : "البداية")} إلى ${(r ? fmtDate(r) : "النهاية")} <br><small style="color:var(--emerald-neon)">⏱️ نطاق الدورة: ${durationText}</small>`;
-  $("display-target").textContent = beneficiaryVal === "all" ? "الكل (الكشف العام)" : beneficiaryVal;
+  const daysText = (dateFrom && dateTo) ? `${getPeriodDays(dateFrom, dateTo)} يوم فعلي` : `${getPeriodDays(dateFrom, dateTo)} يوم (افتراضي)`;
+  $("display-date-range").innerHTML = `${dateFrom ? fmtDate(dateFrom) : "البداية"} إلى ${dateTo ? fmtDate(dateTo) : "النهاية"} <br><small style="color:var(--emerald-neon)">⏱️ نطاق الفترة: ${daysText}</small>`;
 
-  let titleText = "كشف حساب مالي";
-  if(typeVal === "expense") titleText = "تقرير المصروفات ومعدل الحرق (الدورة الحالية)";
-  else if(typeVal === "income") titleText = "تقرير الدخل والإيرادات (شامل دخل السلف والاسترداد)";
-  else if(typeVal === "internal_transfer") titleText = "كشف التحويلات الداخلية بين الحسابات";
-  else if(typeVal === "transfer") titleText = "كشف الحوالات المالية الخارجية";
-  else if(typeVal === "debt") titleText = beneficiaryVal === "all" ? "الكشف العام للديون والوعي المالي" : `بطاقة موقف تفصيلية: ${beneficiaryVal}`;
-  else if(typeVal === "all") titleText = "ملخص كل المعاملات والقفلة الحسابية الشاملة";
-  
-  const custom = $("report-custom-title") ? $("report-custom-title").value.trim() : "";
-  if(custom) titleText = custom;
-  $("report-title").textContent = titleText;
-  
-  const randomArr = new Uint32Array(1);
-  window.crypto.getRandomValues(randomArr);
-  const refNum = `FIN-${new Date().getFullYear()}-${(randomArr[0] % 9000) + 1000}`;
-  $("report-number").textContent = `رقم المرجع: ${refNum} | تاريخ الاصدار: ${todayISO()}`;
+  const accLabel = accFilter === "all" ? "كل الحسابات" : getAccountById(accFilter).name;
+  const subLabel = subtypeVal === "all" ? "كل الأنواع" : ($("report-subtype")?.selectedOptions?.[0]?.textContent || subtypeVal);
+  const benLabel = beneficiaryVal === "all" ? "الكل" : beneficiaryVal;
+  $("display-target").textContent = `${subLabel} • ${accLabel} • ${benLabel}`;
 
-  $("expense-insights-panel").classList.add("hidden");
-  $("debt-awareness-panel").classList.add("hidden");
-  $("transfer-beneficiaries-panel").classList.add("hidden");
-  $("all-summary-dashboard").classList.add("hidden");
+  const titles = {
+    expense: "تقرير المصروفات ومعدل الحرق",
+    income: "تقرير الدخل والإيرادات (شامل السلف والاسترداد)",
+    internal_transfer: "كشف التحويلات الداخلية بين الحسابات",
+    transfer: "كشف الحوالات المالية الخارجية",
+    debt: beneficiaryVal === "all" ? "كشف الديون والعلاقات المالية" : `كشف ديون: ${beneficiaryVal}`,
+    all: "ملخص كل المعاملات والقفلة الحسابية"
+  };
+  const reportName = $("report-custom-title")?.value.trim() || titles[typeVal] || "كشف حساب مالي";
+  const issueDate = fmtDate(todayISO());
+  $("report-title").textContent = reportName;
+  if ($("display-report-name")) $("display-report-name").textContent = reportName;
+  if ($("display-report-date")) $("display-report-date").textContent = issueDate;
 
-  let filteredTxs = allTxs.filter(x => {
-    if(typeVal !== "all" && x.type !== typeVal) return false;
-    if(typeVal === "expense" && subtypeVal !== "all"){
-      const isFixed = x.budgetId==="fixed" || x.isFixed;
-      if(subtypeVal === "fixed" && !isFixed) return false;
-      if(subtypeVal === "regular_and_others" && isFixed) return false;
-    }
-    if(typeVal === "income" && subtypeVal !== "all"){
-      if(x.category !== subtypeVal) return false;
-    }
-    if(accFilter !== "all") {
-      const txAcc = x.account || "cash_default";
-      if(txAcc !== accFilter && x.toAccount !== accFilter) return false;
-    }
-    if(beneficiaryVal !== "all" && typeVal === "debt" && x.person !== beneficiaryVal) return false;
-    if(s && x.date < s) return false;
-    if(r && x.date > r) return false;
-    return true;
-  });
+  const rnd = new Uint32Array(1);
+  window.crypto.getRandomValues(rnd);
+  $("report-number").textContent = `رقم المرجع: FIN-${new Date().getFullYear()}-${(rnd[0] % 9000) + 1000} | تاريخ الاصدار: ${issueDate}`;
 
-  if(typeVal === "expense") {
-    const insights = processExpenseInsights(allTxs, s, r);
-    renderExpenseInsightsPanel(insights, typeVal);
-    cachedReportRecords = filteredTxs;
-    visibleReportRecords = filteredTxs.slice();
-    renderReportTableRows(visibleReportRecords);
-    $("display-count").textContent = visibleReportRecords.length + " حركة";
-    updateReportSummaries(visibleReportRecords, allTxs);
-  } else if(typeVal === "transfer") {
-    renderTransferBeneficiariesPanel(filteredTxs, s, r);
-    cachedReportRecords = filteredTxs;
-    visibleReportRecords = filteredTxs.slice();
-    renderReportTableRows(visibleReportRecords);
-    $("display-count").textContent = visibleReportRecords.length + " حوالة";
-    updateReportSummaries(visibleReportRecords, allTxs);
-  } else if(typeVal === "debt") {
-    const natureF = $("debt-nature-filter") ? $("debt-nature-filter").value : "all";
-    const activityF = $("debt-activity-filter") ? $("debt-activity-filter").value : "all";
-    const debtData = processDebtAwareness(allTxs, beneficiaryVal, natureF, activityF, s, r);
-    renderDebtAwarenessPanel(debtData, beneficiaryVal);
+  ["expense-insights-panel", "transfer-beneficiaries-panel", "all-summary-dashboard"].forEach(id => $(id)?.classList.add("hidden"));
 
-    if(beneficiaryVal === "all") {
-      cachedReportRecords = debtData.personsArray;
-      visibleReportRecords = debtData.personsArray.slice();
-      renderGeneralDebtTable(visibleReportRecords);
-      $("display-count").textContent = visibleReportRecords.length + " جهة / شخص";
-    } else {
-      const personTxs = filteredTxs.filter(x => x.type === "debt" && x.person === beneficiaryVal);
-      cachedReportRecords = personTxs;
-      visibleReportRecords = personTxs.slice();
-      renderPersonCardTable(visibleReportRecords);
-      $("display-count").textContent = visibleReportRecords.length + " حركة";
-    }
-    updateReportSummaries(visibleReportRecords, allTxs, debtData);
-  } else {
-    if(typeVal === "all") {
-      renderAllSummaryDashboard(filteredTxs, allTxs);
-    }
-    cachedReportRecords = filteredTxs;
-    visibleReportRecords = filteredTxs.slice();
-    renderReportTableRows(visibleReportRecords);
-    $("display-count").textContent = visibleReportRecords.length + " حركة";
-    updateReportSummaries(visibleReportRecords, allTxs);
-  }
+  const filtered = allTxs.filter(x => matchesUnifiedFilter(x, { typeVal, subtypeVal, beneficiaryVal, accFilter, dateFrom, dateTo }));
 
-  renderNotesDisplay($("report-notes")?.value || "");
-  if(isRestoring && $("report-search") && $("report-search").value) filterReportTable();
-  window.scrollTo({top:0,behavior:"smooth"});
+  if (typeVal === "expense") renderExpenseInsightsPanel(filtered, dateFrom, dateTo);
+  else if (typeVal === "transfer") renderTransferBeneficiariesPanel(filtered, dateFrom, dateTo, beneficiaryVal);
+  else if (typeVal === "all") renderAllSummaryDashboard(filtered, accFilter, beneficiaryVal);
+
+  cachedReportRecords = visibleReportRecords = [...filtered];
+  renderReportTableRows(visibleReportRecords);
+  $("display-count").textContent = `${visibleReportRecords.length} حركة`;
+  updateReportSummaries(visibleReportRecords);
+
+  const notes = ($("report-notes")?.value || "").trim();
+  $("report-notes-display").classList.toggle("hidden", !notes);
+  if (notes) $("report-notes-text").textContent = notes;
+
+  if (isRestoring && $("report-search")?.value) filterReportTable();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function renderGeneralDebtTable(persons) {
-  const head = $("report-table-head"), body = $("report-table-body");
-  if(!head || !body) return;
-  head.innerHTML = '<tr><th style="width:20%">الشخص / الجهة</th><th class="amount" style="width:15%">إجمالي الدين</th><th class="amount" style="width:15%">المسدد / المسترد</th><th class="amount" style="width:15%">الرصيد المتبقي</th><th style="width:15%">عمر الدين</th><th style="width:20%">الحالة والوعي</th></tr>';
-  
-  if(!persons.length) return void(body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:15px">لا توجد حسابات ديون مطابقة للمعايير.</td></tr>');
+const rowActionsHTML = id => `<div class="action-group">
+  <button type="button" class="btn btn-soft action-btn-mini" onclick="openEditModal(this.dataset.id)" data-id="${escapeHTML(id)}" title="تعديل">✏️</button>
+  <button type="button" class="btn btn-muted action-btn-mini" onclick="openDeleteModal(this.dataset.id)" data-id="${escapeHTML(id)}" title="حذف">🗑️</button>
+</div>`;
 
+function renderReportTableRows(records) {
+  const body = $("report-table-body"), head = $("report-table-head"), typeVal = $("report-type").value;
+  const beneficiaryVal = $("beneficiary-select")?.value || "all";
+  const accFilter = $("report-account-filter")?.value || "all";
+  const heads = {
+    expense: '<tr><th>التاريخ</th><th>التصنيف</th><th>نوع المصروف</th><th>الحساب</th><th class="amount">المبلغ</th><th class="no-print">إجراءات</th></tr>',
+    internal_transfer: '<tr><th>التاريخ</th><th>من حساب</th><th>إلى حساب</th><th class="amount">المبلغ</th><th class="no-print">إجراءات</th></tr>',
+    income: '<tr><th>التاريخ</th><th>مصدر الدخل / التصنيف</th><th>الحساب</th><th class="amount">المبلغ</th><th class="no-print">إجراءات</th></tr>',
+    transfer: '<tr><th>التاريخ</th><th>البيان</th><th>المستفيد</th><th class="amount">بالجنيه</th><th class="amount">حصته بالد.ك</th><th class="amount">سعر / 1,000 ج.م</th><th class="no-print">إجراءات</th></tr>',
+    debt: '<tr><th>التاريخ</th><th>الشخص / نوع الحركة</th><th>الحساب</th><th class="amount">المبلغ</th><th class="no-print">إجراءات</th></tr>',
+    all: '<tr><th>التاريخ</th><th>البيان</th><th>الطرف</th><th class="amount">المبلغ</th><th class="no-print">إجراءات</th></tr>'
+  };
+  head.innerHTML = heads[typeVal] || heads.all;
+  if (!records.length) return void (body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:15px">لا توجد حركات مطابقة لمعايير الفلتر.</td></tr>');
+
+  const sorted = sortByDate(records, $("report-sort-order")?.value || "desc");
   let html = "";
-  let totCred = 0, totDeb = 0, totNet = 0;
 
-  // دعم الترتيب لجدول الديون العام أيضاً حسب آخر تاريخ حركة
-  const sortOrder = $("report-sort-order") ? $("report-sort-order").value : "desc";
-  const sortedPersons = [...persons].sort((a, b) => {
-    const cmp = (b.lastDate || "").localeCompare(a.lastDate || "");
-    return sortOrder === "asc" ? -cmp : cmp;
-  });
-
-  sortedPersons.forEach(p => {
-    totCred += p.totalCreditCalc;
-    totDeb += p.cumulativeDebtor;
-    totNet += Math.abs(p.netBalance);
-
-    let stText = "قائم ⚠️", stClass = "bad";
-    if(p.isClosed) { stText = "خالص ومغلق ✔️"; stClass = "good"; }
-    else if(p.netBalance < 0) { stText = "لك مبلغ (مدينة) ✅"; stClass = "good"; }
-
-    html += `<tr>
-      <td><strong>${escapeHTML(p.name)}</strong><br><small>آخر حركة: ${fmtDate(p.lastDate)} (${p.lastMovementDays} يوم)</small></td>
-      <td class="amount">${money(p.totalCreditCalc)}</td>
-      <td class="amount">${money(p.cumulativeDebtor)}</td>
-      <td class="amount"><strong>${money(Math.abs(p.netBalance))}</strong></td>
-      <td>${p.ageDays} يوم</td>
-      <td><span class="${stClass}" style="font-weight:bold">${stText}</span></td>
-    </tr>`;
-  });
-
-  html += `<tr style="background:rgba(16,185,129,0.08);font-weight:900;border-top:2px solid var(--emerald-neon)">
-    <td>الإجمالي الختامي</td>
-    <td class="amount">${money(totCred)}</td>
-    <td class="amount">${money(totDeb)}</td>
-    <td class="amount" style="color:var(--emerald-neon)">${money(totNet)}</td>
-    <td colspan="2"></td>
-  </tr>`;
-
-  body.innerHTML = html;
-}
-
-function renderPersonCardTable(txs) {
-  const head = $("report-table-head"), body = $("report-table-body");
-  if(!head || !body) return;
-  
-  head.innerHTML = `<tr>
-    <th style="width:15%">التاريخ</th>
-    <th style="width:30%">البيان / نوع الحركة</th>
-    <th class="amount" style="width:13%">دين (+)</th>
-    <th class="amount" style="width:13%">سداد (-)</th>
-    <th class="amount" style="width:15%">الرصيد</th>
-    <th style="width:14%" class="no-print">إجراءات</th>
-  </tr>`;
-  
-  if(!txs.length) return void(body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:15px">لا توجد حركات لهذا الشخص.</td></tr>');
-
-  const sortOrder = $("report-sort-order") ? $("report-sort-order").value : "desc";
-  const sorted = [...txs].sort((a,b)=>a.date.localeCompare(b.date) || (a.time||"").localeCompare(b.time||""));
-  let running = 0;
   sorted.forEach(x => {
-    const amt = realAmount(x);
-    if(isCreditorEntry(x) || isOpeningEntry(x)) running += amt;
-    else if(isDebtorEntry(x)) running -= amt;
-    x._runningBal = running;
-  });
-
-  let html = "";
-  let totalCreditSum = 0;
-  let totalDebitSum = 0;
-  
-  // تطبيق الترتيب (desc: الأحدث أولاً، asc: الأقدم أولاً)
-  const displayList = [...sorted];
-  if(sortOrder === "desc") displayList.reverse();
-
-  displayList.forEach(x => {
-    const lbl = debtTypeLabel(x.debtType);
-    const amt = realAmount(x);
-    let creditCol = "—";
-    let debitCol = "—";
-
-    if(isCreditorEntry(x) || isOpeningEntry(x)) {
-      creditCol = money(amt);
-      totalCreditSum += amt;
-    } else if(isDebtorEntry(x)) {
-      debitCol = money(amt);
-      totalDebitSum += amt;
-    }
-
-    html += `<tr>
-      <td>${fmtDate(x.date)}</td>
-      <td><strong>${escapeHTML(lbl)}</strong><br><small>${escapeHTML(x.notes||"—")}</small></td>
-      <td class="amount bad">${creditCol}</td>
-      <td class="amount good">${debitCol}</td>
-      <td class="amount"><strong>${money(x._runningBal)}</strong></td>
-      <td class="no-print">
-        <div class="action-group">
-          <button type="button" class="btn btn-soft action-btn-mini" onclick="openEditModal(this.dataset.id)" data-id="${escapeHTML(x.id)}" aria-label="تعديل" title="تعديل">✏️</button>
-          <button type="button" class="btn btn-muted action-btn-mini" onclick="openDeleteModal(this.dataset.id)" data-id="${escapeHTML(x.id)}" aria-label="حذف" title="حذف">🗑️</button>
-        </div>
-      </td>
-    </tr>`;
-  });
-
-  html += `<tr style="background:rgba(16,185,129,0.08);font-weight:900;border-top:2px solid var(--emerald-neon)">
-    <td>الإجمالي الختامي</td>
-    <td></td>
-    <td class="amount bad">${money(totalCreditSum)}</td>
-    <td class="amount good">${money(totalDebitSum)}</td>
-    <td class="amount" style="color:var(--emerald-neon)">${money(totalCreditSum - totalDebitSum)}</td>
-    <td class="no-print"></td>
-  </tr>`;
-
-  body.innerHTML = html;
-}
-
-function renderReportTableRows(e){
-  const t=$("report-table-body"),a=$("report-table-head");
-  if(!t||!a)return;
-  const typeVal=$("report-type").value;
-  const sortOrder=$("report-sort-order")?$("report-sort-order").value:"desc";
-
-  const totalSumForPercent = e.reduce((sum, item) => sum + realAmount(item), 0);
-
-  if(typeVal==="expense"){
-    a.innerHTML='<tr><th style="width:15%">التاريخ</th><th style="width:25%">التصنيف</th><th style="width:25%">نوع المصروف</th><th style="width:15%">الحساب</th><th class="amount" style="width:10%">المبلغ</th><th style="width:10%" class="no-print">إجراءات</th></tr>';
-  } else if(typeVal==="internal_transfer"){
-    a.innerHTML='<tr><th style="width:15%">التاريخ</th><th style="width:30%">من حساب</th><th style="width:30%">إلى حساب</th><th class="amount" style="width:15%">المبلغ</th><th style="width:10%" class="no-print">إجراءات</th></tr>';
-  } else if(typeVal==="income"){
-    a.innerHTML='<tr><th style="width:15%">التاريخ</th><th style="width:35%">مصدر الدخل / التصنيف</th><th style="width:25%">الحساب</th><th class="amount" style="width:15%">المبلغ</th><th style="width:10%" class="no-print">إجراءات</th></tr>';
-  } else if(typeVal==="transfer"){
-    a.innerHTML='<tr><th style="width:13%">التاريخ</th><th style="width:22%">البيان</th><th style="width:22%">المستفيد</th><th class="amount" style="width:13%">بالجنيه</th><th class="amount" style="width:15%">حصته بالد.ك</th><th style="width:15%" class="no-print">إجراءات</th></tr>';
-  } else {
-    a.innerHTML='<tr><th style="width:15%">التاريخ</th><th style="width:30%">البيان</th><th style="width:25%">الطرف</th><th class="amount" style="width:20%">المبلغ</th><th style="width:10%" class="no-print">إجراءات</th></tr>';
-  }
-
-  if(!e.length)return void(t.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:15px">لا توجد حركات مطابقة.</td></tr>`);
-
-  let html="";
-  const sorted=[...e].sort((x,y)=>{
-    const cmp=x.date.localeCompare(y.date)||(x.time||"").localeCompare(y.time||"")||x.id.localeCompare(y.id);
-    return sortOrder==="asc"?cmp:-cmp;
-  });
-
-  sorted.forEach(x=>{
-    const amt=realAmount(x);
-    const accName=getAccountById(x.account||"cash_default").name;
-    const editBtn = `<button type="button" class="btn btn-soft action-btn-mini" onclick="openEditModal(this.dataset.id)" data-id="${escapeHTML(x.id)}" aria-label="تعديل" title="تعديل">✏️</button>`;
-    const deleteBtn = `<button type="button" class="btn btn-muted action-btn-mini" onclick="openDeleteModal(this.dataset.id)" data-id="${escapeHTML(x.id)}" aria-label="حذف" title="حذف">🗑️</button>`;
-    const actionsCell = `<div class="action-group">${editBtn}${deleteBtn}</div>`;
-
-    if(typeVal==="expense"){
-      const isFixed = x.budgetId==="fixed" || x.isFixed;
-      const bLabel = isFixed ? '<span style="color:var(--amber-val);font-weight:bold">📌 ثابتة</span>' : '<span style="color:var(--sky-val)">🛍️ نثريات</span>';
-      html+=`<tr><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(x.category)}</strong><br><small>${escapeHTML(x.notes||"")}</small></td><td>${bLabel}</td><td><small>${escapeHTML(accName)}</small></td><td class="amount">${money(amt)}</td><td class="no-print">${actionsCell}</td></tr>`;
-    } else if(typeVal==="internal_transfer"){
-      const toAccName = getAccountById(x.toAccount).name;
-      html+=`<tr><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(accName)}</strong></td><td><strong>${escapeHTML(toAccName)}</strong></td><td class="amount">${money(amt)}</td><td class="no-print">${actionsCell}</td></tr>`;
-    } else if(typeVal==="income"){
-      const isDebtIncome = x.category === "دخل السلف والاسترداد الديون";
-      const catBadge = isDebtIncome ? '<span style="color:var(--amber-val)">🔄 استرداد</span>' : '<span>📥 إيراد</span>';
-      html+=`<tr><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(x.category)}</strong><br><small>${escapeHTML(x.notes||"")}</small></td><td>${catBadge} (${escapeHTML(accName)})</td><td class="amount good">${money(amt)}</td><td class="no-print">${actionsCell}</td></tr>`;
-    } else if(typeVal==="transfer"){
-      const benefs = x.beneficiaries || [];
-      if (benefs.length === 0) {
-        html += `<tr>
-          <td>${fmtDate(x.date)}</td>
-          <td>${escapeHTML(x.notes||"حوالة")}</td>
-          <td>—</td>
-          <td class="amount">—</td>
-          <td class="amount good">${money(amt)}</td>
-          <td class="no-print">${actionsCell}</td>
-        </tr>`;
+    const amt = effectiveAmount(x, beneficiaryVal), acc = getAccountById(x.account || "cash_default").name, act = rowActionsHTML(x.id);
+    if (typeVal === "expense") {
+      const bLabel = isFixedExpense(x) ? '<span style="color:var(--amber-val);font-weight:bold">📌 ثابتة</span>' : '<span style="color:var(--sky-val)">🛍️ نثريات</span>';
+      html += `<tr><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(x.category)}</strong><br><small>${escapeHTML(x.notes || "")}</small></td><td>${bLabel}</td><td><small>${escapeHTML(acc)}</small></td><td class="amount">${money(amt)}</td><td class="no-print">${act}</td></tr>`;
+    } else if (typeVal === "internal_transfer") {
+      const dirBadge = accFilter === "all" ? "" : (x.account === accFilter ? ' <small class="bad">(صادر)</small>' : ' <small class="good">(وارد)</small>');
+      html += `<tr><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(acc)}</strong>${x.account === accFilter ? dirBadge : ""}</td><td><strong>${escapeHTML(getAccountById(x.toAccount).name)}</strong>${x.toAccount === accFilter ? dirBadge : ""}</td><td class="amount">${money(amt)}</td><td class="no-print">${act}</td></tr>`;
+    } else if (typeVal === "income") {
+      const badge = x.category === "دخل السلف والاسترداد الديون" ? '<span style="color:var(--amber-val)">🔄 استرداد</span>' : "<span>📥 إيراد</span>";
+      html += `<tr><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(x.category)}</strong><br><small>${escapeHTML(x.notes || "")}</small></td><td>${badge} (${escapeHTML(acc)})</td><td class="amount good">${money(amt)}</td><td class="no-print">${act}</td></tr>`;
+    } else if (typeVal === "debt") {
+      const cls = isDebtorEntry(x) ? "good" : "bad";
+      html += `<tr><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(x.person || "غير محدد")}</strong> — ${escapeHTML(debtTypeLabel(x.debtType))}<br><small>${escapeHTML(x.notes || "")}</small></td><td><small>${escapeHTML(acc)}</small></td><td class="amount ${cls}">${money(amt)}</td><td class="no-print">${act}</td></tr>`;
+    } else if (typeVal === "transfer") {
+      const allB = x.beneficiaries || [];
+      const benefs = getFilteredBeneficiaries(x, beneficiaryVal);
+      if (!benefs.length) {
+        html += `<tr><td>${fmtDate(x.date)}</td><td>${escapeHTML(x.notes || "حوالة")}</td><td>—</td><td class="amount">—</td><td class="amount good">${money(amt)}</td><td class="amount">—</td><td class="no-print">${act}</td></tr>`;
       } else {
-        const totalEgp = benefs.reduce((sum, b) => sum + (Number(b.egp) || 0), 0);
+        const totalKwd = Number(x.totalKwd ?? x.amount) || 0;
+        const totEgp = allB.reduce((s, b) => s + (Number(b.egp) || 0), 0);
         benefs.forEach((b, idx) => {
-          const bEgp = Number(b.egp) || 0;
-          const shareKwd = totalEgp > 0 ? amt * (bEgp / totalEgp) : amt / benefs.length;
-          const isFirst = idx === 0;
-          const dateCell = isFirst
-            ? `${fmtDate(x.date)}${benefs.length > 1 ? `<br><small style="color:var(--amber-val);font-weight:700">🔗 ${benefs.length} مستفيدين</small>` : ''}`
-            : '';
-          const notesCell = isFirst ? escapeHTML(x.notes||"حوالة") : '';
-          const actCell = isFirst ? actionsCell : '';
+          const bEgp = Number(b.egp) || 0, share = totEgp > 0 ? totalKwd * (bEgp / totEgp) : totalKwd / allB.length, first = idx === 0;
+          const rateTxt = bEgp > 0 ? money((share / bEgp) * 1000) : "—";
           html += `<tr>
-            <td>${dateCell}</td>
-            <td>${notesCell}</td>
+            <td>${first ? `${fmtDate(x.date)}${benefs.length > 1 ? `<br><small style="color:var(--amber-val);font-weight:700">🔗 ${benefs.length} مستفيدين</small>` : ""}` : ""}</td>
+            <td>${first ? escapeHTML(x.notes || "حوالة") : ""}</td>
             <td><strong>${escapeHTML(b.name || "غير محدد")}</strong></td>
             <td class="amount">${moneyEGP(bEgp)}</td>
-            <td class="amount good">${money(shareKwd)}</td>
-            <td class="no-print">${actCell}</td>
+            <td class="amount good">${money(share)}</td>
+            <td class="amount" style="color:var(--sky-val)">${rateTxt}</td>
+            <td class="no-print">${first ? act : ""}</td>
           </tr>`;
         });
       }
     } else {
-      const typeLabels = { expense: "مصروف", income: "دخل", debt: "دين", transfer: "حوالة خارجية", internal_transfer: "تحويل داخلي" };
-      const labelTitle = x.category || typeLabels[x.type] || x.type;
-      html+=`<tr><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(labelTitle)}</strong><br><small>${escapeHTML(x.notes||"")}</small></td><td>${escapeHTML(x.person || (x.beneficiaries||[]).map(b=>b.name).join(" ")||"—")}</td><td class="amount">${money(amt)}</td><td class="no-print">${actionsCell}</td></tr>`;
+      const labels = { expense: "مصروف", income: "دخل", debt: "دين", transfer: "حوالة خارجية", internal_transfer: "تحويل داخلي" };
+      const party = x.person || getFilteredBeneficiaries(x, beneficiaryVal).map(b => b.name).join(" • ") || "—";
+      html += `<tr><td>${fmtDate(x.date)}</td><td><strong>${escapeHTML(x.category || labels[x.type] || x.type)}</strong><br><small>${escapeHTML(x.notes || "")}</small></td><td>${escapeHTML(party)}</td><td class="amount">${money(amt)}</td><td class="no-print">${act}</td></tr>`;
     }
   });
 
-  if(e.length > 0) {
-    if (typeVal === "transfer") {
-      let totalKwd = 0, totalEgp = 0;
-      e.forEach(x => {
-        totalKwd += realAmount(x);
-        if (Array.isArray(x.beneficiaries)) x.beneficiaries.forEach(b => totalEgp += Number(b.egp) || 0);
-      });
-      html += `<tr style="background:rgba(16,185,129,0.08);font-weight:900;border-top:2px solid var(--emerald-neon)">
-        <td>الإجمالي الكلي</td>
-        <td colspan="2"></td>
-        <td class="amount">${moneyEGP(totalEgp)}</td>
-        <td class="amount" style="color:var(--emerald-neon)">${money(totalKwd)}</td>
-        <td class="no-print"></td>
-      </tr>`;
-    } else {
-      const colspan = typeVal === 'expense' ? 3 : (typeVal === 'income' ? 2 : (typeVal === 'internal_transfer' ? 2 : 2));
-      html += `<tr style="background:rgba(16,185,129,0.08);font-weight:900;border-top:2px solid var(--emerald-neon)">
-        <td>الإجمالي الكلي</td>
-        <td colspan="${colspan}"></td>
-        <td class="amount" style="color:var(--emerald-neon)">${money(totalSumForPercent)}</td>
-        <td class="no-print"></td>
-      </tr>`;
-    }
-  }
-
-  t.innerHTML=html;
-}
-
-function updateReportSummaries(txs, allTxsData=[], debtData = null){
-  const sumEl = $("report-summary");
-  const typeVal = $("report-type").value;
-  const beneficiaryVal = $("beneficiary-select") ? $("beneficiary-select").value : "all";
-  if(!sumEl) return;
-
-  if(typeVal === "debt" && beneficiaryVal !== "all" && debtData && debtData.personsArray.length > 0) {
-    const personObj = debtData.personsArray[0];
-    const totalDebt = personObj.totalCreditCalc;
-    const totalPaid = personObj.cumulativeDebtor;
-    const netBalance = Math.abs(personObj.netBalance);
-    const netLabel = personObj.netBalance > 0 ? "عليك صافي (ذمة دائنة)" : (personObj.netBalance < 0 ? "لك صافي (ذمة مدينة)" : "الحساب خالص تماماً");
-
-    sumEl.innerHTML = `
-      <div style="font-weight:900;color:var(--emerald-neon);margin-bottom:2px">📊 ملخص الموقف المالي للشخص:</div>
-      <div class="row-between"><span>💸 إجمالي الديون المستحقة:</span><strong class="bad">${money(totalDebt)}</strong></div>
-      <div class="row-between"><span>✅ إجمالي المسدد / المسترد:</span><strong class="good">${money(totalPaid)}</strong></div>
-      <div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px;margin-top:2px">
-        <span>⚖️ إجمالي الرصيد المتبقي (${netLabel}):</span>
-        <strong style="font-size:13px;color:var(--amber-val)">${money(netBalance)}</strong>
-      </div>
-    `;
-    $("tafqit-box").textContent = "التفقيط المالي للرصيد المتبقي: " + numberToArabicWords(netBalance);
-  } else if(typeVal === "debt" && beneficiaryVal === "all" && debtData) {
-    sumEl.innerHTML = `
-      <div class="row-between"><span>إجمالي المطالبات عليك:</span><strong class="bad">${money(debtData.totalCreditorSum)}</strong></div>
-      <div class="row-between"><span>إجمالي المستحقات لك:</span><strong class="good">${money(debtData.totalDebtorSum)}</strong></div>
-      <div class="row-between" style="border-top:1px dashed var(--border-neon);padding-top:4px">
-        <span>صافي الموقف الختامي للديون:</span>
-        <strong class="${debtData.grandNet > 0 ? 'bad' : 'good'}" style="font-size:13px">${debtData.grandNet > 0 ? 'عليك ' + money(debtData.grandNet) : 'لك ' + money(Math.abs(debtData.grandNet))}</strong>
-      </div>
-    `;
-    $("tafqit-box").textContent = "التفقيط المالي للصافي: " + numberToArabicWords(Math.abs(debtData.grandNet));
-  } else if(typeVal === "expense") {
-    const totalExp = txs.reduce((sum, x) => sum + realAmount(x), 0);
-    sumEl.innerHTML = `<div class="row-between"><span>إجمالي المصروفات في العرض الحالي:</span><strong class="bad" style="font-size:13px">${money(totalExp)}</strong></div>`;
-    $("tafqit-box").textContent = "التفقيط المالي: " + numberToArabicWords(totalExp);
-  } else if(typeVal === "income") {
-    let totalInc = 0;
-    txs.forEach(x => { totalInc += realAmount(x); });
-    sumEl.innerHTML = `<div class="row-between"><span>إجمالي الدخل والإيرادات العام:</span><strong class="good" style="font-size:13px">${money(totalInc)}</strong></div>`;
-    $("tafqit-box").textContent = "التفقيط المالي: " + numberToArabicWords(totalInc);
+  if (typeVal === "transfer") {
+    const totKwd = records.reduce((s, x) => s + effectiveAmount(x, beneficiaryVal), 0);
+    const totEgp = records.reduce((s, x) => s + getFilteredBeneficiaries(x, beneficiaryVal).reduce((bs, b) => bs + (Number(b.egp) || 0), 0), 0);
+    html += `<tr style="background:rgba(16,185,129,.08);font-weight:900;border-top:2px solid var(--emerald-neon)"><td>الإجمالي الكلي</td><td colspan="2"></td><td class="amount">${moneyEGP(totEgp)}</td><td class="amount" style="color:var(--emerald-neon)">${money(totKwd)}</td><td class="amount" style="color:var(--sky-val)">${ratePer1000EGP(totKwd, totEgp)}</td><td class="no-print"></td></tr>`;
   } else {
-    const total = txs.reduce((sum, x) => sum + realAmount(x), 0);
-    sumEl.innerHTML = `<div class="row-between"><span>الإجمالي العام للعناصر المعروضة:</span><strong style="font-size:13px">${money(total)}</strong></div>`;
-    $("tafqit-box").textContent = "التفقيط المالي: " + numberToArabicWords(total);
+    const sum = records.reduce((s, x) => s + effectiveAmount(x, beneficiaryVal), 0);
+    html += `<tr style="background:rgba(16,185,129,.08);font-weight:900;border-top:2px solid var(--emerald-neon)"><td>الإجمالي الكلي</td><td colspan="${typeVal === "expense" ? 3 : 2}"></td><td class="amount" style="color:var(--emerald-neon)">${money(sum)}</td><td class="no-print"></td></tr>`;
   }
-
-  const subBox=$("sub-breakdowns-box");
-  if(subBox){
-    if(isCompareModeActive && allTxsData.length > 0){
-      const sel1Id = $("filter-cycle-1")?.value;
-      const sel2Id = $("filter-cycle-2")?.value;
-      if(sel1Id !== "" && sel2Id !== "" && allCyclesCache[sel1Id] && allCyclesCache[sel2Id]){
-        const c1 = allCyclesCache[sel1Id];
-        const c2 = allCyclesCache[sel2Id];
-        const txsC1 = allTxsData.filter(x => x.date >= c1.start && x.date <= c1.end);
-        const txsC2 = allTxsData.filter(x => x.date >= c2.start && x.date <= c2.end);
-
-        const inc1 = txsC1.reduce((acc, x) => (x.type==="income"||isCreditorEntry(x))?acc+realAmount(x):acc, 0);
-        const inc2 = txsC2.reduce((acc, x) => (x.type==="income"||isCreditorEntry(x))?acc+realAmount(x):acc, 0);
-        const exp1 = txsC1.reduce((acc, x) => (x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))?acc+realAmount(x):acc, 0);
-        const exp2 = txsC2.reduce((acc, x) => (x.type==="expense"||x.type==="transfer"||isDebtorEntry(x))?acc+realAmount(x):acc, 0);
-        const diffInc = inc2 - inc1;
-        const diffExp = exp2 - exp1;
-
-        subBox.innerHTML=`
-        <div style="background:rgba(16,185,129,0.04);border:1px solid var(--border-neon);border-radius:10px;padding:8px">
-          <div style="font-weight:900;color:var(--emerald-neon);margin-bottom:4px">⚖️ مقارنة مباشرة: (${escapeHTML(c1.label)}) مقابل (${escapeHTML(c2.label)})</div>
-          <div class="row-between" style="font-size:11px"><span>دخل الأولى: <strong>${money(inc1)}</strong></span><span>دخل الثانية: <strong>${money(inc2)}</strong></span></div>
-          <div class="row-between" style="font-size:11px;margin-top:2px"><span>مصروفات الأولى: <strong>${money(exp1)}</strong></span><span>مصروفات الثانية: <strong>${money(exp2)}</strong></span></div>
-          <div class="row-between small" style="margin-top:4px;border-top:1px dashed var(--border-subtle);padding-top:2px">
-            <span>التغير بالدخل: <strong class="${diffInc>=0?'good':'bad'}">${diffInc>=0?'+':''}${money(diffInc)}</strong></span>
-            <span>التغير بالمصروفات: <strong class="${diffExp<=0?'good':'bad'}">${diffExp>=0?'+':''}${money(diffExp)}</strong></span>
-          </div>
-        </div>`;
-        subBox.classList.remove("hidden");
-      } else {
-        subBox.classList.add("hidden");
-      }
-    } else {
-      subBox.classList.add("hidden");
-    }
-  }
+  body.innerHTML = html;
 }
 
-function renderNotesDisplay(notesText) {
-  const panel = $("report-notes-display");
-  const textEl = $("report-notes-text");
-  if(!panel || !textEl) return;
-  if(!notesText || !notesText.trim()) { panel.classList.add("hidden"); return; }
-  textEl.textContent = notesText.trim();
-  panel.classList.remove("hidden");
+function updateReportSummaries(txs) {
+  const sumEl = $("report-summary"), typeVal = $("report-type").value;
+  const beneficiaryVal = $("beneficiary-select")?.value || "all";
+  const total = txs.reduce((s, x) => s + effectiveAmount(x, beneficiaryVal), 0);
+  const cls = typeVal === "expense" ? "bad" : (typeVal === "income" ? "good" : "");
+  const lbl = typeVal === "expense" ? "إجمالي المصروفات (حسب الفلتر):"
+    : (typeVal === "income" ? "إجمالي الدخل والإيرادات (حسب الفلتر):"
+    : (typeVal === "debt" ? "إجمالي حركات الديون المعروضة:"
+    : (typeVal === "all" ? "إجمالي قيم حركات الجدول:" : "الإجمالي العام للعناصر المعروضة:")));
+
+  sumEl.innerHTML = `<div class="row-between"><span>${lbl}</span><strong class="${cls}" style="font-size:13px">${money(total)}</strong></div>`;
+  $("tafqit-box").textContent = "التفقيط المالي: " + numberToArabicWords(total);
 }
 
-function backToFilters(){
+function backToFilters() {
   localStorage.removeItem(REPORT_STATE_KEY);
   $("report-section").classList.add("hidden");
   $("filter-section").classList.remove("hidden");
   reportGenerated = false;
 }
+function showReportView() {
+  $("filter-section").classList.toggle("hidden", reportGenerated);
+  $("report-section").classList.toggle("hidden", !reportGenerated);
+  updateReportTargetOptions().catch(() => {});
+}
 
-// دالة البحث الذكي المُطورة والشاملة لكل حقول المعاملات والمستفيدين والتواريخ
-function filterReportTable(){
-  const searchTxt = $("report-search") ? $("report-search").value.toLowerCase().trim() : "";
-  if(!cachedReportRecords.length) return;
-  
+function filterReportTable() {
+  const q = ($("report-search")?.value || "").toLowerCase().trim();
   const typeVal = $("report-type").value;
-  const isGeneralDebt = (typeVal === "debt" && $("beneficiary-select")?.value === "all");
+  const beneficiaryVal = $("beneficiary-select")?.value || "all";
+  const accFilter = $("report-account-filter")?.value || "all";
+  const dateFrom = readDateParts("date-from"), dateTo = readDateParts("date-to");
 
-  let resultList = cachedReportRecords.slice();
+  visibleReportRecords = !q ? [...cachedReportRecords] : cachedReportRecords.filter(item => {
+    const benefs = getFilteredBeneficiaries(item, beneficiaryVal);
+    return [
+      item.date, fmtDate(item.date), item.category, item.person, item.notes, item.type,
+      item.account, item.toAccount, item.debtType, effectiveAmount(item, beneficiaryVal),
+      ...benefs.flatMap(b => [b.name, b.egp])
+    ].join(" ").toLowerCase().includes(q);
+  });
 
-  if(searchTxt) {
-    resultList = resultList.filter(item => {
-      let textBlob = "";
-      if(isGeneralDebt) {
-        textBlob = [
-          item.name || "",
-          String(item.totalCreditCalc || ""),
-          String(item.totalDebtor || ""),
-          String(item.netBalance || ""),
-          item.lastDate || "",
-          fmtDate(item.lastDate || ""),
-          item.isClosed ? "مغلق خالص" : "قائم"
-        ].join(" ").toLowerCase();
+  if (typeVal === "expense") renderExpenseInsightsPanel(visibleReportRecords, dateFrom, dateTo);
+  else if (typeVal === "transfer") renderTransferBeneficiariesPanel(visibleReportRecords, dateFrom, dateTo, beneficiaryVal);
+  else if (typeVal === "all") renderAllSummaryDashboard(visibleReportRecords, accFilter, beneficiaryVal);
+
+  renderReportTableRows(visibleReportRecords);
+  $("display-count").textContent = `${visibleReportRecords.length} حركة`;
+  updateReportSummaries(visibleReportRecords);
+}
+
+function getSmartFilename(ext) {
+  const baseName = ($("report-custom-title")?.value || $("report-title")?.textContent || "تقرير_مالي")
+    .trim().replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, "_");
+  return `${baseName}_${todayISO()}.${ext}`;
+}
+
+function exportReportExcel() {
+  if (!window.XLSX) return showToast("مكتبة Excel غير متوفرة");
+  const records = visibleReportRecords;
+  if (!records.length) return showToast("لا توجد بيانات للتصدير");
+  const clean = v => (typeof v === "string" && /^[=+\-@]/.test(v)) ? "'" + v : v;
+  const typeVal = $("report-type").value;
+  const beneficiaryVal = $("beneficiary-select")?.value || "all";
+
+  let headers = ["التاريخ", "البيان", "الطرف", "المبلغ (د.ك)"];
+  const dataRows = [];
+
+  if (typeVal === "expense") {
+    headers = ["التاريخ", "التصنيف", "نوع المصروف", "الحساب", "المبلغ (د.ك)"];
+    records.forEach(r => dataRows.push([clean(fmtDate(r.date)), clean(r.category), isFixedExpense(r) ? "ثابت" : "نثريات", getAccountById(r.account).name, effectiveAmount(r, beneficiaryVal)]));
+  } else if (typeVal === "income") {
+    headers = ["التاريخ", "مصدر الدخل", "الحساب", "المبلغ (د.ك)"];
+    records.forEach(r => dataRows.push([clean(fmtDate(r.date)), clean(r.category), getAccountById(r.account).name, effectiveAmount(r, beneficiaryVal)]));
+  } else if (typeVal === "debt") {
+    headers = ["التاريخ", "الشخص", "نوع الحركة", "الحساب", "المبلغ (د.ك)"];
+    records.forEach(r => dataRows.push([clean(fmtDate(r.date)), clean(r.person || "—"), clean(debtTypeLabel(r.debtType)), getAccountById(r.account).name, effectiveAmount(r, beneficiaryVal)]));
+  } else if (typeVal === "internal_transfer") {
+    headers = ["التاريخ", "من حساب", "إلى حساب", "المبلغ (د.ك)"];
+    records.forEach(r => dataRows.push([clean(fmtDate(r.date)), getAccountById(r.account).name, getAccountById(r.toAccount).name, effectiveAmount(r, beneficiaryVal)]));
+  } else if (typeVal === "transfer") {
+    headers = ["التاريخ", "البيان", "المستفيد", "المبلغ (ج.م)", "الحصة (د.ك)", "سعر / 1,000 ج.م (د.ك)"];
+    records.forEach(r => {
+      const allB = r.beneficiaries || [];
+      const benefs = getFilteredBeneficiaries(r, beneficiaryVal);
+      const totalKwd = Number(r.totalKwd ?? r.amount) || 0;
+      const totEgp = allB.reduce((s, b) => s + (Number(b.egp) || 0), 0);
+      if (!benefs.length) {
+        dataRows.push([clean(fmtDate(r.date)), clean(r.notes || "حوالة"), "—", 0, totalKwd, "—"]);
       } else {
-        textBlob = [
-          item.date || "",
-          fmtDate(item.date || ""),
-          item.category || "",
-          item.person || "",
-          item.notes || "",
-          item.type || "",
-          item.account || "",
-          item.toAccount || "",
-          String(item.amount || ""),
-          String(item.totalKwd || ""),
-          item.name || "",
-          ...(Array.isArray(item.beneficiaries) ? item.beneficiaries.map(b => `${b.name || ""} ${b.egp || ""} ${b.kwd || ""}`) : [])
-        ].join(" ").toLowerCase();
+        benefs.forEach(b => {
+          const bEgp = Number(b.egp) || 0;
+          const share = totEgp > 0 ? totalKwd * (bEgp / totEgp) : totalKwd / allB.length;
+          const rate1k = bEgp > 0 ? Number(((share / bEgp) * 1000).toFixed(3)) : "—";
+          dataRows.push([clean(fmtDate(r.date)), clean(r.notes || "حوالة"), clean(b.name || "غير محدد"), bEgp, Number(share.toFixed(3)), rate1k]);
+        });
       }
-      return textBlob.includes(searchTxt);
+    });
+  } else {
+    records.forEach(r => {
+      const party = r.person || getFilteredBeneficiaries(r, beneficiaryVal).map(b => b.name).join(" • ") || "—";
+      dataRows.push([clean(fmtDate(r.date)), clean(r.category || r.type), clean(party), effectiveAmount(r, beneficiaryVal)]);
     });
   }
 
-  visibleReportRecords = resultList;
+  const rows = [
+    ["اسم التقرير:", $("report-title")?.textContent || "تقرير مالي", "تاريخ التقرير:", fmtDate(todayISO())],
+    ["الفترة:", $("display-date-range")?.textContent || "—"],
+    [],
+    headers,
+    ...dataRows
+  ];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), "Report");
+  wb.Workbook = { Views: [{ RTL: true }] };
+  XLSX.writeFile(wb, getSmartFilename("xlsx"));
+  showToast("تم تصدير ملف Excel بنجاح 📗");
+}
 
-  if(isGeneralDebt) {
-    renderGeneralDebtTable(visibleReportRecords);
-  } else if(typeVal === "debt") {
-    renderPersonCardTable(visibleReportRecords);
-  } else {
-    renderReportTableRows(visibleReportRecords);
+function toggleCaptureStyle(enable, container) {
+  $("pf-print-styles")?.remove();
+  if (enable) {
+    const s = document.createElement("style");
+    s.id = "pf-print-styles";
+    s.textContent = `#capture-area,#capture-area .report-head,#capture-area .report-meta,#capture-area .report-summary,#capture-area .panel,#capture-area td,#capture-area .table-wrap{background:#fff!important;color:#0f172a!important;border-color:#cbd5e1!important}#capture-area .report-head *{color:#0f172a!important}#capture-area th{background:#f1f5f9!important;color:#0f172a!important}`;
+    document.head.appendChild(s);
+    const restores = [];
+    container.querySelectorAll(".no-print").forEach(n => { restores.push([n, "display", n.style.display]); n.style.display = "none"; });
+    const app = document.querySelector(".app");
+    if (app) { restores.push([app, "maxWidth", app.style.maxWidth], [app, "width", app.style.width]); app.style.maxWidth = "none"; app.style.width = "1000px"; }
+    [["maxWidth", "none"], ["width", "100%"], ["minWidth", "950px"], ["background", "#ffffff"]].forEach(([k, v]) => { restores.push([container, k, container.style[k]]); container.style[k] = v; });
+    return () => restores.forEach(([el, prop, val]) => { el.style[prop] = val; });
   }
-  $("display-count").textContent = visibleReportRecords.length + " عنصر (مطابق للبحث الذكي)";
+  return () => {};
 }
 
-function getSmartFilename(prefix, ext="json"){
-  const s = todayISO();
-  const custom = $("report-custom-title") ? $("report-custom-title").value.trim() : "";
-  const sanitized = custom ? custom.replace(/[\\\/:*?"<>|]/g, "_").replace(/\s+/g, "_") : prefix;
-  return `${sanitized}_${s}.${ext}`;
-}
-
-function exportReportExcel(){
-  try{
-    if(!window.XLSX) return showToast("مكتبة Excel غير متوفرة تأكد من الاتصال");
-    if(!visibleReportRecords.length && !cachedReportRecords.length) return showToast("لا توجد بيانات للتصدير");
-
-    const records = visibleReportRecords.length > 0 ? visibleReportRecords : cachedReportRecords;
-    const wb = XLSX.utils.book_new();
-    
-    const sanitizeCell = (val) => {
-      if(typeof val === "string" && /^[=+\-@]/.test(val)) return "'" + val;
-      return val;
-    };
-
-    const headerTitle = $("report-title")?.textContent || "تقرير مالي";
-    const dateRangeStr = $("display-date-range")?.textContent || "—";
-    
-    let aoaData = [
-      [headerTitle],
-      ["الفترة:", dateRangeStr],
-      ["التاريخ:", todayISO()],
-      []
-    ];
-
-    const typeVal = $("report-type").value;
-    if(typeVal === "expense") {
-      aoaData.push(["التاريخ", "التصنيف", "نوع المصروف", "الحساب", "المبلغ (د.ك)"]);
-      records.forEach(r => {
-        aoaData.push([sanitizeCell(fmtDate(r.date)), sanitizeCell(r.category), r.budgetId==="fixed"||r.isFixed?"ثابت":"نثريات", getAccountById(r.account).name, realAmount(r)]);
-      });
-    } else if(typeVal === "income") {
-      aoaData.push(["التاريخ", "مصدر الدخل / التصنيف", "الحساب", "المبلغ (د.ك)"]);
-      records.forEach(r => {
-        aoaData.push([sanitizeCell(fmtDate(r.date)), sanitizeCell(r.category), getAccountById(r.account).name, realAmount(r)]);
-      });
-    } else {
-      aoaData.push(["التاريخ", "البيان / التصنيف", "الطرف / المستفيد", "المبلغ / الرصيد"]);
-      records.forEach(r => {
-        aoaData.push([sanitizeCell(fmtDate(r.date)), sanitizeCell(r.category || r.type), sanitizeCell(r.person || "—"), realAmount(r)]);
-      });
-    }
-
-    const ws = XLSX.utils.aoa_to_sheet(aoaData);
-    XLSX.utils.book_append_sheet(wb, ws, "Report");
-    wb.Workbook = { Views: [{ RTL: true }] };
-    XLSX.writeFile(wb, getSmartFilename("تقرير_مالي", "xlsx"));
-    showToast("تم تصدير ملف Excel بنجاح 📗");
-  } catch(e) {
-    console.error(e);
-    showToast("حدث خطأ أثناء تصدير Excel");
-  }
-}
-
-function applyPrintStyles() {
-  const old = document.getElementById("pf-print-styles");
-  if (old) old.remove();
-  const style = document.createElement("style");
-  style.id = "pf-print-styles";
-  style.textContent = `
-    #capture-area .report-head { background: #ffffff !important; color: #0f172a !important; border: 1px solid #cbd5e1 !important; }
-    #capture-area .report-head h2, #capture-area .report-head div, #capture-area .report-head span { color: #0f172a !important; }
-    #capture-area .report-meta, #capture-area .report-summary, #capture-area .panel { background: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
-    #capture-area th { background: #f1f5f9 !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
-    #capture-area td { background: #ffffff !important; color: #0f172a !important; border-color: #e2e8f0 !important; }
-    #capture-area .table-wrap { background: #ffffff !important; border-color: #cbd5e1 !important; }
-    #capture-area { background: #ffffff !important; }
-  `;
-  document.head.appendChild(style);
-  return style;
-}
-function removePrintStyles() { const el = document.getElementById("pf-print-styles"); if (el) el.remove(); }
-
-function getSafeCutPoints(container, canvas) {
-  const rect = container.getBoundingClientRect();
-  if (rect.height <= 0) return [0, canvas.height];
-  const scaleY = canvas.height / rect.height;
-  const points = new Set([0, canvas.height]);
-  container.querySelectorAll("tr,.report-head,.report-meta,.report-summary,.table-wrap,.panel").forEach(el => {
-    const r = el.getBoundingClientRect();
-    if (r.height <= 0) return;
-    const top = Math.round((r.top - rect.top) * scaleY);
-    const bottom = Math.round((r.bottom - rect.top) * scaleY);
-    if (top > 0 && top < canvas.height) points.add(top);
-    if (bottom > 0 && bottom < canvas.height) points.add(bottom);
-  });
-  return [...points].sort((a, b) => a - b);
-}
-
-function cutCanvasRegion(source, y1, y2) {
-  const h = y2 - y1;
-  if (h <= 0) return null;
-  const c = document.createElement("canvas");
-  c.width = source.width; c.height = h;
-  const ctx = c.getContext("2d");
-  ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, c.width, c.height);
-  ctx.drawImage(source, 0, y1, source.width, h, 0, 0, source.width, h);
-  return { canvas: c, height: h, y: y1 };
-}
-
-function computeSlicesWithHeader(canvas, pageCapacityPx, headerReservedPx, safeCuts) {
-  const slices = [];
-  const H = canvas.height;
-  if (pageCapacityPx <= 0 || H <= 0) return [{ canvas, height: H, y: 0, needsHeader: false }];
-  let cursor = 0, isFirstPage = true, guard = 0;
-  while (cursor < H && guard++ < 500) {
-    const capacity = isFirstPage ? pageCapacityPx : Math.max(Math.floor(pageCapacityPx * 0.4), pageCapacityPx - headerReservedPx);
-    const remaining = H - cursor;
-    if (remaining <= capacity) {
-      const slice = cutCanvasRegion(canvas, cursor, H);
-      if (slice) slices.push({ ...slice, needsHeader: !isFirstPage });
-      break;
-    }
-    const idealEnd = cursor + capacity;
-    let cut = -1;
-    for (const p of safeCuts) {
-      if (p > cursor && p <= idealEnd) cut = p;
-      else if (p > idealEnd) break;
-    }
-    if (cut <= cursor) cut = idealEnd;
-    const slice = cutCanvasRegion(canvas, cursor, cut);
-    if (slice && slice.height > 0) slices.push({ ...slice, needsHeader: !isFirstPage });
-    cursor = cut; isFirstPage = false;
-  }
-  return slices;
-}
-
-async function captureReportHeader(container) {
-  const head = container.querySelector(".report-head");
-  if (!head) return null;
-  const meta = container.querySelector(".report-meta");
-  const headRect = head.getBoundingClientRect();
-  const wrapper = document.createElement("div");
-  wrapper.style.cssText = `position:absolute; left:-99999px; top:0; width:${headRect.width || container.offsetWidth}px; background:#ffffff; padding:0; display:flex; flex-direction:column; gap:8px;`;
-  wrapper.appendChild(head.cloneNode(true));
-  if (meta) wrapper.appendChild(meta.cloneNode(true));
-  document.body.appendChild(wrapper);
-  try {
-    return await html2canvas(wrapper, { scale: 2, backgroundColor: "#ffffff", useCORS: true, logging: false });
-  } finally { wrapper.remove(); }
-}
-
-function createArabicFooterCanvas() {
-  const c = document.createElement("canvas");
-  c.width = 1600; c.height = 120;
-  const ctx = c.getContext("2d");
-  ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, c.width, c.height);
-  ctx.fillStyle = "#475569"; ctx.font = "bold 56px system-ui, sans-serif";
-  ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.direction = "rtl";
-  ctx.fillText("النظام المالي الشخصي — كشف غير رسمي", c.width / 2, c.height / 2);
-  return c.toDataURL("image/png");
-}
-
-async function exportPDF(captureId, reportName, orientation) {
+async function exportPDF(captureId, orientation = "p") {
   if (!window.jspdf || !window.html2canvas) return showToast("مكتبات PDF غير متوفرة");
-  const container = document.getElementById(captureId);
-  if (!container) return showToast("لا يوجد محتوى");
+  const container = $(captureId);
+  if (!container) return;
   showToast("جاري تجهيز PDF...");
-  const originalTheme = document.documentElement.getAttribute("data-theme") || "dark";
+  const origTheme = document.documentElement.getAttribute("data-theme") || "dark";
   document.documentElement.setAttribute("data-theme", "light");
-  applyPrintStyles();
-  const cleanup = prepareForCapture(container);
+  const restore = toggleCaptureStyle(true, container);
   try {
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-    const headerCanvas = await captureReportHeader(container);
-    const headerHeightPx = headerCanvas ? headerCanvas.height : 0;
     const canvas = await html2canvas(container, { scale: 2, backgroundColor: "#ffffff", useCORS: true, logging: false });
-    const isLandscape = orientation === "l" || orientation === "landscape";
-    const pageW = isLandscape ? 297 : 210, pageH = isLandscape ? 210 : 297, margin = 10;
-    const usableW = pageW - margin * 2, usableH = pageH - margin * 2, footerSpaceMm = 12, usableHEffective = usableH - footerSpaceMm;
-    const pxPerMm = canvas.width / usableW;
-    const pageCapacityPx = Math.floor(usableHEffective * pxPerMm);
-    const headerReservedPx = headerHeightPx > 0 ? headerHeightPx + Math.ceil(3 * pxPerMm) : 0;
-    const safeCuts = getSafeCutPoints(container, canvas);
-    const slices = computeSlicesWithHeader(canvas, pageCapacityPx, headerReservedPx, safeCuts);
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF(isLandscape ? "l" : "p", "mm", "a4");
-    const footerDataURL = createArabicFooterCanvas();
-    const headerMmHeight = headerHeightPx / pxPerMm;
-    let pageNum = 0;
-    for (const s of slices) {
-      if (!s || s.height <= 0) continue;
-      if (pageNum > 0) pdf.addPage();
-      let yOffset = margin;
-      if (s.needsHeader && headerCanvas) {
-        pdf.addImage(headerCanvas.toDataURL("image/jpeg", 0.92), "JPEG", margin, yOffset, usableW, headerMmHeight, undefined, "FAST");
-        yOffset += headerMmHeight + 3;
-      }
-      pdf.addImage(s.canvas.toDataURL("image/jpeg", 0.92), "JPEG", margin, yOffset, usableW, Math.min(s.height / pxPerMm, usableHEffective - (yOffset - margin)), undefined, "FAST");
-      pdf.addImage(footerDataURL, "PNG", margin, pageH - footerSpaceMm + 1, usableW, 6);
-      pdf.setFont("helvetica", "normal"); pdf.setFontSize(8); pdf.setTextColor(100, 116, 139);
-      pdf.text(`${pageNum + 1} / ${slices.length}`, pageW - margin, pageH - 3, { align: "right" });
-      pageNum++;
+    const isLand = orientation === "l";
+    const pageW = isLand ? 297 : 210, pageH = isLand ? 210 : 297, margin = 10, usableW = pageW - 20, usableH = pageH - 32;
+    const pxPerMm = canvas.width / usableW, pageCapacityPx = Math.floor(usableH * pxPerMm);
+    const cuts = [0, canvas.height, ...[...container.querySelectorAll("tr,.report-head,.report-meta,.report-summary,.panel")].map(el => Math.round((el.getBoundingClientRect().bottom - container.getBoundingClientRect().top) * (canvas.height / container.getBoundingClientRect().height)))].filter(y => y > 0 && y < canvas.height).sort((a, b) => a - b);
+
+    const slices = [];
+    let cur = 0;
+    while (cur < canvas.height) {
+      const end = cur + pageCapacityPx >= canvas.height ? canvas.height : (cuts.filter(p => p > cur && p <= cur + pageCapacityPx).pop() || cur + pageCapacityPx);
+      const c = document.createElement("canvas");
+      c.width = canvas.width; c.height = end - cur;
+      c.getContext("2d").drawImage(canvas, 0, cur, canvas.width, c.height, 0, 0, canvas.width, c.height);
+      slices.push(c);
+      cur = end;
     }
-    pdf.save(getSmartFilename("تقرير_مالي", "pdf"));
+
+    const { jsPDF } = window.jspdf, pdf = new jsPDF(isLand ? "l" : "p", "mm", "a4");
+    slices.forEach((sl, i) => {
+      if (i > 0) pdf.addPage();
+      pdf.addImage(sl.toDataURL("image/jpeg", 0.92), "JPEG", margin, margin, usableW, Math.min(sl.height / pxPerMm, usableH), undefined, "FAST");
+      pdf.setFontSize(8); pdf.setTextColor(100, 116, 139);
+      pdf.text(`${i + 1} / ${slices.length}`, pageW - margin, pageH - 4, { align: "right" });
+    });
+    pdf.save(getSmartFilename("pdf"));
     showToast("تم إنشاء PDF بنجاح ✅");
-  } catch (err) {
-    console.error(err); showToast("حدث خطأ أثناء تصدير PDF");
+  } catch (e) {
+    console.error(e); showToast("حدث خطأ أثناء تصدير PDF");
   } finally {
-    restoreAfterCapture(cleanup); removePrintStyles();
-    document.documentElement.setAttribute("data-theme", originalTheme);
+    restore(); toggleCaptureStyle(false, container); document.documentElement.setAttribute("data-theme", origTheme);
   }
 }
 
-function prepareForCapture(e) {
-  const r = [];
-  e.querySelectorAll(".no-print").forEach(el => { r.push({ el, prop: "display", val: el.style.display }); el.style.display = "none"; });
-  const app = document.querySelector(".app");
-  if (app) { r.push({ el: app, prop: "maxWidth", val: app.style.maxWidth }); app.style.maxWidth = "none"; app.style.width = "1000px"; }
-  r.push({ el: e, prop: "maxWidth", val: e.style.maxWidth }, { el: e, prop: "width", val: e.style.width }, { el: e, prop: "minWidth", val: e.style.minWidth });
-  e.style.maxWidth = "none"; e.style.width = "100%"; e.style.minWidth = "950px"; e.style.background = "#ffffff";
-  return { restores: r };
-}
-function restoreAfterCapture(e) { if (e && e.restores) e.restores.forEach(item => { item.el.style[item.prop] = item.val; }); }
-
-async function shareAsImageSafe(captureId, reportName) {
+async function shareAsImageSafe(captureId) {
   if (!window.html2canvas) return showToast("مكتبة الصور غير متوفرة");
-  const container = document.getElementById(captureId);
-  if (!container) return showToast("لا يوجد محتوى");
-  showToast("جاري تجهيز الصور...");
-  const originalTheme = document.documentElement.getAttribute("data-theme") || "dark";
+  const container = $(captureId);
+  if (!container) return;
+  showToast("جاري تجهيز الصورة...");
+  const origTheme = document.documentElement.getAttribute("data-theme") || "dark";
   document.documentElement.setAttribute("data-theme", "light");
-  applyPrintStyles();
-  const cleanup = prepareForCapture(container);
+  const restore = toggleCaptureStyle(true, container);
   try {
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
     const canvas = await html2canvas(container, { scale: 2, backgroundColor: "#ffffff", useCORS: true, logging: false });
     const blob = await new Promise(res => canvas.toBlob(res, "image/jpeg", 0.92));
-    const file = new File([blob], getSmartFilename("صورة_تقرير", "jpg"), { type: "image/jpeg" });
-    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ title: reportName, files: [file] });
+    const file = new File([blob], getSmartFilename("jpg"), { type: "image/jpeg" });
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ title: $("report-title")?.textContent || "تقرير مالي", files: [file] });
       showToast("تمت المشاركة ✅");
     } else {
-      const url = URL.createObjectURL(file);
-      const a = document.createElement("a"); a.href = url; a.download = file.name;
-      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      const url = URL.createObjectURL(file), a = document.createElement("a");
+      a.href = url; a.download = file.name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
       showToast("تم تنزيل الصورة ✅");
     }
-  } catch (err) {
-    showToast("تعذر إنشاء الصور");
-  } finally {
-    restoreAfterCapture(cleanup); removePrintStyles();
-    document.documentElement.setAttribute("data-theme", originalTheme);
-  }
+  } catch (e) { showToast("تعذر إنشاء الصورة"); }
+  finally { restore(); toggleCaptureStyle(false, container); document.documentElement.setAttribute("data-theme", origTheme); }
 }
 
-function shareReport(){
-  const title = $("report-title") ? $("report-title").textContent.trim() : "كشف حساب";
-  const dateRange = $("display-date-range") ? $("display-date-range").textContent.trim() : "—";
-  const count = $("display-count") ? $("display-count").textContent.trim() : "0";
-  
-  let msg = `📄 *${title}*\n━━━━━━━━━━━━━━━━━━━━━\n📅 *الفترة:* ${dateRange}\n🔢 *العدد:* ${count}\n━━━━━━━━━━━━━━━━━━━━━\n\n`;
-  const records = visibleReportRecords.length > 0 ? visibleReportRecords : cachedReportRecords;
+function shareReport() {
+  const records = visibleReportRecords;
+  const beneficiaryVal = $("beneficiary-select")?.value || "all";
+  const rName = $("report-title")?.textContent.trim() || "كشف حساب";
+  const rDate = $("display-report-date")?.textContent.trim() || fmtDate(todayISO());
+  let msg = `📄 *${rName}*\n🗓️ *تاريخ التقرير:* ${rDate}\n📅 *الفترة:* ${$("display-date-range")?.textContent.trim() || "—"}\n🔢 *العدد:* ${$("display-count")?.textContent.trim() || "0"}\n\n`;
   records.slice(0, 10).forEach((x, i) => {
-    if(x.name) {
-      msg += `${i+1}. *${x.name}* | متبقي: *${money(Math.abs(x.netBalance))}*\n`;
-    } else {
-      msg += `${i+1}. *${fmtDate(x.date || "")}* | ${x.category || x.type || "حركة"} | *${money(realAmount(x))}*\n`;
-    }
+    const label = x.category || x.person || getFilteredBeneficiaries(x, beneficiaryVal).map(b => b.name).join(" • ") || x.type || "حركة";
+    msg += `${i + 1}. *${fmtDate(x.date || "")}* | ${label} | *${money(effectiveAmount(x, beneficiaryVal))}*\n`;
   });
-  if(records.length > 10) msg += `\n... و${records.length - 10} عنصر آخر.`;
-  
-  if(msg.length > 1500) {
-    msg = msg.substring(0, 1400) + "\n\n*(تم تقصير الرسالة نظراً لطولها)*";
-  }
-  
-  window.open(`https://api.whatsapp.com/send?text=` + encodeURIComponent(msg), "_blank");
+  if (records.length > 10) msg += `\n... و${records.length - 10} عنصر آخر.`;
+  if (msg.length > 1500) msg = msg.slice(0, 1400) + "\n\n*(تم تقصير الرسالة)*";
+  window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(msg), "_blank", "noopener,noreferrer");
 }
 
-function getAllSalaryCycles(txs){
-  const today = todayISO();
-  const arr = (txs || []).map(x => {
-    if (x && x.date) {
-      const p = x.date.split("-");
-      if (p.length === 3) x.date = formatStrictISO(p[0], p[1], p[2]);
-    }
-    return x;
-  }).filter(x => x && x.date).sort((a, b) => a.date.localeCompare(b.date));
-
-  const salaryDates = [...new Set(
-    arr.filter(x => x.type === "income" && x.isSalaryBase).map(x => x.date)
-  )].sort();
-
-  const cycles = [];
-  if (salaryDates.length === 0) {
-    const start = arr.length > 0 ? arr[0].date : firstOfMonthISO();
-    cycles.push({ id: `cycle_default_${start}_${today}`, label: `دورة (بدون راتب محدد)`, start: start, end: today, isCurrent: true, cycleIndex: 1 });
-    return cycles;
-  }
-
-  const firstSalary = salaryDates[0];
-  const earlierTxs = arr.filter(x => x.date < firstSalary);
-  if (earlierTxs.length > 0) {
-    cycles.push({ id: `cycle_prior_${earlierTxs[0].date}`, label: `الأرصدة القديمة`, start: earlierTxs[0].date, end: dayBefore(firstSalary), isCurrent: false, cycleIndex: 1 });
-  }
-
-  for (let i = 0; i < salaryDates.length; i++) {
-    const start = salaryDates[i];
-    const isLast = i === salaryDates.length - 1;
-    const end = isLast ? today : dayBefore(salaryDates[i + 1]);
-    cycles.push({ id: `cycle_${start}`, label: isLast ? `الدورة الحالية` : `دورة راتب ${i + 1}`, start: start, end: end, isCurrent: isLast, cycleIndex: i + 1 });
-  }
-  return cycles;
-}
-function dayBefore(e){
-  const p=e.split("-");
-  const d=new Date(Date.UTC(+p[0],+p[1]-1,+p[2]));
-  d.setUTCDate(d.getUTCDate()-1);
-  return formatStrictISO(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate());
-}
-
-function switchFinanceTab(e){
-  currentFinanceTab=e;
-  if(e==="ledger"){
-    if(reportGenerated){$("filter-section").classList.add("hidden");$("report-section").classList.remove("hidden");}
-    else{$("filter-section").classList.remove("hidden");$("report-section").classList.add("hidden");}
-    updateReportTargetOptions().catch(()=>{});
-  }
-}
-
-function numberToArabicWords(e){
-  const isNeg = e < 0;
-  const absVal = Math.abs(e);
-  if(absVal === 0) return "صفر دينار كويتي لا غير";
-  
-  const ones=["","واحد","اثنان","ثلاثة","أربعة","خمسة","ستة","سبعة","ثمانية","تسعة","عشرة","أحد عشر","اثنا عشر","ثلاثة عشر","أربعة عشر","خمسة عشر","ستة عشر","سبعة عشر","ثمانية عشر","تسعة عشر"];
-  const tens=["","","عشرون","ثلاثون","أربعون","خمسون","ستون","سبعون","ثمانون","تسعون"];
-  const hundreds=["","مائة","مائتان","ثلاثمائة","أربعمائة","خمسمائة","ستمائة","سبعمائة","ثمانمائة","تسعمائة"];
-
-  function c3(n){
-    if(n===0)return"";
-    const h=Math.floor(n/100),r=n%100;
-    let s=hundreds[h]||"";
-    if(r>0){
-      if(s)s+=" و";
-      if(r<20)s+=ones[r];
-      else{s+=ones[r%10]?(ones[r%10]+" و"):"";s+=tens[Math.floor(r/10)];}
-    }
+function numberToArabicWords(val) {
+  const rounded = Math.round((Number(val) || 0) * 1000) / 1000;
+  const isNeg = rounded < 0, abs = Math.abs(rounded);
+  if (!abs) return "صفر دينار كويتي لا غير";
+  const ones = ["","واحد","اثنان","ثلاثة","أربعة","خمسة","ستة","سبعة","ثمانية","تسعة","عشرة","أحد عشر","اثنا عشر","ثلاثة عشر","أربعة عشر","خمسة عشر","ستة عشر","سبعة عشر","ثمانية عشر","تسعة عشر"];
+  const tens = ["","","عشرون","ثلاثون","أربعون","خمسون","ستون","سبعون","ثمانون","تسعون"];
+  const huns = ["","مائة","مائتان","ثلاثمائة","أربعمائة","خمسمائة","ستمائة","سبعمائة","ثمانمائة","تسعمائة"];
+  const c3 = n => {
+    if (!n) return "";
+    const h = Math.floor(n / 100), r = n % 100;
+    let s = huns[h] || "";
+    if (r) { if (s) s += " و"; s += r < 20 ? ones[r] : `${ones[r % 10] ? ones[r % 10] + " و" : ""}${tens[Math.floor(r / 10)]}`; }
     return s;
-  }
-
-  const intPart = Math.floor(absVal);
-  let frac = Math.round(1000 * (absVal - intPart)), int2 = intPart;
-  if(frac >= 1000) { int2 += 1; frac -= 1000; }
-
-  const millions = Math.floor(int2 / 1e6);
-  const thousands = Math.floor((int2 % 1e6) / 1e3);
-  const remainder = int2 % 1000;
-
-  const parts = [];
-  if(millions === 1) parts.push("مليون");
-  else if(millions === 2) parts.push("مليونان");
-  else if(millions > 2 && millions <= 10) parts.push(ones[millions] + " ملايين");
-  else if(millions > 10) parts.push(c3(millions) + " مليوناً");
-
-  if(thousands === 1) parts.push("ألف");
-  else if(thousands === 2) parts.push("ألفان");
-  else if(thousands > 2 && thousands <= 10) parts.push(ones[thousands] + " آلاف");
-  else if(thousands > 10) parts.push(c3(thousands) + " ألفاً");
-
-  if(remainder > 0 && c3(remainder)) parts.push(c3(remainder));
-
-  let out = parts.length > 0 ? parts.join(" و") + " دينار كويتي" : "";
-  if(frac > 0) out += (out ? " و" : "") + c3(frac) + " فلس";
-  if(!out) out = "صفر دينار كويتي";
-  return (isNeg ? "سالب " : "") + out.trim() + " لا غير";
+  };
+  let intP = Math.floor(abs), frac = Math.round((abs - intP) * 1000);
+  if (frac >= 1000) { intP++; frac -= 1000; }
+  const m = Math.floor(intP / 1e6), k = Math.floor((intP % 1e6) / 1e3), rem = intP % 1000, parts = [];
+  if (m) parts.push(m === 1 ? "مليون" : m === 2 ? "مليونان" : `${m <= 10 ? ones[m] + " ملايين" : c3(m) + " مليوناً"}`);
+  if (k) parts.push(k === 1 ? "ألف" : k === 2 ? "ألفان" : `${k <= 10 ? ones[k] + " آلاف" : c3(k) + " ألفاً"}`);
+  if (rem && c3(rem)) parts.push(c3(rem));
+  let out = parts.length ? parts.join(" و") + " دينار كويتي" : "";
+  if (frac) out += (out ? " و" : "") + c3(frac) + " فلس";
+  return `${isNeg ? "سالب " : ""}${out || "صفر دينار كويتي"} لا غير`;
 }
 
-window.addEventListener("keydown", (e) => {
-  if(e.key === "Escape") {
-    if(!$("person-modal").classList.contains("hidden")) closePersonModal();
-    if(!$("delete-modal").classList.contains("hidden")) closeDeleteModal();
-    if(!$("edit-modal").classList.contains("hidden")) closeEditModal();
-  }
+window.addEventListener("keydown", e => {
+  if (e.key === "Escape") { closeDeleteModal(); closeEditModal(); }
 });
 
-window.addEventListener("DOMContentLoaded",async()=>{
-  try{
+window.addEventListener("DOMContentLoaded", async () => {
+  try {
     initTheme();
-    initDates();
     await openDB();
+    await onReportTypeChange();
     await updateReportTargetOptions();
     populateAccountFilterSelect();
 
-    const savedStateRaw = localStorage.getItem(REPORT_STATE_KEY);
-    if(savedStateRaw){
-      try{
-        const st = JSON.parse(savedStateRaw);
-        if(st && st.reportType){
+    if ($("date-from-year") && !$("date-from-year").value) writeDateParts("date-from", firstOfMonthISO());
+    if ($("date-to-year") && !$("date-to-year").value) writeDateParts("date-to", todayISO());
+
+    const saved = localStorage.getItem(REPORT_STATE_KEY);
+    if (saved) {
+      try {
+        const st = JSON.parse(saved);
+        if (st?.reportType) {
           $("report-type").value = st.reportType;
           await onReportTypeChange();
-          if(st.reportSubtype) $("report-subtype").value = st.reportSubtype;
-          if(st.accountFilter && $("report-account-filter")) $("report-account-filter").value = st.accountFilter;
-          if(st.beneficiary && $("beneficiary-select")) $("beneficiary-select").value = st.beneficiary;
-          
-          if(st.isCompareActive){
-            toggleCompareMode();
-            if(st.cycle1 && $("filter-cycle-1")) $("filter-cycle-1").value = st.cycle1;
-            if(st.cycle2 && $("filter-cycle-2")) $("filter-cycle-2").value = st.cycle2;
-          }
-
-          if(st.debtNature && $("debt-nature-filter")) $("debt-nature-filter").value = st.debtNature;
-          if(st.debtActivity && $("debt-activity-filter")) $("debt-activity-filter").value = st.debtActivity;
-
-          if(st.dateFrom){
-            if($("date-from-day")) $("date-from-day").value = st.dateFrom.d || "";
-            if($("date-from-month")) $("date-from-month").value = st.dateFrom.m || "";
-            if($("date-from-year")) $("date-from-year").value = st.dateFrom.y || "";
-          }
-          if(st.dateTo){
-            if($("date-to-day")) $("date-to-day").value = st.dateTo.d || "";
-            if($("date-to-month")) $("date-to-month").value = st.dateTo.m || "";
-            if($("date-to-year")) $("date-to-year").value = st.dateTo.y || "";
-          }
-          if(st.searchQuery && $("report-search")) $("report-search").value = st.searchQuery;
-          if(st.sortOrder && $("report-sort-order")) $("report-sort-order").value = st.sortOrder;
-          if(st.customTitle && $("report-custom-title")) $("report-custom-title").value = st.customTitle;
-          if(st.notes && $("report-notes")) $("report-notes").value = st.notes;
-
+          if (st.reportSubtype) $("report-subtype").value = st.reportSubtype;
+          if (st.accountFilter && $("report-account-filter")) $("report-account-filter").value = st.accountFilter;
+          if (st.beneficiary && $("beneficiary-select")) $("beneficiary-select").value = st.beneficiary;
+          if (st.dateFrom) { $("date-from-day").value = st.dateFrom.d || ""; $("date-from-month").value = st.dateFrom.m || ""; $("date-from-year").value = st.dateFrom.y || ""; }
+          if (st.dateTo) { $("date-to-day").value = st.dateTo.d || ""; $("date-to-month").value = st.dateTo.m || ""; $("date-to-year").value = st.dateTo.y || ""; }
+          if (st.searchQuery && $("report-search")) $("report-search").value = st.searchQuery;
+          if (st.sortOrder && $("report-sort-order")) $("report-sort-order").value = st.sortOrder;
+          if (st.customTitle && $("report-custom-title")) $("report-custom-title").value = st.customTitle;
+          if (st.notes && $("report-notes")) $("report-notes").value = st.notes;
           await generateReport(true);
         }
-      }catch(err){
-        localStorage.removeItem(REPORT_STATE_KEY);
-      }
+      } catch (e) { localStorage.removeItem(REPORT_STATE_KEY); }
     }
-  }catch(e){console.warn("Init warning:",e)}
+  } catch (e) { console.warn("Init warning:", e); }
 });
 </script>
 </body>
